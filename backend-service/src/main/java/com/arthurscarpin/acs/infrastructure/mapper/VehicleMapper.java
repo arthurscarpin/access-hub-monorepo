@@ -17,10 +17,18 @@ public interface VehicleMapper {
 
     VehicleResponse fromDomainToResponse(Vehicle vehicle);
 
+    @Mapping(target = "owner", source = "ownerId")
     VehicleEntity fromDomainToEntity(Vehicle vehicle);
 
     @Mapping(target = "ownerId", source = "owner")
     Vehicle fromEntityToDomain(VehicleEntity entity);
+
+    default OwnerEntity map(UUID ownerId) {
+        if (ownerId == null) return null;
+        OwnerEntity owner = new OwnerEntity();
+        owner.setId(ownerId);
+        return owner;
+    }
 
     default UUID mapOwnerToId(OwnerEntity owner) {
         return owner != null ? owner.getId() : null;

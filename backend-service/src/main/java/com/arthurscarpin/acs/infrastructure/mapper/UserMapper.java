@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
@@ -19,17 +18,30 @@ public interface UserMapper {
 
     UserResponse fromDomainToResponse(User user);
 
-    @Mapping(target = "scopes", ignore = true)
+    @Mapping(target = "scopes", source = "scopes")
     UserEntity fromDomainToEntity(User user);
 
     @Mapping(target = "scopes", source = "scopes")
     User fromEntityToDomain(UserEntity entity);
 
+    default ScopeEntity map(UUID id) {
+        if (id == null) return null;
+        return ScopeEntity.builder()
+                .id(id)
+                .build();
+    }
+
+    default List<ScopeEntity> map(List<UUID> scopes) {
+        return scopes == null
+                ? List.of()
+                : scopes.stream().map(this::map).toList();
+    }
+
     default UUID map(ScopeEntity scope) {
         return scope != null ? scope.getId() : null;
     }
 
-    default List<UUID> map(List<ScopeEntity> scopes) {
+    default List<UUID> mapScopes(List<ScopeEntity> scopes) {
         return scopes == null
                 ? List.of()
                 : scopes.stream().map(this::map).toList();
