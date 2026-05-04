@@ -15,14 +15,13 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("AccessEventMapper Tests")
 class AccessEventMapperTest {
 
     private final AccessEventMapper mapper = Mappers.getMapper(AccessEventMapper.class);
 
     @Test
-    @DisplayName("Given AccessEventRequest When mapping to Domain Then returns AccessEvent correctly")
-    void givenRequest_whenMapToDomain_thenReturnsDomain() {
+    @DisplayName("Given AccessEventRequest When mapping to domain Then should map to AccessEvent")
+    void shouldMapAccessEventRequestToAccessEventDomain() {
         AccessEventRequest request = new AccessEventRequest(
                 "BRA1S23",
                 Direction.IN,
@@ -39,8 +38,8 @@ class AccessEventMapperTest {
     }
 
     @Test
-    @DisplayName("Given AccessEvent Domain When mapping to Response Then returns AccessEventResponse correctly")
-    void givenDomain_whenMapToResponse_thenReturnsResponse() {
+    @DisplayName("Given AccessEvent domain When mapping to response Then should map to AccessEventResponse")
+    void shouldMapAccessEventDomainToAccessEventResponse() {
         AccessEvent domain = new AccessEvent(
                 UUID.randomUUID(),
                 "BRA1S23",
@@ -60,8 +59,8 @@ class AccessEventMapperTest {
     }
 
     @Test
-    @DisplayName("Given AccessEvent Domain When mapping to Entity Then returns AccessEventEntity correctly")
-    void givenDomain_whenMapToEntity_thenReturnsEntity() {
+    @DisplayName("Given AccessEvent domain When mapping to entity Then should map to AccessEventEntity")
+    void shouldMapAccessEventDomainToAccessEventEntity() {
         AccessEvent domain = new AccessEvent(
                 UUID.randomUUID(),
                 "BRA1S23",
@@ -81,8 +80,8 @@ class AccessEventMapperTest {
     }
 
     @Test
-    @DisplayName("Given AccessEventEntity When mapping to Domain Then returns AccessEvent correctly")
-    void givenEntity_whenMapToDomain_thenReturnsDomain() {
+    @DisplayName("Given AccessEventEntity When mapping to domain Then should map to AccessEvent")
+    void shouldMapAccessEventEntityToAccessEventDomain() {
         AccessEventEntity entity = AccessEventEntity.builder()
                 .id(UUID.randomUUID())
                 .plate("BRA1S23")
@@ -102,8 +101,8 @@ class AccessEventMapperTest {
     }
 
     @Test
-    @DisplayName("Given null values When mapping Then returns null safely")
-    void givenNullValues_whenMapping_thenReturnsNull() {
+    @DisplayName("Given null values When mapping Then should return null")
+    void shouldReturnNullWhenMappingNullValues() {
         assertNull(mapper.fromRequestToDomain(null));
         assertNull(mapper.fromDomainToResponse(null));
         assertNull(mapper.fromDomainToEntity(null));
