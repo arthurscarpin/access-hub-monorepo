@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: access-control-system
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+
+jwt:
+  public:
+    key: ${JWT_PUBLIC_KEY}
+  private:
+    key: ${JWT_PRIVATE_KEY}
+
+springdoc:
+  api-docs:
+    path: /api/api-docs
+  swagger-ui:
+    path: /swagger/index.html

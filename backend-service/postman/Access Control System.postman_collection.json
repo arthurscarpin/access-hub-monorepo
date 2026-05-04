@@ -1,0 +1,320 @@
+{
+  "info": {
+    "_postman_id": "51b8c338-5813-4391-a90a-7bfb492d8c6b",
+    "name": "Access Control System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37882254"
+  },
+  "item": [
+    {
+      "name": "Development",
+      "item": [
+        {
+          "name": "Users",
+          "item": [
+            {
+              "name": "Register User",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"f7e4437e-2fcb-4451-9e85-2ac693ee50db\",\r\n        \"ae0652ae-a223-4164-acf0-8cef0e130b61\",\r\n        \"7682e28a-4098-41c9-a162-a2dbf0876c72\",\r\n        \"04688da2-777e-4d34-bbfc-528fe84233c4\",\r\n        \"061e04d1-2026-4947-8ebf-6a09266193ba\",\r\n        \"5f1cc4ec-0cf5-4a71-82b6-65d7418d95be\",\r\n        \"2a71eb21-6fc0-4391-b834-f9404893f72f\"\r\n    ]\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/users",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Vehicles",
+          "item": [
+            {
+              "name": "Register Vehicle",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"plate\": \"BRA1S23\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"6b9b20f0-f4f2-421a-af94-776d8e5d0d0a\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/vehicles",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "vehicles"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Vehicle Status",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "localhost:8080/vehicles/b0f973ab-c996-4f89-8314-17ab364b573d",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "vehicles",
+                    "b0f973ab-c996-4f89-8314-17ab364b573d"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Owners",
+          "item": [
+            {
+              "name": "Register Owner",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Maria Oliveira\",\r\n    \"document\": \"111.444.777-35\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"contact@example.com\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/owners",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "owners"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Authentication",
+          "item": [
+            {
+              "name": "User Login",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var response = pm.response.json();\r",
+                      "var token = response.accessToken;\r",
+                      "pm.collectionVariables.set(\"token\", token);\r",
+                      "console.log(\"Access Token captured: \" + token);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:8080/login",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Access Event",
+          "item": [
+            {
+              "name": "Get Access Event History",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/access-events?page=0&size=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "access-events"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Validate And Record Access Event",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"plate\": \"BRA1S23\",\r\n  \"direction\": \"IN\",\r\n  \"timestamp\": \"2026-01-01 00:00:00-03:00\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/access-events",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "access-events"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<configuration>
+    <property name="LOG_PATH" value="${LOG_PATH:-logs}"/>
+    <property name="APP_NAME" value="access-control-system"/>
+
+    <!-- Console Configuration -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- File format Configuration -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/%d{yyyyMMdd}.ndjson</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app":"${APP_NAME}","env":"dev"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- ROOT -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="JSON_FILE"/>
+    </root>
+
+    <logger name="com.arthurscarpin" level="DEBUG"/>
+</configuration>
