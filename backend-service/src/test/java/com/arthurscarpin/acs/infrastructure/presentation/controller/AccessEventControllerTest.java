@@ -13,13 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.OffsetDateTime;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
 
     @Autowired
@@ -144,5 +147,106 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
         mockMvc.perform(post("/access-events/non-existent")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Given no filters When retrieving access events Then returns 200 OK with paginated results")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:read"})
+    void shouldReturnAllAccessEvents() throws Exception {
+
+        mockMvc.perform(get("/access-events")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content").isNotEmpty())
+                .andExpect(jsonPath("$.pageable.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageable.pageSize").value(10))
+                .andExpect(jsonPath("$.totalElements").isNumber());
+    }
+
+    @Test
+    @DisplayName("Given plate filter When retrieving access events Then returns filtered results")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:read"})
+    void shouldReturnFilteredByPlate() throws Exception {
+
+        String plate = "BRA1S28";
+
+        mockMvc.perform(get("/access-events")
+                        .param("plate", plate)
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[*].plate").value(org.hamcrest.Matchers.everyItem(org.hamcrest.Matchers.is(plate))));
+    }
+
+    @Test
+    @DisplayName("Given date range When retrieving access events Then returns filtered results")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:read"})
+    void shouldReturnFilteredByDateRange() throws Exception {
+
+        String from = "2026-01-01T00:00:00Z";
+        String to = "2026-12-31T23:59:59Z";
+
+        mockMvc.perform(get("/access-events")
+                        .param("from", from)
+                        .param("to", to)
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray());
+    }
+
+    @Test
+    @DisplayName("Given plate, date range and pagination When retrieving access events Then returns filtered paginated results")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:read"})
+    void shouldReturnFilteredByPlateAndDateRangeWithPagination() throws Exception {
+
+        String plate = "BRA1S28";
+        String from = "2026-01-01T00:00:00Z";
+        String to = "2026-12-31T23:59:59Z";
+
+        mockMvc.perform(get("/access-events")
+                        .param("plate", plate)
+                        .param("from", from)
+                        .param("to", to)
+                        .param("page", "0")
+                        .param("size", "5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content").isNotEmpty())
+                .andExpect(jsonPath("$.content[*].plate")
+                        .value(org.hamcrest.Matchers.everyItem(org.hamcrest.Matchers.is(plate))))
+                .andExpect(jsonPath("$.pageable.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageable.pageSize").value(5))
+                .andExpect(jsonPath("$.totalElements").isNumber());
+    }
+
+    @Test
+    @DisplayName("Given no authentication When retrieving access events Then returns 401 Unauthorized")
+    void shouldReturnUnauthorizedWhenNoAuth() throws Exception {
+
+        mockMvc.perform(get("/access-events")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Given user without permission When retrieving access events Then returns 403 Forbidden")
+    @WithMockUser(authorities = {"SCOPE_access_event:write"})
+    void shouldReturnForbiddenWhenNoPermission() throws Exception {
+
+        mockMvc.perform(get("/access-events")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 }
