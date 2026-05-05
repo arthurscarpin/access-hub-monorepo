@@ -18,7 +18,8 @@ public interface UserControllerDoc {
     @Operation(summary = "Register user", description = "Registers a new user with the provided details.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Scope ID not found",  content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     UserResponse save(@Valid @RequestBody UserRequest request);
 }
