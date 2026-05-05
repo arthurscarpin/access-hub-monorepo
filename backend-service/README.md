@@ -23,6 +23,7 @@ A robust, scalable REST API backend for an **Access Control System** built with 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Development Tools & IDE Setup](#-development-tools--ide-setup)
 - [Configuration](#configuration)
 - [API Documentation](#api-documentation)
 - [Architecture](#architecture)
@@ -69,7 +70,9 @@ The service uses PostgreSQL for persistent data storage, JWT tokens for security
 - 📊 **Pagination Support** - Efficient data retrieval with Spring Data JPA pagination
 - 📝 **OpenAPI/Swagger** - Auto-generated API documentation with SpringDoc
 - 📋 **Structured Logging** - JSON-formatted logs with Logstash integration
-- 🧪 **Comprehensive Testing** - Unit tests with Spring Test Framework
+- 🧪 **Comprehensive Testing** - 20+ unit and integration tests with MockMvc and Testcontainers
+- 🗺️ **Entity Mapping** - MapStruct for efficient DTO/Domain entity conversion
+- 📦 **Reduced Boilerplate** - Lombok annotations for cleaner code
 - 🐳 **Docker Support** - Production-ready containerization
 
 ---
@@ -211,6 +214,187 @@ curl -X POST http://localhost:8080/login \
 
 ---
 
+## 🛠️ Development Tools & IDE Setup
+
+### IDE Configuration
+
+#### IntelliJ IDEA (Recommended)
+
+1. **Open Project**:
+   - File → Open → Select `access-control-system`
+   - Trust the project when prompted
+
+2. **Install Lombok Plugin**:
+   - File → Settings → Plugins
+   - Search "Lombok" → Install "Lombok" plugin
+   - Restart IDE
+
+3. **Enable Annotation Processing**:
+   - File → Settings → Build, Execution, Deployment → Compiler → Annotation Processors
+   - Check "Enable annotation processing"
+   - Check "Obtain processors from project classpath"
+
+4. **Configure Running Tests**:
+   - Run → Edit Configurations
+   - Create JUnit configuration for running test suites
+   - Set VM options: `-Dspring.datasource.url=...` (optional)
+
+5. **Use Built-in Terminal**:
+   - View → Tool Windows → Terminal
+   - Run Maven commands directly
+
+#### VS Code/Visual Studio Code
+
+1. **Install Extensions**:
+   - Extension Pack for Java (Microsoft)
+   - Debugger for Java (Microsoft)
+   - Maven for Java (Microsoft)
+   - Spring Boot Extension Pack (VMware)
+   - Lombok Annotations Support for VS Code
+
+2. **Workspace Settings** (`.vscode/settings.json`):
+```json
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "maven.terminal.useJavaHome": true,
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.formatOnSave": true
+    }
+}
+```
+
+3. **Debug Configuration** (`.vscode/launch.json`):
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Spring Boot App",
+            "type": "java",
+            "name": "Spring Boot (Main)",
+            "request": "launch",
+            "mainClass": "com.arthurscarpin.acs.AccessControlSystemApplication",
+            "args": ""
+        }
+    ]
+}
+```
+
+#### Eclipse
+
+1. **Install Lombok**:
+   - Help → Eclipse Marketplace
+   - Search "Lombok" → Install Lombok IDE
+
+2. **Configure Maven**:
+   - Right-click project → Maven → Update Project
+   - Check "Force Update of Snapshots/Releases"
+
+3. **Build Project**:
+   - Right-click project → Maven → Clean
+   - Right-click project → Maven → Install
+
+### Useful IDE Shortcuts
+
+| Action | IntelliJ | VS Code | Eclipse |
+|--------|----------|---------|---------|
+| Run Tests | Ctrl+Shift+F10 | Ctrl+F5 | Ctrl+F11 |
+| Debug Tests | Ctrl+Shift+F9 | F5 | Ctrl+Shift+F11 |
+| Search Symbol | Ctrl+Alt+Shift+N | Ctrl+F12 | Ctrl+O |
+| Format Code | Ctrl+Alt+L | Shift+Alt+F | Ctrl+Shift+F |
+| Quick Fix | Alt+Enter | Ctrl+. | Ctrl+1 |
+| Generate Code | Alt+Insert | Ctrl+. | Alt+Insert |
+
+### Development Workflow
+
+1. **Create Feature Branch**:
+```bash
+git checkout -b feature/your-feature-name
+```
+
+2. **Make Changes**:
+   - Edit domain models in `core/*/domain/`
+   - Add use cases in `core/*/usecase/`
+   - Create mappers in `infrastructure/mapper/`
+   - Add controllers in `infrastructure/presentation/controller/`
+
+3. **Write Tests**:
+   - Unit tests: `src/test/java/core/*/`
+   - Integration tests: `src/test/java/infrastructure/presentation/`
+   - Follow naming convention: `*Test.java` or `*Tests.java`
+
+4. **Run Locally**:
+```bash
+# Start PostgreSQL
+docker-compose up -d postgres
+
+# Run tests
+mvn test
+
+# Run application
+mvn spring-boot:run
+```
+
+5. **Verify API**:
+   - Open http://localhost:8080/swagger/index.html
+   - Test endpoints directly
+   - Check logs for errors
+
+6. **Commit & Push**:
+```bash
+git add .
+git commit -m "feat: add your feature description"
+git push origin feature/your-feature-name
+```
+
+### Debugging Tips
+
+#### Debug Java Application in IDE
+
+```bash
+# IntelliJ: Select "Debug" from run configurations
+# OR manually start with debug options
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 \
+  -jar target/access-control-system-0.0.1-SNAPSHOT.jar
+```
+
+#### View SQL Queries
+
+Enable in `application.yaml`:
+```yaml
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+```
+
+#### Enable Debug Logging
+
+```bash
+# Via environment variable
+LOGGING_LEVEL_ROOT=DEBUG mvn spring-boot:run
+
+# Or in application.yaml
+logging:
+  level:
+    root: DEBUG
+    com.arthurscarpin.acs: DEBUG
+    org.hibernate.SQL: DEBUG
+```
+
+#### Connect to Running Application
+
+```bash
+# Attach debugger to running app on port 5005
+# In IntelliJ: Run → Attach to Process... or Edit Configs → Remote
+```
+
+---
+
 ## ⚙️ Configuration
 
 ### Application Properties
@@ -253,20 +437,125 @@ spring:
 # JWT Configuration
 jwt:
   public:
-    key: ${JWT_PUBLIC_KEY}
+    key: classpath:authz.pub
   private:
-    key: ${JWT_PRIVATE_KEY}
+    key: classpath:authz.pem
 ```
+
+### Project Dependencies
+
+#### Core Framework
+- **Spring Boot 4.0.6**: Modern Java framework with embedded Tomcat
+- **Spring Data JPA**: Object-relational mapping with Hibernate
+- **Spring Security & OAuth2**: Authentication and authorization
+- **Spring Validation**: Input validation annotations
+
+#### Database
+- **PostgreSQL Driver**: PostgreSQL 16+ support
+- **Flyway**: Database migration management
+
+#### Mapping & Code Generation
+- **MapStruct 1.6.3**: Type-safe entity mapping with compile-time code generation
+- **Lombok**: Reduces boilerplate with annotations (`@Getter`, `@Setter`, `@Builder`)
+
+#### API Documentation
+- **SpringDoc OpenAPI 2.8.0**: Generates Swagger UI and OpenAPI spec
+- **Swagger UI**: Interactive API documentation at `/swagger/index.html`
+
+#### Logging
+- **Logstash Logback Encoder 7.4**: JSON-formatted structured logging
+
+#### Testing
+- **JUnit 5**: Modern testing framework
+- **Mockito**: Mocking framework for unit tests
+- **Testcontainers 1.19.3**: PostgreSQL container for integration tests
+- **Spring Test & MockMvc**: REST endpoint testing
 
 ### Active Profiles
 
-Run with specific profiles:
+Run with specific profiles for different environments:
+
 ```bash
 # Development (local database, debug logging)
 mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
 
-# Production
+# Production (production database, info logging)
 mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=prod"
+
+# Or set environment variable
+export SPRING_PROFILES_ACTIVE=dev
+mvn spring-boot:run
+```
+
+### Maven Build Configuration
+
+The project uses Maven with specialized plugins:
+
+```bash
+# Build phases
+mvn clean              # Clean previous builds
+mvn compile            # Compile source code
+mvn test               # Run all tests
+mvn verify             # Run integration tests
+mvn package            # Create executable JAR
+mvn install            # Install to local repository
+
+# Common combinations
+mvn clean package              # Clean build and package
+mvn clean package -DskipTests  # Package without tests
+mvn clean verify               # Full build with all tests
+```
+
+### MapStruct Configuration
+
+MapStruct automatically generates mapping code during compilation:
+
+```xml
+<!-- In pom.xml: annotation processors -->
+<annotationProcessorPaths>
+    <path>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct-processor</artifactId>
+        <version>${org.mapstruct.version}</version>
+    </path>
+</annotationProcessorPaths>
+```
+
+**Create custom mappers**:
+
+```java
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    User fromEntityToDomain(UserEntity entity);
+    
+    @Mapping(source = "id", target = "userId")
+    UserResponse fromDomainToResponse(User user);
+    
+    List<UserResponse> fromDomainListToResponseList(List<User> users);
+}
+```
+
+### Lombok Configuration
+
+Lombok generates getters, setters, constructors, and builders:
+
+```java
+@Getter                    // Generates all getters
+@Setter                    // Generates all setters
+@NoArgsConstructor         // Generates no-arg constructor
+@AllArgsConstructor        // Generates all-args constructor
+@Builder                   // Generates builder pattern
+@ToString                  // Generates toString()
+@EqualsAndHashCode         // Generates equals() and hashCode()
+@Entity
+@Table(name = "users")
+public class UserEntity {
+    @Id
+    private UUID id;
+    
+    private String email;
+    private String password;
+}
 ```
 
 ---
@@ -425,43 +714,177 @@ The API returns standard HTTP status codes with detailed error messages:
 
 ### Clean Architecture Layers
 
-The project is organized following Clean Architecture principles:
+The project is organized following **Clean Architecture** principles with strict separation of concerns:
 
 ```
-src/main/java/com/arthurscarpin/acs/
-├── core/                          # Enterprise Business Rules
-│   ├── accessevent/              # Access event domain logic
-│   ├── owner/                    # Owner domain logic
-│   ├── user/                     # User domain logic
-│   ├── vehicle/                  # Vehicle domain logic
-│   └── pagination/               # Pagination utilities
-│
-└── infrastructure/               # External frameworks & DB
-    ├── configuration/            # Spring configuration classes
-    ├── gateway/                  # External service integrations
-    ├── mapper/                   # DTO/Domain mappers (MapStruct)
-    ├── persistence/              # JPA repositories & entities
-    └── presentation/             # REST controllers & DTOs
-        ├── controller/           # REST endpoints
-        ├── request/              # Request DTOs
-        ├── response/             # Response DTOs
-        ├── advice/               # Global exception handling
-        └── documentation/        # OpenAPI documentation
+┌─────────────────────────────────────────────────────────┐
+│              REST Controllers (Presentation)             │
+│  (Receives HTTP requests, validates input, returns DTOs) │
+└───────────────────┬─────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────────┐
+│        Entity Mappers (Infrastructure Layer)             │
+│  (MapStruct: DTOs ↔ Entities, Entities ↔ Domain Models) │
+└───────────────────┬─────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────────┐
+│        Use Cases / Business Logic (Core Layer)           │
+│  (Orchestrates domain entities and gateways)             │
+└───────────────────┬─────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────────┐
+│        Domain Models & Value Objects (Core Layer)        │
+│  (Business rules, validations, enums)                    │
+└───────────────────┬─────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────────┐
+│        Gateway Interfaces (Core Layer Contract)          │
+│  (Defines contracts for data access)                     │
+└───────────────────┬─────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────────────┐
+│        Repository Implementations (Infrastructure)       │
+│  (JPA repositories, database operations)                 │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ### Key Design Patterns
 
-- **Use Case Pattern**: Business logic encapsulated in reusable use case classes
-- **Repository Pattern**: Data access abstraction with JPA repositories
-- **Mapper Pattern**: Separation of domain models from DTOs (MapStruct)
-- **Dependency Injection**: Spring IoC container for loose coupling
-- **Exception Handling**: Global exception handler with custom exceptions
+| Pattern | Implementation | Purpose |
+|---------|---|---------|
+| **Use Case Pattern** | `*UseCaseImpl` classes | Encapsulates business logic and orchestrates domain entities |
+| **Repository Pattern** | `*Repository` interfaces + `*RepositoryGateway` | Abstracts data access from business logic |
+| **Mapper Pattern** | `*Mapper` (MapStruct) | Automatically converts between DTOs, entities, and domain models |
+| **Gateway Pattern** | `*Gateway` interfaces | Defines contracts for external dependencies |
+| **Dependency Injection** | Spring IoC Container | Loose coupling and testability |
+| **Value Objects** | `CPF`, `Plate`, `Name` records | Ensures domain validation at the model level |
+| **Domain Events** | `AccessEvent`, `AccessResult` | Models domain concepts with clear semantics |
+| **Exception Handling** | Global `@ControllerAdvice` | Consistent error responses across the API |
 
-### Data Flow
+### Entity-to-Domain Mapping with MapStruct
+
+MapStruct automatically generates efficient mapping code between layers:
+
+```java
+// JPA Entity (Infrastructure Layer)
+@Entity
+@Table(name = "users")
+public class UserEntity {
+    private UUID id;
+    private String email;
+    private String password;
+    private List<ScopeEntity> scopes;
+}
+
+// Domain Model (Core Layer)
+public record User(
+    UUID id,
+    String name,
+    String email,
+    String password,
+    boolean active,
+    List<UUID> scopes
+) {}
+
+// Automatic Mapping (Infrastructure Layer)
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    User fromEntityToDomain(UserEntity entity);
+    UserEntity fromDomainToEntity(User domain);
+    UserResponse fromDomainToResponse(User domain);
+}
+```
+
+**Benefits of MapStruct**:
+- 🚀 Compile-time code generation (no reflection)
+- 🔧 Zero runtime overhead
+- 📝 Type-safe mapping with compiler checks
+- 🧵 Automatic null handling
+- 🔗 Custom mapping methods when needed
+
+### Data Flow Example: User Login
 
 ```
-Request → Controller → Mapper → Use Case → Domain Logic → Repository → Database
-Response ← Mapper ← Use Case ← Domain Logic ← Repository ← Database
+1. Client sends POST /login with email/password
+          ↓
+2. LoginController receives and validates LoginRequest DTO
+          ↓
+3. LoginMapper converts LoginRequest → User domain model
+          ↓
+4. LoginUserUseCase executes business logic:
+   - Verifies user exists (UserGateway)
+   - Validates password (LoginGateway)
+   - Retrieves scopes (ScopeGateway)
+          ↓
+5. LoginGateway generates JWT token
+          ↓
+6. Response mapper converts domain model → LoginResponse DTO
+          ↓
+7. Controller returns 200 OK with token and expiration
+```
+
+### Domain Models (Value Objects)
+
+**Validation at Model Layer**:
+
+```java
+// Plate Domain Model - Automatic validation
+public class Plate {
+    private final String plate;
+    
+    public Plate(String plate) {
+        if(!isValidPlate(plate)) {
+            throw new InvalidPlateException("Invalid plate format");
+        }
+        this.plate = plate;
+    }
+    
+    private boolean isValidPlate(String plate) {
+        // Business logic for plate validation
+        return Pattern.matches("[A-Z]{3}-\\d{4}", plate);
+    }
+}
+
+// CPF Domain Model
+public class CPF implements Document {
+    private final String value;
+    
+    public CPF(String value) {
+        if(!isValidCPF(value)) {
+            throw new InvalidCPFException("Invalid CPF format");
+        }
+        this.value = value;
+    }
+    
+    @Override
+    public String getFormatted() {
+        return String.format("%s.%s.%s-%s", 
+            value.substring(0, 3),
+            value.substring(3, 6),
+            value.substring(6, 9),
+            value.substring(9));
+    }
+}
+```
+
+### Scope/RBAC Architecture
+
+Scopes enable fine-grained permission management:
+
+```
+User → has many → Scope (via users_scopes junction table)
+  
+Scopes available:
+- admin:all (full access)
+- vehicle:write (create/update vehicles)
+- vehicle:read (view vehicles)
+- owner:write (manage owners)
+- owner:read (view owners)
+- access_event:write (record access events)
+- access_event:read (view access history)
+
+JWT Token includes user's scopes
+Controllers validate scopes before processing
 ```
 
 ---
@@ -473,41 +896,127 @@ backend-service/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/arthurscarpin/acs/
-│   │   │   ├── core/
-│   │   │   │   ├── accessevent/
+│   │   │   ├── core/                          # Enterprise Business Rules Layer
+│   │   │   │   ├── accessevent/              # Access event domain logic
 │   │   │   │   │   ├── domain/
+│   │   │   │   │   │   ├── AccessEvent.java
+│   │   │   │   │   │   ├── Direction.java
+│   │   │   │   │   │   └── AccessResult.java
+│   │   │   │   │   ├── usecase/
+│   │   │   │   │   │   └── ValidateAccessUseCaseImpl.java
+│   │   │   │   │   └── gateway/
+│   │   │   │   ├── owner/                    # Owner domain logic
+│   │   │   │   │   ├── domain/
+│   │   │   │   │   │   ├── DocumentFactory.java
+│   │   │   │   │   │   ├── CPF.java
+│   │   │   │   │   │   ├── Name.java
+│   │   │   │   │   │   └── Owner.java
+│   │   │   │   │   └── usecase/
+│   │   │   │   ├── scope/                    # RBAC scope management
+│   │   │   │   │   ├── domain/Scope.java
+│   │   │   │   │   └── gateway/ScopeGateway.java
+│   │   │   │   ├── user/                     # User domain logic
+│   │   │   │   │   ├── domain/User.java
+│   │   │   │   │   ├── usecase/
+│   │   │   │   │   │   ├── RegisterUserUseCaseImpl.java
+│   │   │   │   │   │   └── LoginUserUseCaseImpl.java
+│   │   │   │   │   ├── exception/
+│   │   │   │   │   └── gateway/
+│   │   │   │   ├── vehicle/                  # Vehicle domain logic
+│   │   │   │   │   ├── domain/
+│   │   │   │   │   │   ├── Vehicle.java
+│   │   │   │   │   │   ├── Plate.java
+│   │   │   │   │   │   └── VehicleStatus.java
 │   │   │   │   │   ├── usecase/
 │   │   │   │   │   └── gateway/
-│   │   │   │   ├── owner/
-│   │   │   │   ├── user/
-│   │   │   │   ├── vehicle/
-│   │   │   │   └── pagination/
-│   │   │   └── infrastructure/
-│   │   │       ├── configuration/
-│   │   │       ├── gateway/
-│   │   │       ├── mapper/
-│   │   │       ├── persistence/
-│   │   │       └── presentation/
+│   │   │   │   └── pagination/               # Pagination utilities
+│   │   │   │
+│   │   │   └── infrastructure/               # External Frameworks & DB Layer
+│   │   │       ├── configuration/            # Spring configurations
+│   │   │       │   └── SecurityConfiguration.java
+│   │   │       ├── gateway/                  # Repository implementations
+│   │   │       │   ├── UserRepositoryGateway.java
+│   │   │       │   ├── VehicleRepositoryGateway.java
+│   │   │       │   ├── ScopeRepositoryGateway.java
+│   │   │       │   └── AccessEventRepositoryGateway.java
+│   │   │       ├── mapper/                   # MapStruct entity mappers
+│   │   │       │   ├── UserMapper.java
+│   │   │       │   ├── VehicleMapper.java
+│   │   │       │   ├── ScopeMapper.java
+│   │   │       │   ├── LoginMapper.java
+│   │   │       │   ├── AccessEventMapper.java
+│   │   │       │   └── OwnerMapper.java
+│   │   │       ├── persistence/              # JPA repositories & entities
+│   │   │       │   ├── entity/
+│   │   │       │   │   ├── UserEntity.java
+│   │   │       │   │   ├── VehicleEntity.java
+│   │   │       │   │   ├── ScopeEntity.java
+│   │   │       │   │   ├── OwnerEntity.java
+│   │   │       │   │   └── AccessEventEntity.java
+│   │   │       │   └── repository/
+│   │   │       │       ├── UserRepository.java
+│   │   │       │       ├── VehicleRepository.java
+│   │   │       │       ├── ScopeRepository.java
+│   │   │       │       ├── OwnerRepository.java
+│   │   │       │       └── AccessEventRepository.java
+│   │   │       └── presentation/             # REST controllers & DTOs
+│   │   │           ├── controller/
+│   │   │           │   ├── LoginController.java
+│   │   │           │   ├── UserController.java
+│   │   │           │   ├── VehicleController.java
+│   │   │           │   ├── OwnerController.java
+│   │   │           │   └── AccessEventController.java
+│   │   │           ├── request/              # Request DTOs
+│   │   │           ├── response/             # Response DTOs
+│   │   │           ├── advice/               # Global exception handling
+│   │   │           └── documentation/        # OpenAPI specs
 │   │   │
 │   │   └── resources/
-│   │       ├── application.yaml         # Main configuration
-│   │       ├── db/migration/            # Flyway SQL migrations
-│   │       ├── authz.pem & authz.pub    # JWT key pair
-│   │       └── logback-spring.xml       # Logging configuration
+│   │       ├── application.yaml              # Main configuration
+│   │       ├── db/migration/                 # Flyway SQL migrations (V0-V7)
+│   │       ├── authz.pem & authz.pub         # JWT RSA key pair
+│   │       └── logback-spring.xml            # Logging configuration
 │   │
 │   └── test/
 │       └── java/com/arthurscarpin/acs/
-│           └── core/
-│               ├── accessevent/
-│               ├── owner/
-│               ├── user/
-│               └── vehicle/
+│           ├── AccessControlSystemIntegrationTest.java  # Base integration test
+│           ├── core/
+│           │   ├── accessevent/
+│           │   ├── owner/
+│           │   │   └── domain/
+│           │   │       ├── CPFTest.java
+│           │   │       ├── NameTest.java
+│           │   │       ├── RGTest.java
+│           │   │       └── DocumentFactoryTest.java
+│           │   ├── user/
+│           │   │   └── usecase/
+│           │   │       ├── LoginUserUseCaseImplTest.java
+│           │   │       └── RegisterUserUseCaseImplTest.java
+│           │   └── vehicle/
+│           │       └── usecase/
+│           │           ├── RegisterVehicleUseCaseImplTest.java
+│           │           └── UpdateVehicleStatusUseCaseImplTest.java
+│           └── infrastructure/
+│               ├── mapper/                   # MapStruct mapper tests
+│               │   ├── UserMapperTest.java
+│               │   ├── VehicleMapperTest.java
+│               │   ├── ScopeMapperTest.java
+│               │   ├── LoginMapperTest.java
+│               │   ├── AccessEventMapperTest.java
+│               │   └── OwnerMapperTest.java
+│               └── presentation/
+│                   └── controller/           # REST controller tests
+│                       ├── LoginControllerTest.java
+│                       ├── UserControllerTest.java
+│                       ├── VehicleControllerTest.java
+│                       ├── OwnerControllerTest.java
+│                       └── AccessEventControllerTest.java
 │
-├── target/                              # Compiled artifacts
-├── pom.xml                              # Maven dependencies
-├── Dockerfile                           # Container configuration
-├── mvnw & mvnw.cmd                      # Maven wrapper
-└── README.md                            # This file
+├── target/                                   # Compiled artifacts
+├── pom.xml                                   # Maven dependencies & plugins
+├── Dockerfile                                # Container configuration
+├── mvnw & mvnw.cmd                           # Maven wrapper
+└── README.md                                 # This file
 ```
 
 ---
@@ -620,45 +1129,129 @@ Custom annotations control access to endpoints:
 
 ## 🧪 Testing
 
+### Test Strategy
+
+The project implements a comprehensive testing approach with **20+ test files** covering:
+
+- **Unit Tests**: Domain logic, value objects, and use cases with Mockito
+- **Integration Tests**: Full Spring context with MockMvc and Testcontainers
+- **Mapper Tests**: MapStruct entity-to-domain conversion validation
+- **Controller Tests**: REST endpoint behavior and request/response handling
+
 ### Test Coverage
 
-The project includes comprehensive unit tests:
+| Category | Files | Coverage |
+|----------|-------|----------|
+| **Domain Tests** | 4 files | CPF, Name, RG, DocumentFactory |
+| **Use Case Tests** | 4 files | Login, Registration, Vehicle Status updates |
+| **Mapper Tests** | 6 files | User, Vehicle, Scope, Login, AccessEvent, Owner |
+| **Controller Tests** | 5 files | Login, User, Vehicle, Owner, AccessEvent |
+| **Integration Tests** | 1 base class | Testcontainers PostgreSQL support |
+| **Total** | **20 files** | High coverage of critical paths |
+
+### Running Tests
 
 ```bash
 # Run all tests
 mvn test
 
 # Run specific test class
-mvn test -Dtest=AccessEventTest
+mvn test -Dtest=LoginControllerTest
 
-# Run with coverage report
-mvn test jacoco:report
+# Run specific test method
+mvn test -Dtest=LoginControllerTest#shouldLoginSuccessfully
+
+# Run with detailed output
+mvn test -X
+
+# Skip tests during build
+mvn clean package -DskipTests
 ```
 
-### Test Files Location
+### Integration Testing with Testcontainers
 
+The project uses **Testcontainers** with PostgreSQL for realistic integration tests:
+
+```java
+@Testcontainers
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+public abstract class AccessControlSystemIntegrationTest {
+    
+    @Container
+    protected static final PostgreSQLContainer<?> POSTGRES =
+            new PostgreSQLContainer<>("postgres:16")
+                    .withDatabaseName("test_db")
+                    .withUsername("postgres_test")
+                    .withPassword("postgres_test");
+    
+    @DynamicPropertySource
+    protected static void configureProperties(DynamicPropertyRegistry registry) {
+        // Dynamic property configuration for test database
+    }
+}
 ```
-src/test/java/com/arthurscarpin/acs/core/
-├── accessevent/
-│   ├── domain/AccessEventTest.java
-│   └── usecase/GetAccessHistoryUseCaseImplTest.java
-├── owner/
-│   └── domain/CPFTest.java
-├── user/
-│   └── usecase/LoginUserUseCaseImplTest.java
-└── vehicle/
-    ├── domain/PlateTest.java
-    └── usecase/RegisterVehicleUseCaseImplTest.java
+
+**Benefits**:
+- ✅ Real PostgreSQL instance during tests
+- ✅ Database migrations run automatically
+- ✅ Transactional test isolation
+- ✅ Consistent test environment across machines
+
+### Test Example - Unit Test (Mockito)
+
+```java
+@ExtendWith(MockitoExtension.class)
+class LoginUserUseCaseImplTest {
+    
+    @InjectMocks
+    private LoginUserUseCaseImpl useCase;
+    
+    @Mock
+    private UserGateway userGateway;
+    
+    @Mock
+    private LoginGateway loginGateway;
+    
+    @Mock
+    private ScopeGateway scopeGateway;
+    
+    @Test
+    @DisplayName("Given valid credentials, when logging in, then should return token")
+    void shouldLoginSuccessfully() {
+        // Test implementation
+    }
+}
 ```
 
-### Running Tests in Docker
+### Test Example - Integration Test (MockMvc)
 
-```bash
-# Build with tests
-docker build -f backend-service/Dockerfile --target testing .
-
-# Or run tests before Docker build
-mvn clean verify
+```java
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+class LoginControllerTest extends AccessControlSystemIntegrationTest {
+    
+    @Autowired
+    private ObjectMapper objectMapper;
+    
+    @Autowired
+    private ScopeRepository scopeRepository;
+    
+    @BeforeEach
+    void setup() {
+        // Setup test data with real database
+    }
+    
+    @Test
+    @DisplayName("When posting valid login request then should return JWT token")
+    void shouldLoginEndpointReturnToken() throws Exception {
+        mockMvc.perform(post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists());
+    }
+}
 ```
 
 ### Test Reports
@@ -668,10 +1261,37 @@ Test reports are generated in:
 target/surefire-reports/
 ```
 
-View HTML report:
+Generate and view HTML report:
 ```bash
-open target/surefire-reports/index.html
+# Maven generates surefire report
+mvn surefire-report:report
+
+# Open report
+open target/site/surefire-report.html
 ```
+
+### Running Tests in Docker
+
+```bash
+# Build image with tests
+docker build -f backend-service/Dockerfile .
+
+# Or run tests before Docker build
+mvn clean verify
+
+# Run tests with Docker Compose
+docker-compose -f docker-compose.yaml run --rm backend-service mvn test
+```
+
+### Test Best Practices Implemented
+
+✅ **Descriptive Test Names**: Using `@DisplayName` annotation  
+✅ **Arrange-Act-Assert**: Clear test structure  
+✅ **Mocking External Dependencies**: Isolated unit tests with Mockito  
+✅ **Real Database Testing**: Integration tests with Testcontainers  
+✅ **Transactional Isolation**: Tests don't affect each other  
+✅ **Test Data Management**: BeforeEach setup and cleanup  
+✅ **Assertion Libraries**: JUnit 5 assertions
 
 ---
 
@@ -679,48 +1299,72 @@ open target/surefire-reports/index.html
 
 ### Building the Application
 
-#### Maven Build
+#### Development Build
 
 ```bash
-# Clean and package
+# Build with all tests
 mvn clean package
 
-# Skip tests (faster)
+# Build and run immediately
+mvn clean package spring-boot:run
+
+# Build with test output
+mvn clean package -X
+```
+
+#### Production Build
+
+```bash
+# Build with optimizations (skip tests)
 mvn clean package -DskipTests
 
 # Build specific profile
 mvn clean package -Pprod
+
+# Build with detailed logging
+mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=debug clean package
 ```
 
-#### Output Artifacts
+### Build Output Artifacts
 
-```
-target/access-control-system-0.0.1-SNAPSHOT.jar          # Executable JAR
-target/access-control-system-0.0.1-SNAPSHOT.jar.original # Original JAR
+```bash
+# Main executable JAR
+target/access-control-system-0.0.1-SNAPSHOT.jar
+
+# Original JAR (without Spring Boot repackaging)
+target/access-control-system-0.0.1-SNAPSHOT.jar.original
+
+# Test results
+target/surefire-reports/
+target/test-classes/
 ```
 
 ### Running the Application
 
-#### Development
+#### Development Mode
 
 ```bash
+# Via Maven
 mvn spring-boot:run
-```
 
-#### Production (JAR)
-
-```bash
+# Via compiled JAR
 java -jar target/access-control-system-0.0.1-SNAPSHOT.jar
+
+# With custom port
+SERVER_PORT=9090 java -jar target/access-control-system-0.0.1-SNAPSHOT.jar
+
+# With increased heap size
+java -Xmx1024m -Xms512m -jar target/access-control-system-0.0.1-SNAPSHOT.jar
 ```
 
-#### Production (Docker)
+#### Production Mode (Docker)
 
 ```bash
-# Build image
+# Build Docker image
 docker build -f backend-service/Dockerfile \
   -t access-control-system:1.0.0 .
 
-# Run container
+# Run container with all environment variables
 docker run -d \
   -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=prod \
@@ -733,19 +1377,93 @@ docker run -d \
   -e JWT_PRIVATE_KEY="$(cat authz.pem)" \
   --name backend-service \
   access-control-system:1.0.0
+
+# View container logs
+docker logs -f backend-service
+
+# Stop container
+docker stop backend-service
 ```
 
-### Deployment Checklist
+#### Docker Compose Deployment
 
-- [ ] Database is configured and running
-- [ ] Environment variables are set
-- [ ] JWT keys are generated and configured
-- [ ] Application builds successfully
-- [ ] All tests pass
-- [ ] Database migrations are applied
-- [ ] Swagger docs are accessible
-- [ ] API endpoints respond correctly
-- [ ] Logs are being captured properly
+```bash
+# Start all services (PostgreSQL + Backend)
+docker-compose up -d
+
+# View all running services
+docker-compose ps
+
+# View service logs
+docker-compose logs -f backend-service
+
+# Stop all services
+docker-compose down
+
+# Stop and remove volumes (full cleanup)
+docker-compose down -v
+```
+
+### Pre-Deployment Checklist
+
+Before deploying to production, verify:
+
+- [ ] All tests pass: `mvn clean verify`
+- [ ] No compilation warnings: `mvn clean compile`
+- [ ] Application starts without errors
+- [ ] Database migrations are valid
+- [ ] Environment variables are configured:
+  - [ ] POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB
+  - [ ] POSTGRES_USER, POSTGRES_PASSWORD
+  - [ ] JWT_PUBLIC_KEY, JWT_PRIVATE_KEY
+  - [ ] SPRING_PROFILES_ACTIVE=prod
+- [ ] JWT keys are generated and valid
+- [ ] Swagger documentation is accessible
+- [ ] Health endpoint responds: `GET /actuator/health`
+- [ ] Database connection is established
+- [ ] All required ports are open (8080, 5432)
+- [ ] Logging is configured correctly
+- [ ] No hardcoded credentials in code
+- [ ] Docker image builds successfully
+- [ ] Performance testing completed
+
+### Deployment Environments
+
+#### Local Development
+```bash
+# PostgreSQL: localhost:5432
+# Application: localhost:8080
+mvn spring-boot:run
+```
+
+#### Staging (Docker Compose)
+```bash
+# Uses docker-compose.yaml
+docker-compose -f docker-compose.yaml up -d
+# Verify at localhost:8080
+```
+
+#### Production (Kubernetes/Docker)
+```bash
+# Use production secrets for environment variables
+# Use resource limits for containers
+# Enable health checks and monitoring
+# Configure auto-scaling policies
+# Set up CI/CD pipeline for auto-deployment
+```
+
+### Release Process
+
+1. **Create Release Branch**: `git checkout -b release/1.0.0`
+2. **Update Version**: Update pom.xml version
+3. **Build & Test**: `mvn clean verify`
+4. **Create Release**: `git tag -a v1.0.0`
+5. **Build Artifacts**: `mvn clean package`
+6. **Build Docker Image**: `docker build -t access-control-system:1.0.0 .`
+7. **Push to Registry**: `docker push your-registry/access-control-system:1.0.0`
+8. **Deploy**: Update deployment manifests
+9. **Verify**: Run smoke tests
+10. **Document**: Update changelog and release notes
 
 ---
 
