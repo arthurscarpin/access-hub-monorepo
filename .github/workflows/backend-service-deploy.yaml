@@ -49,6 +49,13 @@ jobs:
       - name: Run tests + coverage
         run: mvn verify
 
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-service-jar
+          path: backend-service/target/*.jar
+          retention-days: 7
+
   # JOB 2 - Sonar Cloud
   sonar:
     runs-on: ubuntu-latest
