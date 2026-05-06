@@ -39,6 +39,7 @@ public class AccessEventController implements AccessEventControllerDoc {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AccessEventResponse save(@Valid @RequestBody AccessEventRequest request) {
+        log.debug("Test");
         log.info("Starting access validation for plate: {}, direction: {}, timestamp: {}", request.plate(), request.direction(), request.timestamp());
         AccessEvent domain = mapper.fromRequestToDomain(request);
         log.debug("Mapped request to domain: {}", domain);
