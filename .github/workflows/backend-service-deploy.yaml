@@ -4,8 +4,6 @@ name: Backend Service CI/CD
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "backend-service/**"
 
 jobs:
 
