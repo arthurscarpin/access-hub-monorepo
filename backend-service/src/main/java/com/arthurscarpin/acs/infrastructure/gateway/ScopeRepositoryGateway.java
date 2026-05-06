@@ -25,8 +25,14 @@ public class ScopeRepositoryGateway implements ScopeGateway {
 
     @Override
     public List<Scope> findAllByIdIn(List<UUID> scopes) {
-        return repository.findAllByIdIn(scopes)
-                .stream()
+        return repository.findAllByIdIn(scopes).stream()
+                .map(mapper::fromEntityToDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Scope> findAll() {
+        return repository.findAll().stream()
                 .map(mapper::fromEntityToDomain)
                 .toList();
     }
