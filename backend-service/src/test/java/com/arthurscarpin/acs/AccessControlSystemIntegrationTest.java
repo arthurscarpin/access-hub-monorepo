@@ -27,7 +27,6 @@ public abstract class AccessControlSystemIntegrationTest {
                     .withUsername("postgres_test")
                     .withPassword("postgres_test");
 
-
     @DynamicPropertySource
     protected static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.driver-class-name", POSTGRES::getDriverClassName);

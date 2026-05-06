@@ -193,6 +193,7 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.13</version>
+
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -209,6 +210,7 @@
 					</execution>
 					<execution>
 						<id>check</id>
+						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
@@ -218,9 +220,9 @@
 									<element>BUNDLE</element>
 									<limits>
 										<limit>
-											<counter>LINE</counter>
+											<counter>INSTRUCTION</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.70</minimum>
+											<minimum>0.80</minimum>
 										</limit>
 									</limits>
 								</rule>

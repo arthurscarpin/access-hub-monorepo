@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class OwnerControllerTest extends AccessControlSystemIntegrationTest {
 
     @Autowired
@@ -44,6 +43,7 @@ class OwnerControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given valid owner request When saving Then returns 201 Created with owner data")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_owner:write"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldCreateOwnerSuccessfully() throws Exception {
         OwnerRequest request = new OwnerRequest(
                 "Paulo Silva",
@@ -67,6 +67,7 @@ class OwnerControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given invalid owner request When saving Then returns 400 Bad Request")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_owner:write"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnBadRequestWhenInvalidData() throws Exception {
         OwnerRequest request = new OwnerRequest(
                 "",
@@ -84,6 +85,7 @@ class OwnerControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given no authentication When saving owner Then returns 401 Unauthorized")
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnUnauthorizedWhenNoAuth() throws Exception {
         OwnerRequest request = new OwnerRequest(
                 "Paulo Silva",
@@ -101,6 +103,7 @@ class OwnerControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given user without permission When saving owner Then returns 403 Forbidden")
     @WithMockUser(authorities = {"SCOPE_owner:read"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnForbiddenWhenNoPermission() throws Exception {
         OwnerRequest request = new OwnerRequest(
                 "Paulo Silva",
