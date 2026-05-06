@@ -37,14 +37,14 @@ jobs:
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
 
+      - name: Create JWT keys for tests
+        run: |
+          mkdir -p src/test/resources
+          echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/test/resources/authz.pub
+          echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/test/resources/authz.pem
+
       - name: Compile project
         run: mvn clean compile
-
-      - name: Inject JWT keys
-        run: |
-          mkdir -p target/classes
-          echo "${{ secrets.JWT_PRIVATE_KEY }}" > target/classes/authz.pem
-          echo "${{ secrets.JWT_PUBLIC_KEY }}" > target/classes/authz.pub
 
       - name: Run tests + coverage
         run: mvn verify
@@ -68,6 +68,13 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
+
+      # O Sonar também precisa das chaves para conseguir compilar o projeto sem falhar
+      - name: Create JWT keys for Sonar analysis
+        run: |
+          mkdir -p src/test/resources
+          echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/test/resources/authz.pub
+          echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/test/resources/authz.pem
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
@@ -95,6 +102,12 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java
+
+      - name: Create JWT keys for CodeQL build
+        run: |
+          mkdir -p backend-service/src/test/resources
+          echo "${{ secrets.JWT_PUBLIC_KEY }}" > backend-service/src/test/resources/authz.pub
+          echo "${{ secrets.JWT_PRIVATE_KEY }}" > backend-service/src/test/resources/authz.pem
 
       - name: Build project
         run: cd backend-service && mvn clean compile
