@@ -20,8 +20,7 @@ jobs:
         working-directory: backend-service
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -30,7 +29,7 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Set environment variables
+      - name: Set env vars
         run: |
           echo "POSTGRES_HOST=${{ vars.POSTGRES_HOST }}" >> $GITHUB_ENV
           echo "POSTGRES_PORT=${{ vars.POSTGRES_PORT }}" >> $GITHUB_ENV
@@ -38,25 +37,17 @@ jobs:
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Create JWT keys
+      - name: Compile project
+        run: mvn clean compile
+
+      - name: Inject JWT keys
         run: |
-          echo "${{ secrets.JWT_PRIVATE_KEY }}" > src/main/resources/authz.pem
-          echo "${{ secrets.JWT_PUBLIC_KEY }}" > src/main/resources/authz.pub
+          mkdir -p target/classes
+          echo "${{ secrets.JWT_PRIVATE_KEY }}" > target/classes/authz.pem
+          echo "${{ secrets.JWT_PUBLIC_KEY }}" > target/classes/authz.pub
 
-      - name: Build + Test + Coverage
-        run: mvn clean verify
-
-      - name: Upload JaCoCo Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: backend-service/target/site/jacoco
-
-      - name: Upload JAR Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-service-jar
-          path: backend-service/target/*.jar
+      - name: Run tests + coverage
+        run: mvn verify
 
   # JOB 2 - SONARCLOUD
   sonar:
