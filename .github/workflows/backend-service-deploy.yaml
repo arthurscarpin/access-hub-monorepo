@@ -83,7 +83,10 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+            -Dsonar.sources=backend-service/src/main/java
+            -Dsonar.tests=backend-service/src/test/java
+            -Dsonar.java.binaries=backend-service/target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=backend-service/target/site/jacoco/jacoco.xml
 
   # JOB 3 - Security
   security:
