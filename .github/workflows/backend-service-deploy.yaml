@@ -50,49 +50,49 @@ jobs:
         run: mvn verify
 
   # JOB 2 - Sonar Cloud
-    # JOB 2 - SONARCLOUD
-    sonar:
-      runs-on: ubuntu-latest
-      needs: build-test
+  sonar:
+    runs-on: ubuntu-latest
+    needs: build-test
 
-      defaults:
-        run:
-          working-directory: backend-service
+    defaults:
+      run:
+        working-directory: backend-service
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0 # O Sonar precisa do histórico completo do Git para o Git Blame funcionar
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # O Sonar precisa do histórico completo do Git para o Git Blame funcionar
 
-        - name: Setup Java
-          uses: actions/setup-java@v4
-          with:
-            distribution: temurin
-            java-version: 17
-            cache: maven
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
 
-        - name: Create JWT keys for Sonar analysis
-          run: |
-            mkdir -p src/test/resources
-            echo "${{ secrets.JWT_PUBLIC_KEY_PEM }}" > src/test/resources/authz.pub
-            echo "${{ secrets.JWT_PRIVATE_KEY_PEM }}" > src/test/resources/authz.pem
+      - name: Create JWT keys for Sonar analysis
+        run: |
+          mkdir -p src/test/resources
+          echo "${{ secrets.JWT_PUBLIC_KEY_PEM }}" > src/test/resources/authz.pub
+          echo "${{ secrets.JWT_PRIVATE_KEY_PEM }}" > src/test/resources/authz.pem
 
-        - name: Compile bytecode for Sonar
-          run: mvn clean compile
+      # PASSO CHAVE: Compila o projeto no runner atual para gerar a pasta /target/classes
+      - name: Compile bytecode for Sonar
+        run: mvn clean compile
 
-        - name: SonarCloud Scan
-          uses: SonarSource/sonarcloud-github-action@v2
-          env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          with:
-            args: >
-              -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-              -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-              -Dsonar.sources=backend-service/src/main/java
-              -Dsonar.tests=backend-service/src/test/java
-              -Dsonar.java.binaries=backend-service/target/classes
-              -Dsonar.coverage.jacoco.xmlReportPaths=backend-service/target/site/jacoco/jacoco.xml
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.sources=backend-service/src/main/java
+            -Dsonar.tests=backend-service/src/test/java
+            -Dsonar.java.binaries=backend-service/target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=backend-service/target/site/jacoco/jacoco.xml
 
   # JOB 3 - Security
   security:
