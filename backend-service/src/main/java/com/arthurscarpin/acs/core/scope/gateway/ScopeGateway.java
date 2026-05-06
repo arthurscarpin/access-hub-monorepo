@@ -10,4 +10,6 @@ public interface ScopeGateway {
     List<UUID> findAllIdsByIds(List<UUID> scopes);
 
     List<Scope> findAllByIdIn(List<UUID> scopes);
+
+    List<Scope> findAll();
 }
