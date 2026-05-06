@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/scopes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger/**").permitAll()
                         .anyRequest().authenticated()
