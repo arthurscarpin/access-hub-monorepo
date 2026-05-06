@@ -27,6 +27,9 @@ public abstract class AccessControlSystemIntegrationTest {
                     .withUsername("postgres_test")
                     .withPassword("postgres_test");
 
+    static {
+        POSTGRES.start();
+    }
 
     @DynamicPropertySource
     protected static void configureProperties(DynamicPropertyRegistry registry) {

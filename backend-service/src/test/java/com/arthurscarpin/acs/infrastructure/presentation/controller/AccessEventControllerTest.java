@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
 
     @Autowired
@@ -48,6 +47,7 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given valid access event request When saving Then returns 201 Created with event data")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:write"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldCreateAccessEventSuccessfully() throws Exception {
 
         AccessEventRequest request = AccessEventRequest.builder()
@@ -70,6 +70,7 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given valid request When access is denied Then returns 201 Created with DENIED result")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:write"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnCreatedWithDeniedResultWhenAccessIsDenied() throws Exception {
 
         AccessEventRequest request = AccessEventRequest.builder()
@@ -92,6 +93,7 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given invalid request data When saving Then returns 400 Bad Request")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:write"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnBadRequestWhenRequestIsInvalid() throws Exception {
 
         AccessEventRequest invalidRequest = AccessEventRequest.builder()
@@ -108,6 +110,7 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given unauthenticated user When saving Then returns 401 Unauthorized")
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnUnauthorizedWhenUserIsNotAuthenticated() throws Exception {
 
         AccessEventRequest request = AccessEventRequest.builder()
@@ -125,6 +128,7 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given authenticated user without permission When saving Then returns 403 Forbidden")
     @WithMockUser(authorities = {"SCOPE_other_scope"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnForbiddenWhenUserHasNoPermission() throws Exception {
 
         AccessEventRequest request = AccessEventRequest.builder()
@@ -142,6 +146,7 @@ class AccessEventControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given valid request When resource not found Then returns 404 Not Found")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_access_event:write"})
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnNotFoundWhenResourceDoesNotExist() throws Exception {
 
         mockMvc.perform(post("/access-events/non-existent")
