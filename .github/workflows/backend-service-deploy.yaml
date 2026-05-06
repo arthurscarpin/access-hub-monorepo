@@ -2,6 +2,8 @@ name: Backend Service CI/CD
 
 # Only Pull Request
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [main]
     paths:
