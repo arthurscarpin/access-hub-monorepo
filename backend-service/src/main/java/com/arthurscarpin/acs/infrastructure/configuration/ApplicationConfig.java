@@ -9,6 +9,8 @@ import com.arthurscarpin.acs.core.owner.gateway.OwnerGateway;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerImpl;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerUseCase;
 import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
+import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCase;
+import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCaseImpl;
 import com.arthurscarpin.acs.core.user.gateway.LoginGateway;
 import com.arthurscarpin.acs.core.user.gateway.UserGateway;
 import com.arthurscarpin.acs.core.user.usecase.LoginUserUseCase;
