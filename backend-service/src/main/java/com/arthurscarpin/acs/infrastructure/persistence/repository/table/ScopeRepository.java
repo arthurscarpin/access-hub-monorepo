@@ -1,6 +1,6 @@
-package com.arthurscarpin.acs.infrastructure.persistence.repository;
+package com.arthurscarpin.acs.infrastructure.persistence.repository.table;
 
-import com.arthurscarpin.acs.infrastructure.persistence.entity.ScopeEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.ScopeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

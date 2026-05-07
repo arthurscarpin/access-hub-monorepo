@@ -1,7 +1,7 @@
 package com.arthurscarpin.acs.infrastructure.mapper;
 
 import com.arthurscarpin.acs.core.accessevent.domain.AccessEvent;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.AccessEventEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.AccessEventEntity;
 import com.arthurscarpin.acs.infrastructure.presentation.request.AccessEventRequest;
 import com.arthurscarpin.acs.infrastructure.presentation.response.AccessEventResponse;
 import org.mapstruct.Mapper;

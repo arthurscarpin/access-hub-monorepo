@@ -1,8 +1,8 @@
 package com.arthurscarpin.acs.infrastructure.mapper;
 
 import com.arthurscarpin.acs.core.user.domain.User;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.ScopeEntity;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.UserEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.ScopeEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.UserEntity;
 import com.arthurscarpin.acs.infrastructure.presentation.request.UserRequest;
 import com.arthurscarpin.acs.infrastructure.presentation.response.UserResponse;
 import org.mapstruct.Mapper;

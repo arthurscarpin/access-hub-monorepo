@@ -1,6 +1,6 @@
-package com.arthurscarpin.acs.infrastructure.persistence.repository;
+package com.arthurscarpin.acs.infrastructure.persistence.repository.table;
 
-import com.arthurscarpin.acs.infrastructure.persistence.entity.AccessEventEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.AccessEventEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

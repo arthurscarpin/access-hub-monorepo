@@ -2,8 +2,8 @@ package com.arthurscarpin.acs.infrastructure.mapper;
 
 import com.arthurscarpin.acs.core.vehicle.domain.Vehicle;
 import com.arthurscarpin.acs.core.vehicle.domain.VehicleStatus;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.OwnerEntity;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.VehicleEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.OwnerEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.VehicleEntity;
 import com.arthurscarpin.acs.infrastructure.presentation.request.VehicleRequest;
 import com.arthurscarpin.acs.infrastructure.presentation.response.VehicleResponse;
 import org.junit.jupiter.api.DisplayName;

@@ -3,7 +3,7 @@ package com.arthurscarpin.acs.infrastructure.gateway;
 import com.arthurscarpin.acs.core.scope.domain.Scope;
 import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
 import com.arthurscarpin.acs.infrastructure.mapper.ScopeMapper;
-import com.arthurscarpin.acs.infrastructure.persistence.repository.ScopeRepository;
+import com.arthurscarpin.acs.infrastructure.persistence.repository.table.ScopeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

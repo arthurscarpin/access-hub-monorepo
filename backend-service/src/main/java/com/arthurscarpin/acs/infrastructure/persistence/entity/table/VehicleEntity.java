@@ -1,4 +1,4 @@
-package com.arthurscarpin.acs.infrastructure.persistence.entity;
+package com.arthurscarpin.acs.infrastructure.persistence.entity.table;
 
 import com.arthurscarpin.acs.core.vehicle.domain.VehicleStatus;
 import jakarta.persistence.*;

@@ -1,7 +1,7 @@
-package com.arthurscarpin.acs.infrastructure.persistence.repository;
+package com.arthurscarpin.acs.infrastructure.persistence.repository.table;
 
 import com.arthurscarpin.acs.core.vehicle.domain.Vehicle;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.VehicleEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.VehicleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

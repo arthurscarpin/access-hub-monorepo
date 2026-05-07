@@ -1,8 +1,8 @@
 package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
 import com.arthurscarpin.acs.AccessControlSystemIntegrationTest;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.ScopeEntity;
-import com.arthurscarpin.acs.infrastructure.persistence.repository.ScopeRepository;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.ScopeEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.repository.table.ScopeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
