@@ -1,4 +1,4 @@
-package com.arthurscarpin.acs.infrastructure.persistence.entity;
+package com.arthurscarpin.acs.infrastructure.persistence.entity.table;
 
 import jakarta.persistence.*;
 import lombok.*;

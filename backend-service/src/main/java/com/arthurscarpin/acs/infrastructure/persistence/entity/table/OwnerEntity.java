@@ -1,4 +1,4 @@
-package com.arthurscarpin.acs.infrastructure.persistence.entity;
+package com.arthurscarpin.acs.infrastructure.persistence.entity.table;
 
 import com.arthurscarpin.acs.core.owner.domain.DocumentType;
 import jakarta.persistence.*;

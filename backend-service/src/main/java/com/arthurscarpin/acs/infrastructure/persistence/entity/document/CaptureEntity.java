@@ -1,4 +1,4 @@
-package com.arthurscarpin.acs.infrastructure.persistence.entity;
+package com.arthurscarpin.acs.infrastructure.persistence.entity.document;
 
 import com.arthurscarpin.acs.core.capture.domain.CaptureStatus;
 import jakarta.persistence.Id;

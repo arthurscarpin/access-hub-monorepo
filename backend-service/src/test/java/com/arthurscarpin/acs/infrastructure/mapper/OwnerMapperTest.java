@@ -2,7 +2,7 @@ package com.arthurscarpin.acs.infrastructure.mapper;
 
 import com.arthurscarpin.acs.core.owner.domain.DocumentType;
 import com.arthurscarpin.acs.core.owner.domain.Owner;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.OwnerEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.OwnerEntity;
 import com.arthurscarpin.acs.infrastructure.presentation.request.OwnerRequest;
 import com.arthurscarpin.acs.infrastructure.presentation.response.OwnerResponse;
 import org.junit.jupiter.api.DisplayName;

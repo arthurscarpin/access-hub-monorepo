@@ -1,11 +1,9 @@
-package com.arthurscarpin.acs.infrastructure.persistence.entity;
+package com.arthurscarpin.acs.infrastructure.persistence.entity.document;
 
 import com.arthurscarpin.acs.core.capture.domain.ImageStatus;
 import lombok.*;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor

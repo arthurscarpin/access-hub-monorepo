@@ -2,11 +2,8 @@ spring:
   application:
     name: access-control-system
 
-  datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: ${ENVIRONMENT}
 
   jpa:
     open-in-view: false
@@ -19,24 +16,6 @@ spring:
 
   flyway:
     enabled: true
-
-  data:
-    mongodb:
-      host: ${MONGO_HOST}
-      port: ${MONGO_PORT}
-      username: ${MONGO_USER}
-      password: ${MONGO_PASSWORD}
-      database: ${MONGO_DB}
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-    virtual-host: ${RABBITMQ_VIRTUAL_HOST}
-    routing-key: ${RABBITMQ_ROUTING_KEY}
-    ssl:
-      enabled: false
 
 jwt:
   public:

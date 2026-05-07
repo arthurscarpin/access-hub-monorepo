@@ -1,7 +1,7 @@
 package com.arthurscarpin.acs.infrastructure.mapper;
 
 import com.arthurscarpin.acs.core.capture.domain.Capture;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.CaptureEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.document.CaptureEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

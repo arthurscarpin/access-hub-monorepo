@@ -2,8 +2,8 @@ package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
 import com.arthurscarpin.acs.AccessControlSystemIntegrationTest;
 import com.arthurscarpin.acs.core.owner.domain.DocumentType;
-import com.arthurscarpin.acs.infrastructure.persistence.entity.OwnerEntity;
-import com.arthurscarpin.acs.infrastructure.persistence.repository.OwnerRepository;
+import com.arthurscarpin.acs.infrastructure.persistence.entity.table.OwnerEntity;
+import com.arthurscarpin.acs.infrastructure.persistence.repository.table.OwnerRepository;
 import com.arthurscarpin.acs.infrastructure.presentation.request.OwnerRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
