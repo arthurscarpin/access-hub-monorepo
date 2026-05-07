@@ -20,6 +20,24 @@ spring:
   flyway:
     enabled: true
 
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      username: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+      database: ${MONGO_DB}
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST}
+    routing-key: ${RABBITMQ_ROUTING_KEY}
+    ssl:
+      enabled: false
+
 jwt:
   public:
     key: classpath:authz.pub
