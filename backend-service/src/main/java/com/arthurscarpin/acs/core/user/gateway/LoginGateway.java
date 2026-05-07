@@ -1,6 +1,6 @@
 package com.arthurscarpin.acs.core.user.gateway;
 
-import com.arthurscarpin.acs.core.scope.domain.Scope;
+import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
 import com.arthurscarpin.acs.core.user.domain.User;
 
 import java.util.List;

@@ -1,7 +1,8 @@
 package com.arthurscarpin.acs.core.scope.usecase;
 
-import com.arthurscarpin.acs.core.scope.domain.Scope;
-import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
+import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
+import com.arthurscarpin.acs.core.vehicle.scope.gateway.ScopeGateway;
+import com.arthurscarpin.acs.core.vehicle.scope.usecase.GetScopesUseCaseImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

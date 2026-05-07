@@ -1,6 +1,6 @@
-package com.arthurscarpin.acs.core.scope.gateway;
+package com.arthurscarpin.acs.core.vehicle.scope.gateway;
 
-import com.arthurscarpin.acs.core.scope.domain.Scope;
+import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
 
 import java.util.List;
 import java.util.UUID;

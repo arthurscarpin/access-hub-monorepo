@@ -4,5 +4,5 @@ import com.arthurscarpin.acs.core.capture.domain.Capture;
 
 public interface CaptureGateway {
 
-    Capture save(Capture capture);
+    Capture saveAndPublish(Capture capture);
 }
