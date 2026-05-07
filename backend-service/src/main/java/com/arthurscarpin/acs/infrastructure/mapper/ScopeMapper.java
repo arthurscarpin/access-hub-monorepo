@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ScopeMapper {
 
-    Scope fromEntityToDomain(ScopeEntity entity);
+    Scope fromEntityToDomain(ScopeEntity scopeEntity);
 }
