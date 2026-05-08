@@ -64,47 +64,47 @@ jobs:
           path: backend-service/target/*.jar
           retention-days: 7
 
-    # JOB 2 - Sonar Cloud
-    sonar:
-      runs-on: ubuntu-latest
-      needs: build-test
-      defaults:
-        run:
-          working-directory: backend-service
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
+  # JOB 2 - Sonar Cloud
+  sonar:
+    runs-on: ubuntu-latest
+    needs: build-test
+    defaults:
+      run:
+        working-directory: backend-service
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-        - name: Setup Java
-          uses: actions/setup-java@v4
-          with:
-            distribution: corretto
-            java-version: 17
-            cache: maven
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: 17
+          cache: maven
 
-        - name: Create JWT keys for Sonar analysis
-          run: |
-            mkdir -p src/test/resources
-            echo "${{ secrets.JWT_PUBLIC_KEY_PEM }}" > src/test/resources/authz.pub
-            echo "${{ secrets.JWT_PRIVATE_KEY_PEM }}" > src/test/resources/authz.pem
-        - name: Generate Coverage Report
-          run: mvn clean verify
-        - name: SonarCloud Scan
-          uses: SonarSource/sonarcloud-github-action@v2
-          env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            args: >
-              -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-              -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-              -Dsonar.sources=src/main/java
-              -Dsonar.tests=src/test/java
-              -Dsonar.java.binaries=target/classes
-              -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
-              -Dsonar.scm.exclusions.disabled=true
+      - name: Create JWT keys for Sonar analysis
+        run: |
+          mkdir -p src/test/resources
+          echo "${{ secrets.JWT_PUBLIC_KEY_PEM }}" > src/test/resources/authz.pub
+          echo "${{ secrets.JWT_PRIVATE_KEY_PEM }}" > src/test/resources/authz.pem
+      - name: Generate Coverage Report
+        run: mvn clean verify
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.sources=src/main/java
+            -Dsonar.tests=src/test/java
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+            -Dsonar.scm.exclusions.disabled=true
 
   # JOB 3 - Security CodeQL
   security:
