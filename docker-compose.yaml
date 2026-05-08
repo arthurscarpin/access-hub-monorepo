@@ -96,29 +96,29 @@ services:
       - "8080:8080"
     restart: unless-stopped
 
-  recognize-plate-service:
-    build:
-      context: ./recognize-plate-service
-      dockerfile: Dockerfile
-    container_name: recognize-plate-service
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: ${RABBITMQ_PORT}
-      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-      RABBITMQ_QUEUE: ${RABBITMQ_QUEUE}
-    volumes:
-      - ./storage:/app/storage
-      - ./recognize-plate-service/log:/app/log
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "pgrep", "-f", "python"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # recognize-plate-service:
+  #   build:
+  #     context: ./recognize-plate-service
+  #     dockerfile: Dockerfile
+  #   container_name: recognize-plate-service
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   environment:
+  #     RABBITMQ_HOST: rabbitmq
+  #     RABBITMQ_PORT: ${RABBITMQ_PORT}
+  #     RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+  #     RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+  #     RABBITMQ_QUEUE: ${RABBITMQ_QUEUE}
+  #   volumes:
+  #     - ./storage:/app/storage
+  #     - ./recognize-plate-service/log:/app/log
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "pgrep", "-f", "python"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
 volumes:
   access-control-pgdata:
