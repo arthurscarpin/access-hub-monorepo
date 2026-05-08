@@ -1,0 +1,11 @@
+[project]
+name = "recognize-plate-service"
+version = "0.1.0"
+dependencies = [
+    "easyocr",
+    "torch",
+    "opencv-python",
+    "numpy",
+    "pydantic",
+    "pika"
+]
