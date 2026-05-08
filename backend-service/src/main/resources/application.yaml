@@ -5,6 +5,15 @@ spring:
   profiles:
     active: ${ENVIRONMENT}
 
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
   flyway:
     enabled: true
 
