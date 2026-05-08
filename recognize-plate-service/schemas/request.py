@@ -1,6 +1,7 @@
 from typing import List, Literal, Optional
-from schemas.ocr import OCRItem
-from schemas.plate import PlateRules
+
+from . import OCRItem, PlateRules
+
 from pydantic import BaseModel, Field
 
 
@@ -18,5 +19,5 @@ class PlateRequest(BaseModel):
     country: Literal["BR"] = "BR"
     input: PlateInput
     rules: PlateRules
-    instruction: str
+    instruction: str | None
     output: PlateOutput
