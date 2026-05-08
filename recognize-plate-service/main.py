@@ -1,11 +1,15 @@
-from pipelines import PlatePipeline
-from decorators import inject_plate_pipeline
+from consumer import OCRConsumer
 
 
-@inject_plate_pipeline
-def run_pipeline(pipeline: PlatePipeline, filename: str):
-    return pipeline.run(filename)
+def main() -> None:
+    consumer = OCRConsumer(
+        host="localhost",
+        port=5672,
+        user="rabbitmq",
+        password="rabbitmq",
+        queue="ocr-processing-queue",
+    )
+    consumer.start()
 
 if __name__ == "__main__":
-    result = run_pipeline("test.webp")
-    print(result.model_dump_json(indent=2, ensure_ascii=False))
+    main()
