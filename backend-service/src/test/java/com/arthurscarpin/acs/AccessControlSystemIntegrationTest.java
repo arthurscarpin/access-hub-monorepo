@@ -14,6 +14,8 @@ import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.Duration;
+
 @Testcontainers
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,15 +26,32 @@ public abstract class AccessControlSystemIntegrationTest {
     protected MockMvc mockMvc;
 
     @Container
-    @ServiceConnection
     static PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:16");
+            new PostgreSQLContainer<>("postgres:16")
+                    .withDatabaseName("testdb")
+                    .withUsername("test")
+                    .withPassword("test")
+                    .withStartupAttempts(2)
+                    .withStartupTimeout(Duration.ofMinutes(2));
 
     @Container
     @ServiceConnection
-    static MongoDBContainer mongo = new MongoDBContainer("mongo:5.0");
+    static MongoDBContainer mongo =
+            new MongoDBContainer("mongo:5.0")
+                    .withStartupAttempts(3)
+                    .withStartupTimeout(Duration.ofMinutes(2));
 
     @Container
     @ServiceConnection
-    static RabbitMQContainer rabbit = new RabbitMQContainer("rabbitmq:3-management");
+    static RabbitMQContainer rabbit =
+            new RabbitMQContainer("rabbitmq:3-management")
+                    .withStartupAttempts(3)
+                    .withStartupTimeout(Duration.ofMinutes(2));
+
+    @DynamicPropertySource
+    static void overrideProps(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
 }
