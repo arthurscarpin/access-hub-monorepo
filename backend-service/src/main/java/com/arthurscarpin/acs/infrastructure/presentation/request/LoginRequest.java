@@ -12,7 +12,7 @@ public record LoginRequest(
         String email,
 
         @NotBlank
-        @Schema(description = "User password", example = "Password@1234")
+        @Schema(description = "User password", example = "Password@123")
         String password
 ) {
 }
