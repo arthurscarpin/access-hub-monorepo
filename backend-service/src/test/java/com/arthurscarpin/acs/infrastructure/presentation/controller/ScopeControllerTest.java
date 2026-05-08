@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.UUID;
 
@@ -56,7 +55,6 @@ class ScopeControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given no scopes exist When retrieving all scopes Then returns 200 OK with empty list")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnEmptyListWhenNoScopesExist() throws Exception {
         repository.deleteAllInBatch();
 

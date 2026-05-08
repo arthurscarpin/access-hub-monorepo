@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Autowired
@@ -22,10 +24,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given valid capture request When saving Then returns 201 Created with capture data")
-    @WithMockUser(authorities = {
-            "SCOPE_admin:all",
-            "SCOPE_capture:write"
-    })
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_capture:write"})
     void shouldCreateCaptureSuccessfully() throws Exception {
         CaptureRequest request =
                 new CaptureRequest(List.of("plate1.jpg", "plate2.jpg"));
@@ -41,9 +40,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given capture request with single filename When saving Then returns 201 Created")
-    @WithMockUser(authorities = {
-            "SCOPE_capture:write"
-    })
+    @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldCreateCaptureWithSingleFilename() throws Exception {
         CaptureRequest request =
                 new CaptureRequest(List.of("license_plate.jpg"));
@@ -59,9 +56,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given capture request with multiple filenames When saving Then returns 201 Created")
-    @WithMockUser(authorities = {
-            "SCOPE_admin:all"
-    })
+    @WithMockUser(authorities = {"SCOPE_admin:all"})
     void shouldCreateCaptureWithMultipleFilenames() throws Exception {
         CaptureRequest request =
                 new CaptureRequest(List.of(
@@ -81,9 +76,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given invalid capture request with empty filenames When saving Then returns 400 Bad Request")
-    @WithMockUser(authorities = {
-            "SCOPE_capture:write"
-    })
+    @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldReturnBadRequestWhenEmptyFilenames() throws Exception {
         CaptureRequest request =
                 new CaptureRequest(List.of());
@@ -96,9 +89,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given invalid capture request with null filenames When saving Then returns 400 Bad Request")
-    @WithMockUser(authorities = {
-            "SCOPE_capture:write"
-    })
+    @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldReturnBadRequestWhenNullFilenames() throws Exception {
         String invalidRequest = """
                 {
@@ -126,9 +117,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given user without permission When saving capture Then returns 403 Forbidden")
-    @WithMockUser(authorities = {
-            "SCOPE_capture:read"
-    })
+    @WithMockUser(authorities = {"SCOPE_capture:read"})
     void shouldReturnForbiddenWhenNoPermission() throws Exception {
         CaptureRequest request =
                 new CaptureRequest(List.of("plate1.jpg"));
@@ -141,10 +130,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given user with only capture:read scope When saving capture Then returns 403 Forbidden")
-    @WithMockUser(authorities = {
-            "SCOPE_capture:read",
-            "SCOPE_admin:read"
-    })
+    @WithMockUser(authorities = {"SCOPE_capture:read", "SCOPE_admin:read"})
     void shouldReturnForbiddenWhenOnlyReadPermission() throws Exception {
         CaptureRequest request =
                 new CaptureRequest(List.of("plate1.jpg"));

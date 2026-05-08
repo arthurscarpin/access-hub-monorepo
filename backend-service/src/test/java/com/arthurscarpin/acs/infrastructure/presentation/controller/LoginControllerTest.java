@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class LoginControllerTest extends AccessControlSystemIntegrationTest {
 
     @Autowired
@@ -61,7 +62,6 @@ class LoginControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given valid credentials When logging in Then returns 200 OK with token")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldLoginSuccessfully() throws Exception {
 
         LoginRequest request = new LoginRequest(
@@ -79,7 +79,6 @@ class LoginControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given invalid login request When logging in Then returns 400 Bad Request")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnBadRequestWhenInvalidData() throws Exception {
 
         LoginRequest request = new LoginRequest(
@@ -96,7 +95,6 @@ class LoginControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given invalid credentials When logging in Then returns 401 Unauthorized")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnUnauthorizedWhenInvalidCredentials() throws Exception {
 
         LoginRequest request = new LoginRequest(

@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class UserControllerTest extends AccessControlSystemIntegrationTest {
 
     @Autowired
@@ -62,7 +63,6 @@ class UserControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given valid user request When saving Then returns 201 Created with user data")
     @WithMockUser(authorities = {"SCOPE_admin:all"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldCreateUserSuccessfully() throws Exception {
 
         UserRequest request = new UserRequest(
@@ -86,7 +86,6 @@ class UserControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given invalid user request When saving Then returns 400 Bad Request")
     @WithMockUser(authorities = {"SCOPE_admin:all"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnBadRequestWhenInvalidData() throws Exception {
 
         UserRequest request = new UserRequest(
@@ -106,7 +105,6 @@ class UserControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given non existing scope When saving user Then returns 404 Not found")
     @WithMockUser(authorities = {"SCOPE_admin:all"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnBadRequestWhenScopeDoesNotExist() throws Exception {
 
         UserRequest request = new UserRequest(
