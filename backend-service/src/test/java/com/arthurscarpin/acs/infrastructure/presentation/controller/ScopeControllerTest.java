@@ -3,6 +3,7 @@ package com.arthurscarpin.acs.infrastructure.presentation.controller;
 import com.arthurscarpin.acs.AccessControlSystemIntegrationTest;
 import com.arthurscarpin.acs.infrastructure.persistence.entity.table.ScopeEntity;
 import com.arthurscarpin.acs.infrastructure.persistence.repository.table.ScopeRepository;
+import com.arthurscarpin.acs.infrastructure.persistence.repository.table.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,20 +23,24 @@ class ScopeControllerTest extends AccessControlSystemIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ScopeRepository repository;
+    private ScopeRepository scopeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private UUID scopeId;
 
     @BeforeEach
     void setup() {
-        repository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        scopeRepository.deleteAllInBatch();
         ScopeEntity scope1 = new ScopeEntity(null, "admin:all");
         ScopeEntity scope2 = new ScopeEntity(null, "user:read");
         ScopeEntity scope3 = new ScopeEntity(null, "owner:write");
 
-        ScopeEntity savedScope1 = repository.save(scope1);
-        repository.save(scope2);
-        repository.save(scope3);
+        ScopeEntity savedScope1 = scopeRepository.save(scope1);
+        scopeRepository.save(scope2);
+        scopeRepository.save(scope3);
         scopeId = savedScope1.getId();
     }
 
@@ -56,7 +61,7 @@ class ScopeControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given no scopes exist When retrieving all scopes Then returns 200 OK with empty list")
     void shouldReturnEmptyListWhenNoScopesExist() throws Exception {
-        repository.deleteAllInBatch();
+        scopeRepository.deleteAllInBatch();
 
         mockMvc.perform(get("/scopes")
                         .contentType(MediaType.APPLICATION_JSON))

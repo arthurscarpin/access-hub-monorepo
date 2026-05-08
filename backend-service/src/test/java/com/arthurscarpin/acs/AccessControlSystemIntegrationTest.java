@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -13,6 +14,7 @@ import org.testcontainers.containers.RabbitMQContainer;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 public abstract class AccessControlSystemIntegrationTest {
 
     @Autowired
