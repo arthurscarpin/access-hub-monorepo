@@ -2,6 +2,8 @@
 #    uv pip compile pyproject.toml -o requirements.txt
 annotated-types==0.7.0
     # via pydantic
+dotenv==0.9.9
+    # via recognize-plate-service (pyproject.toml)
 easyocr==1.7.2
     # via recognize-plate-service (pyproject.toml)
 filelock==3.29.0
@@ -29,17 +31,16 @@ numpy==2.4.4
     #   recognize-plate-service (pyproject.toml)
     #   easyocr
     #   imageio
-    #   opencv-python
     #   opencv-python-headless
     #   scikit-image
     #   scipy
     #   shapely
     #   tifffile
     #   torchvision
-opencv-python==4.13.0.92
-    # via recognize-plate-service (pyproject.toml)
 opencv-python-headless==4.13.0.92
-    # via easyocr
+    # via
+    #   recognize-plate-service (pyproject.toml)
+    #   easyocr
 packaging==26.2
     # via
     #   lazy-loader
@@ -60,6 +61,10 @@ pydantic-core==2.46.4
     # via pydantic
 python-bidi==0.6.9
     # via easyocr
+python-dotenv==1.2.2
+    # via
+    #   recognize-plate-service (pyproject.toml)
+    #   dotenv
 pyyaml==6.0.3
     # via easyocr
 scikit-image==0.26.0
@@ -78,7 +83,6 @@ tifffile==2026.3.3
     # via scikit-image
 torch==2.11.0
     # via
-    #   recognize-plate-service (pyproject.toml)
     #   easyocr
     #   torchvision
 torchvision==0.26.0
