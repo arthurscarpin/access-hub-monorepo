@@ -19,6 +19,20 @@ spring:
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
     virtual-host: ${RABBITMQ_VIRTUAL_HOST}
+    exchange: ${RABBITMQ_EXCHANGE}
+    queue: ${RABBITMQ_QUEUE}
     routing-key: ${RABBITMQ_ROUTING_KEY}
+    dead-exchange: ${RABBITMQ_DEAD_EXCHANGE}
+    dead-queue: ${RABBITMQ_DEAD_QUEUE}
+    dead-routing-key: ${RABBITMQ_DEAD_ROUTING_KEY}
+    template:
+      mandatory: true
+    listener:
+      simple:
+        concurrency: 3
+        max-concurrency: 10
+        prefetch: 1
+    publisher-confirm-type: correlated
+    publisher-returns: true
     ssl:
       enabled: false

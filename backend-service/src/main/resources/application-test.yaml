@@ -1,24 +1,16 @@
 spring:
-
-  mongodb:
-    host: ${MONGO_HOST:localhost}
-    port: ${MONGO_PORT:27017}
-    database: ${MONGO_DB:test_db}
-    username: ${MONGO_USER:mongo_test}
-    password: ${MONGO_PASSWORD:mongo_test}
-    authentication-database: ${MONGO_AUTHENTICATION:admin}
-
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:test_db}
+    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_DB:test_db}
     username: ${POSTGRES_USER:postgres_test}
     password: ${POSTGRES_PASSWORD:postgres_test}
 
+  mongodb:
+    database: ${MONGO_DB:test_db}
+
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
-    virtual-host: ${RABBITMQ_VIRTUAL_HOST:/}
-    routing-key: ${RABBITMQ_ROUTING_KEY:test.queue}
-    ssl:
-      enabled: false
+    exchange: ${RABBITMQ_EXCHANGE:test.exchange}
+    queue: ${RABBITMQ_QUEUE:test.queue}
+    routing-key: ${RABBITMQ_ROUTING_KEY:test.routing}
+    dead-exchange: ${RABBITMQ_DEAD_EXCHANGE:test.dead.exchange}
+    dead-queue: ${RABBITMQ_DEAD_QUEUE:test.dead.queue}
+    dead-routing-key: ${RABBITMQ_DEAD_ROUTING_KEY:test.dead.routing}

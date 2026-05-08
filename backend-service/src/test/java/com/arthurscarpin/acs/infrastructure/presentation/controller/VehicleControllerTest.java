@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.UUID;
 
@@ -76,7 +75,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given valid vehicle request When saving Then returns 201 Created with vehicle data")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:write"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldCreateVehicleSuccessfully() throws Exception {
 
         VehicleRequest request = new VehicleRequest(
@@ -98,7 +96,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given invalid vehicle request When saving Then returns 400 Bad Request")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:write"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnBadRequestWhenInvalidData() throws Exception {
 
         VehicleRequest request = new VehicleRequest(
@@ -116,7 +113,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given no authentication When saving vehicle Then returns 401 Unauthorized")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnUnauthorizedWhenNoAuthPost() throws Exception {
 
         VehicleRequest request = new VehicleRequest(
@@ -134,7 +130,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given user without permission When saving vehicle Then returns 403 Forbidden")
     @WithMockUser(authorities = {"SCOPE_vehicle:read"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnForbiddenWhenNoPermissionPost() throws Exception {
 
         VehicleRequest request = new VehicleRequest(
@@ -152,7 +147,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given existing vehicle When updating status Then returns 200 OK with updated vehicle")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:write"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldUpdateVehicleStatusSuccessfully() throws Exception {
 
         VehicleEntity vehicle = vehicleRepository.findAll().get(0);
@@ -169,7 +163,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given non existing vehicle When updating status Then returns 404 Not Found")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:write"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnNotFoundWhenVehicleDoesNotExist() throws Exception {
 
         UUID nonExistingId = UUID.randomUUID();
@@ -181,7 +174,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
 
     @Test
     @DisplayName("Given no authentication When updating vehicle Then returns 401 Unauthorized")
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnUnauthorizedWhenNoAuthPatch() throws Exception {
 
         VehicleEntity vehicle = vehicleRepository.findAll().get(0);
@@ -194,7 +186,6 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
     @Test
     @DisplayName("Given user without permission When updating vehicle Then returns 403 Forbidden")
     @WithMockUser(authorities = {"SCOPE_vehicle:read"})
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     void shouldReturnForbiddenWhenNoPermissionPatch() throws Exception {
 
         VehicleEntity vehicle = vehicleRepository.findAll().get(0);

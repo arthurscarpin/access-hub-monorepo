@@ -1,7 +1,7 @@
 package com.arthurscarpin.acs.core.user.usecase;
 
-import com.arthurscarpin.acs.core.scope.domain.Scope;
-import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
+import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
+import com.arthurscarpin.acs.core.vehicle.scope.gateway.ScopeGateway;
 import com.arthurscarpin.acs.core.user.domain.User;
 import com.arthurscarpin.acs.core.user.exception.BadCredentialsException;
 import com.arthurscarpin.acs.core.user.gateway.LoginGateway;

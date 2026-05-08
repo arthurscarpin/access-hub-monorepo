@@ -1,28 +1,25 @@
 package com.arthurscarpin.acs.core.capture.usecase;
 
-import com.arthurscarpin.acs.core.capture.domain.Capture;
-import com.arthurscarpin.acs.core.capture.domain.CaptureImage;
-import com.arthurscarpin.acs.core.capture.domain.CaptureStatus;
-import com.arthurscarpin.acs.core.capture.domain.ImageStatus;
+import com.arthurscarpin.acs.core.capture.domain.*;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class CreateCaptureUseCaseImpl implements CreateCaptureUseCase {
 
-    private final CaptureGateway gateway;
+    private final CaptureGateway captureGateway;
 
     public CreateCaptureUseCaseImpl(CaptureGateway gateway) {
-        this.gateway = gateway;
+        this.captureGateway = gateway;
     }
 
     @Override
     public String execute(List<String> filenames) {
         List<CaptureImage> captureImages = filenames.stream()
                 .map(filename -> new CaptureImage(
-                        null,
+                        UUID.randomUUID().toString(),
                         filename,
                         null,
                         null,
@@ -41,7 +38,6 @@ public class CreateCaptureUseCaseImpl implements CreateCaptureUseCase {
                 null
         );
 
-        // TODO - To implement Capture producer with RabbitMQ
-        return gateway.save(capture).id();
+        return captureGateway.saveAndPublish(capture).id();
     }
 }

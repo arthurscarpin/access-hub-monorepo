@@ -18,16 +18,34 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: corretto
           java-version: 17
           cache: maven
       - name: Set env vars
         run: |
+          echo "ENVIRONMENT=${{ vars.ENVIRONMENT }}" >> $GITHUB_ENV
           echo "POSTGRES_HOST=${{ vars.POSTGRES_HOST }}" >> $GITHUB_ENV
           echo "POSTGRES_PORT=${{ vars.POSTGRES_PORT }}" >> $GITHUB_ENV
           echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" >> $GITHUB_ENV
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "MONGO_HOST=${{ vars.MONGO_HOST }}" >> $GITHUB_ENV
+          echo "MONGO_PORT=${{ vars.MONGO_PORT }}" >> $GITHUB_ENV
+          echo "MONGO_DB=${{ vars.MONGO_DB }}" >> $GITHUB_ENV
+          echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> $GITHUB_ENV
+          echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> $GITHUB_ENV
+          echo "MONGO_AUTHENTICATION=${{ secrets.MONGO_AUTHENTICATION }}" >> $GITHUB_ENV
+          echo "RABBITMQ_HOST=${{ vars.RABBITMQ_HOST }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PORT=${{ vars.RABBITMQ_PORT }}" >> $GITHUB_ENV
+          echo "RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> $GITHUB_ENV
+          echo "RABBITMQ_VIRTUAL_HOST=${{ vars.RABBITMQ_VIRTUAL_HOST }}" >> $GITHUB_ENV
+          echo "RABBITMQ_EXCHANGE=${{ vars.RABBITMQ_EXCHANGE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_DEAD_EXCHANGE=${{ vars.RABBITMQ_DEAD_EXCHANGE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_QUEUE=${{ vars.RABBITMQ_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_DEAD_QUEUE=${{ vars.RABBITMQ_DEAD_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_ROUTING_KEY=${{ vars.RABBITMQ_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "RABBITMQ_DEAD_ROUTING_KEY=${{ vars.RABBITMQ_DEAD_ROUTING_KEY }}" >> $GITHUB_ENV
       - name: Create JWT keys for tests
         run: |
           mkdir -p src/test/resources
@@ -59,7 +77,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: corretto
           java-version: 17
           cache: maven
       - name: Create JWT keys for Sonar analysis
