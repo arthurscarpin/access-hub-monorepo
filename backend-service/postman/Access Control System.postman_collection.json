@@ -19,7 +19,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"f7e4437e-2fcb-4451-9e85-2ac693ee50db\",\r\n        \"ae0652ae-a223-4164-acf0-8cef0e130b61\",\r\n        \"7682e28a-4098-41c9-a162-a2dbf0876c72\",\r\n        \"04688da2-777e-4d34-bbfc-528fe84233c4\",\r\n        \"061e04d1-2026-4947-8ebf-6a09266193ba\",\r\n        \"5f1cc4ec-0cf5-4a71-82b6-65d7418d95be\",\r\n        \"2a71eb21-6fc0-4391-b834-f9404893f72f\"\r\n    ]\r\n}",
+                  "raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"2751ea2e-6978-4521-b4cd-850a74f63655\"\r\n    ]\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -34,6 +34,29 @@
                   "port": "8080",
                   "path": [
                     "users"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Scopes",
+          "item": [
+            {
+              "name": "Get Scopes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "localhost:8080/scopes",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "scopes"
                   ]
                 }
               },
@@ -61,7 +84,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"plate\": \"BRA1S23\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"6b9b20f0-f4f2-421a-af94-776d8e5d0d0a\"\r\n}",
+                  "raw": "{\r\n    \"plate\": \"BRA1S23\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"bf913720-abc4-4069-a302-8c8a1b339b7d\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -97,14 +120,14 @@
                 "method": "PATCH",
                 "header": [],
                 "url": {
-                  "raw": "localhost:8080/vehicles/b0f973ab-c996-4f89-8314-17ab364b573d",
+                  "raw": "localhost:8080/vehicles/ba780a43-40e4-4672-9e49-fdd2313ab0cf",
                   "host": [
                     "localhost"
                   ],
                   "port": "8080",
                   "path": [
                     "vehicles",
-                    "b0f973ab-c996-4f89-8314-17ab364b573d"
+                    "ba780a43-40e4-4672-9e49-fdd2313ab0cf"
                   ]
                 }
               },
@@ -261,7 +284,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"plate\": \"BRA1S23\",\r\n  \"direction\": \"IN\",\r\n  \"timestamp\": \"2026-01-01 00:00:00-03:00\"\r\n}",
+                  "raw": "{\r\n  \"plate\": \"BRA1S23\",\r\n  \"direction\": \"OUT\",\r\n  \"timestamp\": \"2026-01-01 00:00:00-03:00\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -277,6 +300,49 @@
                   "port": "8080",
                   "path": [
                     "access-events"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Capture",
+          "item": [
+            {
+              "name": "Create Capture",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"filenames\": [\r\n        \"filename_test_1.jpg\",\r\n        \"filename_test_2.jpg\",\r\n        \"filename_test_3.jpg\",\r\n        \"filename_test_4.jpg\",\r\n        \"filename_test_5.jpg\"\r\n    ]\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8080/captures",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "captures"
                   ]
                 }
               },
