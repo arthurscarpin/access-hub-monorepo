@@ -1,7 +1,6 @@
 import json
 import logging
 import sys
-
 from pathlib import Path
 from datetime import datetime
 
@@ -29,7 +28,7 @@ class ConsoleFormatter(logging.Formatter):
 
         return (
             f"{timestamp} | "
-            f"{record.levelname:<8} | "
+            f"{record.levelname} | "
             f"{record.name} | "
             f"{record.getMessage()}"
         )
@@ -45,14 +44,14 @@ class Logger:
         return cls._instance
 
     def _configure(self) -> None:
-        self._logger = logging.getLogger("ocr-service")
+        self._logger = logging.getLogger("recognize-plate-service")
 
         if self._logger.handlers:
             return
 
         self._logger.setLevel(logging.INFO)
 
-        root = Path(__file__).resolve().parents[1]
+        root = Path(__file__).resolve().parents[2]
 
         log_dir = root / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)

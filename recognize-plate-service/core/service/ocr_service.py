@@ -1,17 +1,14 @@
 from typing import Any
-
 import numpy as np
-import easyocr  # type: ignore
-
-from schemas import OCRItem
+import easyocr
 
 
 class OCRService:
 
     def __init__(self) -> None:
-        self._reader: Any = easyocr.Reader(["pt"], gpu=False)
+        self._reader: Any = easyocr.Reader(["pt"], gpu=True)
 
-    def execute(self, image: np.ndarray) -> list[OCRItem]:
+    def execute(self, image: np.ndarray) -> list[dict[str, Any]]:
         if image is None:
             raise ValueError("Image cannot be None")
 
@@ -23,24 +20,24 @@ class OCRService:
             low_text=0.3,
         )
 
-        ocr_items: list[OCRItem] = []
+        ocr_items: list[dict[str, Any]] = []
 
         for bbox, text, confidence in result:
             if not text:
                 continue
 
             ocr_items.append(
-                OCRItem(
-                    text=text.strip(),
-                    confidence=float(confidence),
-                    bbox=bbox,
-                )
+                {
+                    "text": text.strip(),
+                    "confidence": float(confidence),
+                    "bbox": bbox,
+                }
             )
 
         return sorted(
             ocr_items,
             key=lambda x: (
-                min(p[1] for p in x.bbox),  # Y (topo)
-                min(p[0] for p in x.bbox),  # X (esquerda)
+                min(p[1] for p in x["bbox"]),
+                min(p[0] for p in x["bbox"]),
             ),
         )

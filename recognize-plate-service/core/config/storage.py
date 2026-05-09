@@ -1,9 +1,9 @@
 from pathlib import Path
 
 
-class StorageConfig:
+class Storage:
 
-    def __init__(self, root: Path, folder: str="storage"):
+    def __init__(self, root: Path, folder: str = "storage"):
         self._root = root
         self._folder = folder
 

@@ -2,9 +2,9 @@ package com.arthurscarpin.acs.core.capture.domain;
 
 public enum CaptureStatus {
     RECEIVED,
+    STARTED,
     PROCESSING,
-    OCR_IN_PROGRESS,
     OCR_DONE,
-    FAILED,
-    DECIDED
+    AI_REVISION_DONE,
+    FAILED
 }
