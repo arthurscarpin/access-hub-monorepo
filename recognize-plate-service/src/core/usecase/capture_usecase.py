@@ -13,5 +13,6 @@ class CaptureUseCase(ABC):
                 connection: Any, 
                 exchange: str, 
                 routing_key: str,
-                logger: Any) -> dict[str, Any]:
+                logger: Any,
+                storage: str) -> dict[str, Any]:
         pass

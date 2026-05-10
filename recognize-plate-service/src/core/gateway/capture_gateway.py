@@ -9,7 +9,7 @@ class CaptureGateway(ABC):
         pass
 
     @abstractmethod
-    def storage_build_path(self, filename: str) -> str:
+    def storage_build_path(self, filename: str, storage: str) -> str:
         pass
 
     @abstractmethod

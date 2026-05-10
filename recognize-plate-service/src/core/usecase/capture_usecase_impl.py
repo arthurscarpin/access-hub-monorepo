@@ -13,7 +13,8 @@ class CaptureUseCaseImpl(CaptureUseCase):
                 connection: Any, 
                 exchange: str, 
                 routing_key: str,
-                logger: Any) -> dict[str, Any]:
+                logger: Any,
+                storage: str) -> dict[str, Any]:
         filename = message.get("filename", "")
         message_producer = {}
         
@@ -39,7 +40,7 @@ class CaptureUseCaseImpl(CaptureUseCase):
             )
 
             logger.info(f"File {filename=} found in storage")
-            storage_path = gateway.storage_build_path(filename)
+            storage_path = gateway.storage_build_path(filename, storage)
 
             logger.info("Stage 2 - Execution started")
             message_producer = {**message, "status": CaptureStatus.PROCESSING.value, "message": "Execution in processing..."}

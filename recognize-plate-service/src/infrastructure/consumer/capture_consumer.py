@@ -18,7 +18,8 @@ class CaptureConsumer:
             gateway: CaptureGateway,
             exchange: str, 
             routing_key: str,
-            logger: logging.Logger):
+            logger: logging.Logger,
+            storage: str):
         self._connection = connection
         self._channel = connection.channel()
         self._queue = queue
@@ -28,6 +29,7 @@ class CaptureConsumer:
         self._exchange = exchange
         self._routing_key = routing_key
         self._logger = logger
+        self._storage = storage
 
     def start(self):
         try:
@@ -53,7 +55,8 @@ class CaptureConsumer:
                 connection=self._connection, 
                 exchange=self._exchange, 
                 routing_key=self._routing_key,
-                logger=self._logger
+                logger=self._logger,
+                storage=self._storage
             )
 
             ch.basic_ack(delivery_tag=delivery_tag)

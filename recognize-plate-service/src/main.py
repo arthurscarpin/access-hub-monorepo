@@ -18,7 +18,8 @@ def main():
         gateway=capture_gateway,
         exchange=settings.RABBITMQ_OCR_STATUS_EXCHANGE, 
         routing_key=settings.RABBITMQ_OCR_STATUS_ROUTING_KEY,
-        logger=logger
+        logger=logger,
+        storage=settings.STORAGE_PATH
     )
     consumer.start()
 

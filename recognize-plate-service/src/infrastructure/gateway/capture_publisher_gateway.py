@@ -13,9 +13,10 @@ class CapturePublisherGateway(CaptureGateway):
         producer = OCRStatusProducer(connection=connection, exchange=exchange)
         producer.publish(routing_key=routing_key, payload=message)
 
-    def storage_build_path(self, filename: str) -> str:
-        storage = Storage()
-        return storage.build(filename=filename)
+    def storage_build_path(self, filename: str, storage: str) -> str:
+        storage = Storage(storage=storage) \
+            .build(filename=filename)
+        return storage
     
     def image_preprocessor(self, storage_path: str) -> numpy.ndarray:
         pre_processor = OpenCVPreProcessor()
