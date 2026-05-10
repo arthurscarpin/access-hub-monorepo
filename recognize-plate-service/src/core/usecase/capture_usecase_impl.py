@@ -2,6 +2,8 @@ from typing import Any
 
 from core.usecase.capture_usecase import CaptureUseCase
 from core.gateway.capture_gateway import CaptureGateway
+from core.domain.capture_status import CaptureStatus
+
 
 class CaptureUseCaseImpl(CaptureUseCase):
 
@@ -16,7 +18,7 @@ class CaptureUseCaseImpl(CaptureUseCase):
         message_producer = {}
         
         if filename == "":
-            message_producer = {**message, "status": "FAILED", "message": "Filename is not found"}
+            message_producer = {**message, "status": CaptureStatus.FAILED.value, "message": "Filename is not found"}
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -28,7 +30,7 @@ class CaptureUseCaseImpl(CaptureUseCase):
 
         try:
             logger.info("Stage 1 - Execution started")
-            message_producer = {**message, "status": "STARTED", "message": "Execution started"}
+            message_producer = {**message, "status": CaptureStatus.STARTED.value, "message": "Execution started"}
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -40,7 +42,7 @@ class CaptureUseCaseImpl(CaptureUseCase):
             storage_path = gateway.storage_build_path(filename)
 
             logger.info("Stage 2 - Execution started")
-            message_producer = {**message, "status": "STARTED", "message": "Execution in processing..."}
+            message_producer = {**message, "status": CaptureStatus.PROCESSING.value, "message": "Execution in processing..."}
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -62,7 +64,7 @@ class CaptureUseCaseImpl(CaptureUseCase):
 
             message_producer = {
                 **message, 
-                "status": "PROCESSED", 
+                "status": CaptureStatus.COMPLETED.value, 
                 "message": "Execution completed",
                 "result": plate_normalize,
                 "result_status": plate_status
@@ -77,7 +79,7 @@ class CaptureUseCaseImpl(CaptureUseCase):
             logger.info("Stage 3 - Execution completed")
             return message_producer
         except Exception as e:
-            message_producer = {**message, "status": "PROCESSING", "message": e}
+            message_producer = {**message, "status": CaptureStatus.FAILED.value, "message": e}
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
