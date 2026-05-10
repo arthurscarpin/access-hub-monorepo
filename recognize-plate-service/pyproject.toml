@@ -11,4 +11,6 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "torch",
     "torchvision",
+    "pydantic-settings>=2.14.1",
+    "requests>=2.33.1",
 ]
