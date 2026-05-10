@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-class PreProcessorImageService:
+class OpenCVPreProcessor:
 
     def execute(self, path: str) -> np.ndarray:
         image = cv2.imread(path)

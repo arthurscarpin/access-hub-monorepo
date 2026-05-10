@@ -3,9 +3,9 @@ import numpy as np
 import easyocr
 
 
-class OCRService:
+class EasyOCRProcessor:
 
-    def __init__(self) -> None:
+    def __init__(self):
         self._reader: Any = easyocr.Reader(["pt"], gpu=True)
 
     def execute(self, image: np.ndarray) -> list[dict[str, Any]]:
