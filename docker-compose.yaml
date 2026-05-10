@@ -14,10 +14,11 @@ services:
       - access-control-pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
 
   mongo:
     image: mongo:5.0
@@ -32,16 +33,17 @@ services:
       - access-control-mongo-data:/data/db
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD-SHELL", "mongosh --eval \"db.adminCommand('ping')\""]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 5
+      start_period: 20s
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: access-control-rabbit-mq
     environment:
-      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VIRTUAL_HOST}
+      RABBITMQ_DEFAULT_VHOST: /
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
@@ -51,10 +53,11 @@ services:
       - access-control-rabbitmq-data:/var/lib/rabbitmq
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 15
+      start_period: 60s
 
   backend-service:
     build:
@@ -70,6 +73,7 @@ services:
         condition: service_healthy
     environment:
       ENVIRONMENT: ${ENVIRONMENT}
+
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -96,29 +100,27 @@ services:
       - "8080:8080"
     restart: unless-stopped
 
-  # recognize-plate-service:
-  #   build:
-  #     context: ./recognize-plate-service
-  #     dockerfile: Dockerfile
-  #   container_name: recognize-plate-service
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
-  #   environment:
-  #     RABBITMQ_HOST: rabbitmq
-  #     RABBITMQ_PORT: ${RABBITMQ_PORT}
-  #     RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
-  #     RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-  #     RABBITMQ_QUEUE: ${RABBITMQ_QUEUE}
-  #   volumes:
-  #     - ./storage:/app/storage
-  #     - ./recognize-plate-service/log:/app/log
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "pgrep", "-f", "python"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  recognize-plate-service:
+    build:
+      context: ./recognize-plate-service
+      dockerfile: Dockerfile
+    container_name: recognize-plate-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_QUEUE: ${RABBITMQ_QUEUE}
+      RABBITMQ_OCR_STATUS_EXCHANGE: ${RABBITMQ_OCR_STATUS_EXCHANGE}
+      RABBITMQ_OCR_STATUS_ROUTING_KEY: ${RABBITMQ_OCR_STATUS_ROUTING_KEY}
+      STORAGE_PATH: ${STORAGE_PATH}
+    volumes:
+      - ./storage:/app/storage
+      - ./recognize-plate-service/log:/app/log
+    restart: unless-stopped
 
 volumes:
   access-control-pgdata:
