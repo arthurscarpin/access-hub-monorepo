@@ -1,7 +1,10 @@
 from core import CaptureUseCaseImpl
-from infrastructure import RabbitMQConfig, CaptureConsumer, settings, CapturePublisherGateway, logger
+from infrastructure.configuration.settings import get_settings
+from infrastructure import RabbitMQConfig, CaptureConsumer, CapturePublisherGateway, logger
+
 
 def main():
+    settings = get_settings()
     capture_usecase = CaptureUseCaseImpl()
     capture_gateway = CapturePublisherGateway()
 

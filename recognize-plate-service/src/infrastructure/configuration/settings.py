@@ -1,4 +1,5 @@
 from pathlib import Path
+from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT_DIR = Path(__file__).resolve().parents[4]
@@ -17,8 +18,11 @@ class Settings(BaseSettings):
     STORAGE_PATH: str
 
     model_config = SettingsConfigDict(
-        env_file=env_idea if env_idea.exists() else env, 
-        extra="ignore"
+        env_file=env_idea if env_idea.exists() else env,
+        extra="ignore",
     )
 
-settings = Settings() # type: ignore
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
