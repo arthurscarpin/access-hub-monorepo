@@ -2,7 +2,6 @@
 
 ## Fluxo de Processamento de Imagem de Veículos
 
-
 ---
 
 # 1. Entrada no Spring Boot
