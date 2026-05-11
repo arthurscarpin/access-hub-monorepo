@@ -11,7 +11,9 @@ on:
       - 'backend-service/**'
 
 jobs:
-  # Job 1: Build | Test | Coverage
+  # =========================
+  # JOB 1 - Build | Test | Coverage
+  # =========================
   build-test:
     runs-on: ubuntu-latest
     defaults:
@@ -70,7 +72,9 @@ jobs:
           path: backend-service/target/site/jacoco/
           retention-days: 1
 
-  # JOB 2 - Sonar Cloud
+  # =========================
+  # JOB 2 - SonarCloud
+  # =========================
   sonar:
     runs-on: ubuntu-latest
     needs: build-test
@@ -115,7 +119,9 @@ jobs:
             -Dsonar.coverage.jacoco.xmlReportPaths=backend-service/target/site/jacoco/jacoco.xml
             -Dsonar.scm.exclusions.disabled=true
 
-  # JOB 3 - Security CodeQL
+  # =========================
+  # JOB 3 - Security (CodeQL)
+  # =========================
   security:
     runs-on: ubuntu-latest
     permissions:
