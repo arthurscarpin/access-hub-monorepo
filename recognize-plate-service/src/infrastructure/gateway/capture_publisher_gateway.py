@@ -1,6 +1,6 @@
 from typing import Any
 
-from core import CaptureGateway, Storage, Plate
+from core import CaptureGateway, Storage
 from infrastructure.image_processing.opencv_preprocessor import OpenCVPreProcessor
 from infrastructure.ocr.easyocr_processor import EasyOCRProcessor
 from infrastructure.producer.ocr_status_producer import OCRStatusProducer
@@ -25,9 +25,3 @@ class CapturePublisherGateway(CaptureGateway):
     def ocr_processor(self, image: Any) -> list[dict[str, Any]]:
         ocr = EasyOCRProcessor()
         return ocr.execute(image=image)
-    
-    def plate_normalize(self, plate: str) -> str:
-        return Plate.normalize(plate=plate)
-    
-    def plate_is_valid(self, plate: str) -> bool:
-        return Plate.is_valid(plate=plate)

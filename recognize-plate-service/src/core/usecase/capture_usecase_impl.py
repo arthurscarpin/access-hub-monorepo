@@ -59,16 +59,14 @@ class CaptureUseCaseImpl(CaptureUseCase):
             logger.debug(ocr_image)
 
             ocr_plate = "".join(item["text"] for item in ocr_image)
-            plate_normalize = gateway.plate_normalize(ocr_plate)
-            plate_status = gateway.plate_is_valid(plate_normalize)
-            logger.info(f"Vehicle license plate: {plate_normalize=} | {plate_status=}")
+            logger.info(f"Vehicle license plate: {ocr_plate=} | plate_status={True}")
 
-            message_producer = {
+            message_producer: dict[str, Any] = {
                 **message, 
                 "status": CaptureStatus.COMPLETED.value, 
                 "message": "Execution completed",
-                "result": plate_normalize,
-                "result_status": plate_status
+                "result": ocr_plate,
+                "result_status": True
             }
             logger.info(f"The result was generated: {message_producer=}")
             gateway.message_publisher(

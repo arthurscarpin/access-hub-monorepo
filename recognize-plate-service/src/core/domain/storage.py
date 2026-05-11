@@ -7,5 +7,9 @@ class Storage:
             raise ValueError("STORAGE_PATH is required")
         self._root = Path(storage).resolve()
 
+    @property
+    def root(self) -> Path:
+        return self._root
+
     def build(self, filename: str) -> str:
         return str(self._root / filename)

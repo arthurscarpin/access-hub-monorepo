@@ -19,11 +19,3 @@ class CaptureGateway(ABC):
     @abstractmethod
     def ocr_processor(self, image: Any) -> list[dict[str, Any]]:
         pass
-
-    @abstractmethod
-    def plate_normalize(self, plate: str) -> str:
-        pass
-
-    @abstractmethod
-    def plate_is_valid(self, plate: str) -> bool:
-        pass

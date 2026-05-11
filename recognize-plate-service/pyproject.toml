@@ -14,4 +14,15 @@ dependencies = [
     "torchvision",
     "pydantic-settings>=2.14.1",
     "requests>=2.33.1",
+    "pytest-cov>=7.1.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["test"]
+addopts = "--cov=src"
+
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:.*torch.ao.quantization.*:DeprecationWarning",
 ]

@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Any
 
 from core import CaptureUseCase, CaptureGateway
 
@@ -21,7 +22,7 @@ class CaptureConsumer:
             logger: logging.Logger,
             storage: str):
         self._connection = connection
-        self._channel = connection.channel()
+        self._channel: Any = connection.channel()
         self._queue = queue
         self._channel.basic_qos(prefetch_count=1)
         self._capture_usecase = use_case
