@@ -97,7 +97,7 @@ jobs:
             -Dsonar.projectBaseDir=recognize-plate-service
             -Dsonar.sources=src
             -Dsonar.tests=test
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.coverage.reportPaths=recognize-plate-service/coverage.xml
             -Dsonar.sourceEncoding=UTF-8
 
   # =========================
