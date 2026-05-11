@@ -12,29 +12,35 @@ on:
 
 jobs:
   # =========================
-  # JOB 1 - Build | Test | Coverage
+  # JOB 1 - TESTS + COVERAGE
   # =========================
   build-test:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: recognize-plate-service
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install uv
         run: pip install uv
+
       - name: Cache uv
         uses: actions/cache@v4
         with:
           path: ~/.cache/uv
           key: uv-${{ runner.os }}-${{ hashFiles('recognize-plate-service/uv.lock') }}
-      - name: Sync dependencies (locked)
+
+      - name: Sync dependencies
         run: uv sync --frozen --no-dev
+
       - name: Set environment variables
         run: |
           echo "RABBITMQ_HOST=${{ vars.RABBITMQ_HOST }}" >> $GITHUB_ENV
@@ -45,46 +51,51 @@ jobs:
           echo "RABBITMQ_OCR_STATUS_EXCHANGE=${{ vars.RABBITMQ_OCR_STATUS_EXCHANGE }}" >> $GITHUB_ENV
           echo "RABBITMQ_OCR_STATUS_ROUTING_KEY=${{ vars.RABBITMQ_OCR_STATUS_ROUTING_KEY }}" >> $GITHUB_ENV
           echo "STORAGE_PATH=${{ vars.STORAGE_PATH }}" >> $GITHUB_ENV
+
       - name: Run tests with coverage
         run: |
           uv run pytest \
             --cov=src \
             --cov-report=xml:coverage.xml \
             --cov-report=term
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: recognize-plate-service/coverage.xml
-          retention-days: 1
+
 
   # =========================
-  # JOB 2 - SonarCloud
+  # JOB 2 - SONAR
   # =========================
   sonar:
     runs-on: ubuntu-latest
     needs: build-test
-    defaults:
-      run:
-        working-directory: recognize-plate-service
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Download coverage report
+
+      - name: Download coverage
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
           path: recognize-plate-service/
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install uv
         run: pip install uv
+
       - name: Sync dependencies
         run: uv sync --frozen --no-dev
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -98,32 +109,40 @@ jobs:
             -Dsonar.tests=recognize-plate-service/test
             -Dsonar.python.coverage.reportPaths=recognize-plate-service/coverage.xml
 
+
   # =========================
-  # JOB 3 - Security (CodeQL)
+  # JOB 3 - SECURITY
   # =========================
   security:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
       contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: python
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install uv
         run: pip install uv
+
       - name: Sync dependencies
         run: |
           cd recognize-plate-service
           uv sync --frozen --no-dev
+
       - name: Compile check
         run: python -m compileall recognize-plate-service
+
       - name: Analyze security
         uses: github/codeql-action/analyze@v3

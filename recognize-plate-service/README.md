@@ -1,5 +1,6 @@
 # 🧠 Arquitetura ANPR (Automatic Number Plate Recognition)
 
+
 ## Fluxo de Processamento de Imagem de Veículos
 
 ---
