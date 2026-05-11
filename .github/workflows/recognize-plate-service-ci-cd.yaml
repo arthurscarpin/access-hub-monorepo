@@ -19,35 +19,38 @@ jobs:
     defaults:
       run:
         working-directory: recognize-plate-service
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install uv
         run: pip install uv
-
       - name: Cache uv
         uses: actions/cache@v4
         with:
           path: ~/.cache/uv
           key: uv-${{ runner.os }}-${{ hashFiles('recognize-plate-service/uv.lock') }}
-
       - name: Sync dependencies
         run: uv sync --frozen --no-dev
-
+      - name: Set environment variables
+        run: |
+          echo "RABBITMQ_HOST=${{ vars.RABBITMQ_HOST }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PORT=${{ vars.RABBITMQ_PORT }}" >> $GITHUB_ENV
+          echo "RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> $GITHUB_ENV
+          echo "RABBITMQ_QUEUE=${{ vars.RABBITMQ_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_OCR_STATUS_EXCHANGE=${{ vars.RABBITMQ_OCR_STATUS_EXCHANGE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_OCR_STATUS_ROUTING_KEY=${{ vars.RABBITMQ_OCR_STATUS_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "STORAGE_PATH=${{ vars.STORAGE_PATH }}" >> $GITHUB_ENV
       - name: Run tests with coverage
         run: |
           PYTHONPATH=src uv run pytest \
             --cov=src \
-            --cov-report=xml \
+            --cov-report=xml:coverage.xml \
             --cov-report=term
-
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
@@ -64,30 +67,24 @@ jobs:
     defaults:
       run:
         working-directory: recognize-plate-service
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Download coverage
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
           path: recognize-plate-service/
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install uv
         run: pip install uv
-
       - name: Sync dependencies
         run: uv sync --frozen --no-dev
-
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
@@ -97,6 +94,7 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectBaseDir=recognize-plate-service
             -Dsonar.sources=src
             -Dsonar.tests=test
             -Dsonar.python.coverage.reportPaths=coverage.xml
@@ -110,33 +108,26 @@ jobs:
     permissions:
       security-events: write
       contents: read
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: python
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install uv
         run: pip install uv
-
       - name: Sync dependencies
         run: |
           cd recognize-plate-service
           uv sync --frozen --no-dev
-
       - name: Build project
         run: |
           cd recognize-plate-service
           python -m compileall src
-
       - name: Analyze security
         uses: github/codeql-action/analyze@v3
