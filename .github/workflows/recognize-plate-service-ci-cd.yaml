@@ -94,10 +94,9 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-            -Dsonar.sources=src
-            -Dsonar.tests=test
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.scm.exclusions.disabled=true
+            -Dsonar.sources=recognize-plate-service/src
+            -Dsonar.tests=recognize-plate-service/test
+            -Dsonar.python.coverage.reportPaths=recognize-plate-service/coverage.xml
 
   # =========================
   # JOB 3 - Security (CodeQL)
