@@ -73,7 +73,6 @@ services:
         condition: service_healthy
     environment:
       ENVIRONMENT: ${ENVIRONMENT}
-
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -99,6 +98,13 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
 
   recognize-plate-service:
     build:
@@ -107,6 +113,8 @@ services:
     container_name: recognize-plate-service
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      backend-service:
         condition: service_healthy
     environment:
       RABBITMQ_HOST: ${RABBITMQ_HOST}
