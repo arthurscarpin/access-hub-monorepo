@@ -72,6 +72,9 @@ jobs:
   sonar:
     runs-on: ubuntu-latest
     needs: build-test
+    defaults:
+      run:
+        working-directory: recognize-plate-service
 
     steps:
       - name: Checkout code
