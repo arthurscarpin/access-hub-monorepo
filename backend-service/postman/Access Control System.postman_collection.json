@@ -19,7 +19,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"2751ea2e-6978-4521-b4cd-850a74f63655\"\r\n    ]\r\n}",
+                  "raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"67b0b900-8439-41c4-9146-1087df2df45f\"\r\n    ]\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -327,7 +327,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n    \"filenames\": [\r\n        \"filename_test_1.jpg\",\r\n        \"filename_test_2.jpg\",\r\n        \"filename_test_3.jpg\",\r\n        \"filename_test_4.jpg\",\r\n        \"filename_test_5.jpg\"\r\n    ]\r\n}",
+                  "raw": "{\r\n    \"filenames\": [\r\n        \"car1.webp\"\r\n    ]\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -343,6 +343,31 @@
                   "port": "8080",
                   "path": [
                     "captures"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Health Check",
+          "item": [
+            {
+              "name": "Health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/actuator/health",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "actuator",
+                    "health"
                   ]
                 }
               },
