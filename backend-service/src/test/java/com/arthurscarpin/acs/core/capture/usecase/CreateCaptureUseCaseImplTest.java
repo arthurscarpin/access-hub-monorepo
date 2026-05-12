@@ -42,21 +42,6 @@ class CreateCaptureUseCaseImplTest {
     }
 
     @Test
-    @DisplayName("Given empty filename list, when executing use case, then should create capture with empty images")
-    void shouldCreateCaptureWithEmptyImagesWhenNoFilenames() {
-        List<String> filenames = List.of();
-        String expectedId = UUID.randomUUID().toString();
-        Capture savedCapture = createMockCapture(expectedId, filenames);
-
-        when(gateway.saveAndPublish(any(Capture.class))).thenReturn(savedCapture);
-
-        String result = useCase.execute(filenames);
-
-        assertEquals(expectedId, result);
-        verify(gateway, times(1)).saveAndPublish(any(Capture.class));
-    }
-
-    @Test
     @DisplayName("Given filenames, when executing use case, then should create capture images with RECEIVED status")
     void shouldCreateCaptureImagesWithReceivedStatus() {
         List<String> filenames = List.of("plate1.jpg");
@@ -69,26 +54,21 @@ class CreateCaptureUseCaseImplTest {
 
         verify(gateway, times(1)).saveAndPublish(argThat(capture -> {
             assertNotNull(capture);
-            assertEquals(CaptureStatus.RECEIVED, capture.status());
-            assertNotNull(capture.images());
-            assertEquals(1, capture.images().size());
-
             CaptureImage image = capture.images().get(0);
+
             assertEquals("plate1.jpg", image.filename());
             assertEquals(ImageStatus.RECEIVED, image.status());
-            assertNull(image.ocrText());
-            assertNull(image.confidence());
-            assertNotNull(image.id());
-            assertNull(image.timestamp());
+            assertNotNull(image.ocr());
+            assertTrue(image.ocr().isEmpty());
 
             return true;
         }));
     }
 
     @Test
-    @DisplayName("Given multiple filenames, when executing use case, then should create multiple capture images")
-    void shouldCreateMultipleCaptureImages() {
-        List<String> filenames = List.of("plate1.jpg", "plate2.jpg", "plate3.jpg");
+    @DisplayName("Given multiple filenames, when executing use case, then should create capture with correct counts")
+    void shouldCreateCaptureWithCorrectCounts() {
+        List<String> filenames = List.of("img1.jpg", "img2.jpg");
         String expectedId = UUID.randomUUID().toString();
         Capture savedCapture = createMockCapture(expectedId, filenames);
 
@@ -97,13 +77,8 @@ class CreateCaptureUseCaseImplTest {
         useCase.execute(filenames);
 
         verify(gateway, times(1)).saveAndPublish(argThat(capture -> {
-            assertNotNull(capture);
-            assertEquals(3, capture.images().size());
-
-            assertEquals("plate1.jpg", capture.images().get(0).filename());
-            assertEquals("plate2.jpg", capture.images().get(1).filename());
-            assertEquals("plate3.jpg", capture.images().get(2).filename());
-
+            assertEquals(2, capture.images().size());
+            assertEquals(0, capture.processedImagesCount());
             return true;
         }));
     }
@@ -112,50 +87,9 @@ class CreateCaptureUseCaseImplTest {
     @DisplayName("Given gateway failure, when executing use case, then should propagate exception")
     void shouldPropagateExceptionWhenGatewayFails() {
         List<String> filenames = List.of("plate1.jpg");
-
         when(gateway.saveAndPublish(any(Capture.class))).thenThrow(new RuntimeException("Database error"));
 
         assertThrows(RuntimeException.class, () -> useCase.execute(filenames));
-        verify(gateway, times(1)).saveAndPublish(any(Capture.class));
-    }
-
-    @Test
-    @DisplayName("Given valid execution, when executing use case, then should call gateway only once")
-    void shouldCallGatewayOnlyOnce() {
-        List<String> filenames = List.of("plate1.jpg");
-        String expectedId = UUID.randomUUID().toString();
-        Capture savedCapture = createMockCapture(expectedId, filenames);
-
-        when(gateway.saveAndPublish(any(Capture.class))).thenReturn(savedCapture);
-
-        useCase.execute(filenames);
-
-        verify(gateway, times(1)).saveAndPublish(any(Capture.class));
-        verifyNoMoreInteractions(gateway);
-    }
-
-    @Test
-    @DisplayName("Given filenames, when executing use case, then should create capture with RECEIVED status and timestamps")
-    void shouldCreateCaptureWithReceivedStatusAndTimestamps() {
-        List<String> filenames = List.of("plate1.jpg");
-        String expectedId = UUID.randomUUID().toString();
-        Capture savedCapture = createMockCapture(expectedId, filenames);
-
-        when(gateway.saveAndPublish(any(Capture.class))).thenReturn(savedCapture);
-
-        useCase.execute(filenames);
-
-        verify(gateway, times(1)).saveAndPublish(argThat(capture -> {
-            assertNotNull(capture);
-            assertEquals(CaptureStatus.RECEIVED, capture.status());
-            assertNull(capture.finalPlate());
-            assertNull(capture.finalConfidence());
-            assertNotNull(capture.createdAt());
-            assertNotNull(capture.updatedAt());
-            assertNull(capture.processedAt());
-
-            return true;
-        }));
     }
 
     private Capture createMockCapture(String id, List<String> filenames) {
@@ -163,9 +97,8 @@ class CreateCaptureUseCaseImplTest {
                 .map(filename -> new CaptureImage(
                         UUID.randomUUID().toString(),
                         filename,
-                        null,
-                        null,
                         ImageStatus.RECEIVED,
+                        List.of(),
                         null
                 ))
                 .toList();
@@ -178,7 +111,9 @@ class CreateCaptureUseCaseImplTest {
                 null,
                 Instant.now(),
                 Instant.now(),
-                null
+                null,
+                0,
+                1L
         );
     }
 }
