@@ -4,8 +4,10 @@ import com.arthurscarpin.acs.infrastructure.persistence.entity.document.CaptureE
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
+import java.util.Optional;
 
 @Repository
-public interface CaptureRepository extends MongoRepository<CaptureEntity, UUID> {
+public interface CaptureRepository extends MongoRepository<CaptureEntity, String> {
+
+    Optional<CaptureEntity> findByIdAndImages_Id(String id, String imageId);
 }

@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.presentation.advice;
 
+import com.arthurscarpin.acs.core.capture.exception.CaptureNotFoundException;
 import com.arthurscarpin.acs.core.owner.exception.*;
 import com.arthurscarpin.acs.core.vehicle.scope.exception.ScopeNotFoundException;
 import com.arthurscarpin.acs.core.user.exception.BadCredentialsException;
@@ -132,8 +133,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ScopeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse ScopeNotFoundException(ScopeNotFoundException ex) {
+    public ErrorResponse handleScopeNotFoundException(ScopeNotFoundException ex) {
         log.error("Scope not found exception: {}", ex.getMessage(), ex);
+        return ErrorResponse.builder()
+                .timestamp(OffsetDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(CaptureNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleCaptureNotFoundException(CaptureNotFoundException ex) {
+        log.error("Capture not found exception: {}", ex.getMessage(), ex);
         return ErrorResponse.builder()
                 .timestamp(OffsetDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())

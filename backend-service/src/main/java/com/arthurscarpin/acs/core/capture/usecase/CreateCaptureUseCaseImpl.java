@@ -21,10 +21,9 @@ public class CreateCaptureUseCaseImpl implements CreateCaptureUseCase {
                 .map(filename -> new CaptureImage(
                         UUID.randomUUID().toString(),
                         filename,
-                        null,
-                        null,
                         ImageStatus.RECEIVED,
-                        null
+                        List.of(),
+                        Instant.now()
                 )).toList();
 
         Capture capture = new Capture(
@@ -35,6 +34,8 @@ public class CreateCaptureUseCaseImpl implements CreateCaptureUseCase {
                 null,
                 Instant.now(),
                 Instant.now(),
+                null,
+                0,
                 null
         );
 

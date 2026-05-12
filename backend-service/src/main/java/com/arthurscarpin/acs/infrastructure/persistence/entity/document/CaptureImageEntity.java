@@ -4,6 +4,7 @@ import com.arthurscarpin.acs.core.capture.domain.ImageStatus;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +17,9 @@ public class CaptureImageEntity {
 
     private String filename;
 
-    private String ocrText;
-
-    private Double confidence;
-
     private ImageStatus status;
+
+    private List<CaptureOCREntity> ocr;
 
     private Instant timestamp;
 }

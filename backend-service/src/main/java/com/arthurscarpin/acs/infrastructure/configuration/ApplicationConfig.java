@@ -8,6 +8,8 @@ import com.arthurscarpin.acs.core.accessevent.usecase.ValidateAccessUseCaseImpl;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 import com.arthurscarpin.acs.core.capture.usecase.CreateCaptureUseCase;
 import com.arthurscarpin.acs.core.capture.usecase.CreateCaptureUseCaseImpl;
+import com.arthurscarpin.acs.core.capture.usecase.StatusCaptureUseCase;
+import com.arthurscarpin.acs.core.capture.usecase.StatusCaptureUseCaseImpl;
 import com.arthurscarpin.acs.core.owner.gateway.OwnerGateway;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerImpl;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerUseCase;
@@ -74,5 +76,10 @@ public class ApplicationConfig {
     @Bean
     public GetScopesUseCase getScopesUseCase(ScopeGateway scopeGateway) {
         return new GetScopesUseCaseImpl(scopeGateway);
+    }
+
+    @Bean
+    public StatusCaptureUseCase statusCaptureUseCase(CaptureGateway captureGateway) {
+        return new StatusCaptureUseCaseImpl(captureGateway);
     }
 }

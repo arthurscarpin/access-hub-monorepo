@@ -25,7 +25,7 @@ class CaptureMapperTest {
                 "plate.jpg",
                 "ABC-1234",
                 95.5,
-                ImageStatus.OCR_DONE,
+                ImageStatus.COMPLETED,
                 now
         );
 
@@ -77,7 +77,7 @@ class CaptureMapperTest {
                 .filename("plate.jpg")
                 .ocrText("ABC-1234")
                 .confidence(95.5)
-                .status(ImageStatus.OCR_DONE)
+                .status(ImageStatus.COMPLETED)
                 .timestamp(now)
                 .build();
 

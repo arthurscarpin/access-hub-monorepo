@@ -2,6 +2,7 @@ package com.arthurscarpin.acs.infrastructure.persistence.entity.document;
 
 import com.arthurscarpin.acs.core.capture.domain.CaptureStatus;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -32,4 +33,10 @@ public class CaptureEntity {
     private Instant updatedAt;
 
     private Instant processedAt;
+
+    @Builder.Default
+    private Integer processedImagesCount = 0;
+
+    @Version
+    private Long version;
 }

@@ -4,7 +4,10 @@ public enum ImageStatus {
     RECEIVED,
     STARTED,
     PROCESSING,
-    OCR_DONE,
-    AI_REVISION_DONE,
-    FAILED
+    COMPLETED,
+    FAILED;
+
+    public static ImageStatus fromString(String value) {
+        return valueOf(value.toUpperCase());
+    }
 }
