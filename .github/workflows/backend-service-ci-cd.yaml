@@ -30,6 +30,7 @@ jobs:
       - name: Set env vars
         run: |
           echo "ENVIRONMENT=${{ vars.ENVIRONMENT }}" >> $GITHUB_ENV
+          echo "STORAGE_PATH=${{ vars.STORAGE_PATH }}" >> $GITHUB_ENV
           echo "POSTGRES_HOST=${{ vars.POSTGRES_HOST }}" >> $GITHUB_ENV
           echo "POSTGRES_PORT=${{ vars.POSTGRES_PORT }}" >> $GITHUB_ENV
           echo "POSTGRES_DB=${{ vars.POSTGRES_DB }}" >> $GITHUB_ENV
@@ -43,15 +44,16 @@ jobs:
           echo "MONGO_AUTHENTICATION=${{ secrets.MONGO_AUTHENTICATION }}" >> $GITHUB_ENV
           echo "RABBITMQ_HOST=${{ vars.RABBITMQ_HOST }}" >> $GITHUB_ENV
           echo "RABBITMQ_PORT=${{ vars.RABBITMQ_PORT }}" >> $GITHUB_ENV
-          echo "RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" >> $GITHUB_ENV
-          echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> $GITHUB_ENV
           echo "RABBITMQ_VIRTUAL_HOST=${{ vars.RABBITMQ_VIRTUAL_HOST }}" >> $GITHUB_ENV
           echo "RABBITMQ_EXCHANGE=${{ vars.RABBITMQ_EXCHANGE }}" >> $GITHUB_ENV
-          echo "RABBITMQ_DEAD_EXCHANGE=${{ vars.RABBITMQ_DEAD_EXCHANGE }}" >> $GITHUB_ENV
-          echo "RABBITMQ_QUEUE=${{ vars.RABBITMQ_QUEUE }}" >> $GITHUB_ENV
-          echo "RABBITMQ_DEAD_QUEUE=${{ vars.RABBITMQ_DEAD_QUEUE }}" >> $GITHUB_ENV
-          echo "RABBITMQ_ROUTING_KEY=${{ vars.RABBITMQ_ROUTING_KEY }}" >> $GITHUB_ENV
-          echo "RABBITMQ_DEAD_ROUTING_KEY=${{ vars.RABBITMQ_DEAD_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "RABBITMQ_OCR_ROUTING_KEY=${{ vars.RABBITMQ_OCR_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "RABBITMQ_OCR_QUEUE=${{ vars.RABBITMQ_OCR_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_OCR_STATUS_ROUTING_KEY=${{ vars.RABBITMQ_OCR_STATUS_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "RABBITMQ_OCR_STATUS_QUEUE=${{ vars.RABBITMQ_OCR_STATUS_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_AI_VALIDATION_ROUTING_KEY=${{ vars.RABBITMQ_AI_VALIDATION_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "RABBITMQ_AI_VALIDATION_QUEUE=${{ vars.RABBITMQ_AI_VALIDATION_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> $GITHUB_ENV
       - name: Create JWT keys for tests
         run: |
           mkdir -p src/test/resources
