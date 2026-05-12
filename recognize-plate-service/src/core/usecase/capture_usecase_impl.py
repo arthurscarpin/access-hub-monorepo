@@ -19,7 +19,12 @@ class CaptureUseCaseImpl(CaptureUseCase):
         message_producer = {}
         
         if filename == "":
-            message_producer = {**message, "status": CaptureStatus.FAILED.value, "message": "Filename is not found"}
+            message_producer = {
+                **message, 
+                "status": CaptureStatus.FAILED.value, 
+                "message": "Filename is not found",
+                "ocr": []
+            }
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -31,7 +36,12 @@ class CaptureUseCaseImpl(CaptureUseCase):
 
         try:
             logger.info("Stage 1 - Execution started")
-            message_producer = {**message, "status": CaptureStatus.STARTED.value, "message": "Execution started"}
+            message_producer = {
+                **message, 
+                "status": CaptureStatus.STARTED.value, 
+                "message": "Execution started",
+                "ocr": []
+            }
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -43,7 +53,12 @@ class CaptureUseCaseImpl(CaptureUseCase):
             storage_path = gateway.storage_build_path(filename, storage)
 
             logger.info("Stage 2 - Execution started")
-            message_producer = {**message, "status": CaptureStatus.PROCESSING.value, "message": "Execution in processing..."}
+            message_producer = {
+                **message, 
+                "status": CaptureStatus.PROCESSING.value, 
+                "message": "Execution in processing...",
+                "ocr": []
+            }
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -57,18 +72,14 @@ class CaptureUseCaseImpl(CaptureUseCase):
             ocr_image = gateway.ocr_processor(pre_processed_image)
             logger.debug("The OCR has been pre-processed")
             logger.debug(ocr_image)
-
-            ocr_plate = "".join(item["text"] for item in ocr_image)
-            logger.info(f"Vehicle license plate: {ocr_plate=} | plate_status={True}")
+            logger.info("OCR Extracted")
 
             message_producer: dict[str, Any] = {
                 **message, 
                 "status": CaptureStatus.COMPLETED.value, 
                 "message": "Execution completed",
-                "result": ocr_plate,
-                "result_status": True
+                "ocr": ocr_image
             }
-            logger.info(f"The result was generated: {message_producer=}")
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
@@ -78,12 +89,17 @@ class CaptureUseCaseImpl(CaptureUseCase):
             logger.info("Stage 3 - Execution completed")
             return message_producer
         except Exception as e:
-            message_producer = {**message, "status": CaptureStatus.FAILED.value, "message": e}
+            message_producer = {
+                **message, 
+                "status": CaptureStatus.FAILED.value, 
+                "message": e, 
+                "ocr": []
+            }
             gateway.message_publisher(
                 message=message_producer, 
                 connection=connection, 
                 exchange=exchange, 
                 routing_key=routing_key
             )
-            logger.error(f"Error {type(e).__name__}: {e}")
+            logger.error(f"Error {type(e).__name__}: {str(e)}")
             return message_producer

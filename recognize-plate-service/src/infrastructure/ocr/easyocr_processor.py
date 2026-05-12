@@ -25,12 +25,12 @@ class EasyOCRProcessor:
         for bbox, text, confidence in result:
             if not text:
                 continue
-
+            native_bbox = [[int(coord) for coord in point] for point in bbox]
             ocr_items.append(
                 {
                     "text": text.strip(),
                     "confidence": float(confidence),
-                    "bbox": bbox,
+                    "bbox": native_bbox,
                 }
             )
 
