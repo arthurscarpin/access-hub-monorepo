@@ -12,9 +12,10 @@ class Settings(BaseSettings):
     RABBITMQ_PORT: int
     RABBITMQ_USERNAME: str
     RABBITMQ_PASSWORD: str
-    RABBITMQ_QUEUE: str
-    RABBITMQ_OCR_STATUS_EXCHANGE: str
+    RABBITMQ_EXCHANGE: str
+    RABBITMQ_OCR_QUEUE: str
     RABBITMQ_OCR_STATUS_ROUTING_KEY: str
+    RABBITMQ_AI_VALIDATION_ROUTING_KEY: str
     STORAGE_PATH: str
 
     model_config = SettingsConfigDict(

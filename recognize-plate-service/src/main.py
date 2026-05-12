@@ -15,11 +15,11 @@ def main():
         password=settings.RABBITMQ_PASSWORD
     )
     consumer = CaptureConsumer(
-        connection=connection, 
-        queue=settings.RABBITMQ_QUEUE, 
+        connection=connection,
+        queue=settings.RABBITMQ_OCR_QUEUE, 
         use_case=capture_usecase, 
         gateway=capture_gateway,
-        exchange=settings.RABBITMQ_OCR_STATUS_EXCHANGE, 
+        exchange=settings.RABBITMQ_EXCHANGE, 
         routing_key=settings.RABBITMQ_OCR_STATUS_ROUTING_KEY,
         logger=logger,
         storage=settings.STORAGE_PATH
