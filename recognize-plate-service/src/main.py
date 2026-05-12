@@ -1,4 +1,4 @@
-from core import CaptureUseCaseImpl
+from core.usecase.capture_usecase_impl import CaptureUseCaseImpl
 from infrastructure.configuration.settings import get_settings
 from infrastructure import RabbitMQConfig, CaptureConsumer, CapturePublisherGateway, logger
 

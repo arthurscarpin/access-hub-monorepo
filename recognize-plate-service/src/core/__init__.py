@@ -1,7 +1,6 @@
-from core.usecase.capture_usecase_impl import CaptureUseCaseImpl
 from core.usecase.capture_usecase import CaptureUseCase
 from core.gateway.capture_gateway import CaptureGateway
 from core.domain.storage import Storage
-from core.domain.capture_status import CaptureStatus
+from core.domain.status import ImageStatus, CaptureStatus
 
-__all__ = ["CaptureUseCaseImpl", "CaptureGateway", "Storage", "CaptureUseCase", "CaptureStatus"]
+__all__ = ["CaptureGateway", "Storage", "CaptureUseCase", "ImageStatus", "CaptureStatus"]
