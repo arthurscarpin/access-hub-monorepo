@@ -2,7 +2,7 @@ from typing import Any
 
 from core.usecase.capture_usecase import CaptureUseCase
 from core.gateway.capture_gateway import CaptureGateway
-from core.domain.capture_status import CaptureStatus
+from core.domain.status import ImageStatus, CaptureStatus
 
 
 class CaptureUseCaseImpl(CaptureUseCase):
@@ -21,7 +21,8 @@ class CaptureUseCaseImpl(CaptureUseCase):
         if filename == "":
             message_producer = {
                 **message, 
-                "status": CaptureStatus.FAILED.value, 
+                "image_status": ImageStatus.FAILED.value,
+                "capture_status": CaptureStatus.PROCESSING.value,
                 "message": "Filename is not found",
                 "ocr": []
             }
@@ -38,7 +39,8 @@ class CaptureUseCaseImpl(CaptureUseCase):
             logger.info("Stage 1 - Execution started")
             message_producer = {
                 **message, 
-                "status": CaptureStatus.STARTED.value, 
+                "image_status": ImageStatus.STARTED.value,
+                "capture_status": CaptureStatus.PROCESSING.value, 
                 "message": "Execution started",
                 "ocr": []
             }
@@ -55,7 +57,8 @@ class CaptureUseCaseImpl(CaptureUseCase):
             logger.info("Stage 2 - Execution started")
             message_producer = {
                 **message, 
-                "status": CaptureStatus.PROCESSING.value, 
+                "image_status": ImageStatus.PROCESSING.value,
+                "capture_status": CaptureStatus.PROCESSING.value,
                 "message": "Execution in processing...",
                 "ocr": []
             }
@@ -76,7 +79,8 @@ class CaptureUseCaseImpl(CaptureUseCase):
 
             message_producer: dict[str, Any] = {
                 **message, 
-                "status": CaptureStatus.COMPLETED.value, 
+                "image_status": ImageStatus.COMPLETED.value,
+                "capture_status": CaptureStatus.PROCESSING.value, 
                 "message": "Execution completed",
                 "ocr": ocr_image
             }
@@ -91,7 +95,8 @@ class CaptureUseCaseImpl(CaptureUseCase):
         except Exception as e:
             message_producer = {
                 **message, 
-                "status": CaptureStatus.FAILED.value, 
+                "image_status": ImageStatus.FAILED.value,
+                "capture_status": CaptureStatus.PROCESSING.value,
                 "message": e, 
                 "ocr": []
             }
