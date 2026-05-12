@@ -6,8 +6,4 @@ public enum ImageStatus {
     PROCESSING,
     COMPLETED,
     FAILED;
-
-    public static ImageStatus fromString(String value) {
-        return valueOf(value.toUpperCase());
-    }
 }

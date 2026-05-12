@@ -9,8 +9,12 @@ spring:
 
   rabbitmq:
     exchange: ${RABBITMQ_EXCHANGE:test.exchange}
-    queue: ${RABBITMQ_QUEUE:test.queue}
-    routing-key: ${RABBITMQ_ROUTING_KEY:test.routing}
-    dead-exchange: ${RABBITMQ_DEAD_EXCHANGE:test.dead.exchange}
-    dead-queue: ${RABBITMQ_DEAD_QUEUE:test.dead.queue}
-    dead-routing-key: ${RABBITMQ_DEAD_ROUTING_KEY:test.dead.routing}
+    # File Received to OCR
+    ocr-routing-key: ${RABBITMQ_OCR_ROUTING_KEY:test.ocr.routing}
+    ocr-queue: ${RABBITMQ_OCR_QUEUE:test.ocr.queue}
+    # File OCR Status
+    ocr-status-routing-key: ${RABBITMQ_OCR_STATUS_ROUTING_KEY:test.ocrstatus.routing}
+    ocr-status-queue: ${RABBITMQ_OCR_STATUS_QUEUE:test.ocrstatus.queue}
+    # File AI validation
+    ai-validation-routing-key: ${RABBITMQ_AI_VALIDATION_ROUTING_KEY:test.aivalidation.routing}
+    ai-validation-queue: ${RABBITMQ_AI_VALIDATION_QUEUE:test.aivalidation.queue}

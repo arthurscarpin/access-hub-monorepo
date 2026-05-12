@@ -20,11 +20,15 @@ spring:
     password: ${RABBITMQ_PASSWORD}
     virtual-host: ${RABBITMQ_VIRTUAL_HOST}
     exchange: ${RABBITMQ_EXCHANGE}
-    queue: ${RABBITMQ_QUEUE}
-    routing-key: ${RABBITMQ_ROUTING_KEY}
-    dead-exchange: ${RABBITMQ_DEAD_EXCHANGE}
-    dead-queue: ${RABBITMQ_DEAD_QUEUE}
-    dead-routing-key: ${RABBITMQ_DEAD_ROUTING_KEY}
+    # File Received to OCR
+    ocr-routing-key: ${RABBITMQ_OCR_ROUTING_KEY}
+    ocr-queue: ${RABBITMQ_OCR_QUEUE}
+    # File OCR Status
+    ocr-status-routing-key: ${RABBITMQ_OCR_STATUS_ROUTING_KEY}
+    ocr-status-queue: ${RABBITMQ_OCR_STATUS_QUEUE}
+    # File AI validation
+    ai-validation-routing-key: ${RABBITMQ_AI_VALIDATION_ROUTING_KEY}
+    ai-validation-queue: ${RABBITMQ_AI_VALIDATION_QUEUE}
     template:
       mandatory: true
     listener:

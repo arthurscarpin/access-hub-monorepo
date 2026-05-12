@@ -8,7 +8,8 @@ public record CaptureOCRStatus(
         String imageId,
         String filename,
         Instant timestamp,
-        ImageStatus status,
+        ImageStatus imageStatus,
+        CaptureStatus captureStatus,
         String message,
         List<CaptureOCR> ocr
 ) {

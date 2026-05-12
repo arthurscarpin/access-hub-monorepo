@@ -1,24 +1,13 @@
 package com.arthurscarpin.acs.infrastructure.configuration;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.ExchangeBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class RabbitMQConfig {
@@ -26,26 +15,25 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.queue}")
-    private String queue;
+    // OCR Configuration
+    @Value("${spring.rabbitmq.ocr-queue}")
+    private String ocrQueue;
+    @Value("${spring.rabbitmq.ocr-routing-key}")
+    private String ocrRoutingKey;
 
-    @Value("${spring.rabbitmq.dead-exchange}")
-    private String deadExchange;
+    // Status Configuration
+    @Value("${spring.rabbitmq.ocr-status-queue}")
+    private String ocrStatusQueue;
+    @Value("${spring.rabbitmq.ocr-status-routing-key}")
+    private String ocrStatusRoutingKey;
 
-    @Value("${spring.rabbitmq.dead-queue}")
-    private String deadQueue;
+    // AI Validation Configuration
+    @Value("${spring.rabbitmq.ai-validation-queue}")
+    private String aiValidationQueue;
+    @Value("${spring.rabbitmq.ai-validation-routing-key}")
+    private String aiValidationRoutingKey;
 
-    @Value("${spring.rabbitmq.routing-key}")
-    private String routingKey;
-
-    @Value("${spring.rabbitmq.dead-routing-key}")
-    private String deadRoutingKey;
-
-    @Bean
-    public ApplicationRunner rabbitInitializer(RabbitAdmin rabbitAdmin) {
-        return args -> rabbitAdmin.initialize();
-    }
-
+    // Core Infrastructure Beans
     @Bean
     public JacksonJsonMessageConverter messageConverter() {
         return new JacksonJsonMessageConverter();
@@ -53,76 +41,62 @@ public class RabbitMQConfig {
 
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
-        RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
-        rabbitAdmin.setAutoStartup(true);
-        return rabbitAdmin;
+        return new RabbitAdmin(connectionFactory);
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(
-            ConnectionFactory connectionFactory,
-            JacksonJsonMessageConverter messageConverter
-    ) {
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(messageConverter);
+        template.setMessageConverter(messageConverter());
         return template;
     }
 
-    @Bean(name = "captureEventsExchange")
-    public TopicExchange captureEventsExchange() {
+    @Bean
+    public TopicExchange captureTopicExchange() {
         return ExchangeBuilder
                 .topicExchange(exchange)
                 .durable(true)
                 .build();
     }
 
-    @Bean(name = "deadLetterExchange")
-    public TopicExchange deadLetterExchange() {
-        return ExchangeBuilder
-                .topicExchange(deadExchange)
-                .durable(true)
-                .build();
-    }
-
-    @Bean(name = "ocrProcessingQueue")
+    // Queues Declaration
+    @Bean
     public Queue ocrProcessingQueue() {
-        return QueueBuilder
-                .durable(queue)
-                .deadLetterExchange(deadExchange)
-                .deadLetterRoutingKey(deadRoutingKey)
-                .build();
-    }
-
-    @Bean(name = "deadLetterQueue")
-    public Queue deadLetterQueue() {
-        return QueueBuilder
-                .durable(deadQueue)
-                .build();
+        return QueueBuilder.durable(ocrQueue).build();
     }
 
     @Bean
-    public Binding ocrProcessingBinding(
-            @Qualifier("ocrProcessingQueue")
-            Queue ocrProcessingQueue,
-            @Qualifier("captureEventsExchange")
-            TopicExchange captureEventsExchange
-    ) {
+    public Queue ocrStatusQueue() {
+        return QueueBuilder.durable(ocrStatusQueue).build();
+    }
+
+    @Bean
+    public Queue aiValidationQueue() {
+        return QueueBuilder.durable(aiValidationQueue).build();
+    }
+
+    // Bindings (Connecting Queues to the Topic Exchange)
+    @Bean
+    public Binding ocrProcessingBinding(TopicExchange captureEventsExchange) {
         return BindingBuilder
-                .bind(ocrProcessingQueue)
+                .bind(ocrProcessingQueue())
                 .to(captureEventsExchange)
-                .with(routingKey);
+                .with(ocrRoutingKey);
     }
 
     @Bean
-    public Binding deadLetterBinding(
-            @Qualifier("deadLetterQueue")
-            Queue deadLetterQueue,
-            @Qualifier("deadLetterExchange")
-            TopicExchange deadLetterExchange
-    ) {
+    public Binding ocrStatusBinding(TopicExchange captureEventsExchange) {
         return BindingBuilder
-                .bind(deadLetterQueue)
-                .to(deadLetterExchange)
-                .with(deadRoutingKey);
+                .bind(ocrStatusQueue())
+                .to(captureEventsExchange)
+                .with(ocrStatusRoutingKey);
+    }
+
+    @Bean
+    public Binding aiValidationBinding(TopicExchange captureEventsExchange) {
+        return BindingBuilder
+                .bind(aiValidationQueue())
+                .to(captureEventsExchange)
+                .with(aiValidationRoutingKey);
     }
 }

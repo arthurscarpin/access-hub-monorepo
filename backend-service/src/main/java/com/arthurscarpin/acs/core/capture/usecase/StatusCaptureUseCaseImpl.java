@@ -25,7 +25,7 @@ public class StatusCaptureUseCaseImpl implements StatusCaptureUseCase {
         return new CaptureImage(
                 currentImage.id(),
                 currentImage.filename(),
-                statusRequest.status(),
+                statusRequest.imageStatus(),
                 ocr,
                 Instant.now()
         );
@@ -44,7 +44,7 @@ public class StatusCaptureUseCaseImpl implements StatusCaptureUseCase {
         Capture updatedCapture = new Capture(
                 capture.id(),
                 updatedImages,
-                capture.status(),
+                captureOCRStatus.captureStatus(),
                 capture.finalPlate(),
                 capture.finalConfidence(),
                 capture.createdAt(),
@@ -54,12 +54,6 @@ public class StatusCaptureUseCaseImpl implements StatusCaptureUseCase {
                 capture.version()
         );
 
-        Capture updatedResult = gateway.update(updatedCapture);
-        System.out.println("salvou a parada");
-
-        if (updatedResult.processedImagesCount() >= updatedResult.images().size()) {
-            // TODO - Implements AI Producer
-            System.out.println("To send to AI Producer");
-        }
+        gateway.updateAndPublish(updatedCapture);
     }
 }
