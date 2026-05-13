@@ -241,21 +241,13 @@
 				<version>0.8.13</version>
 				<configuration>
 					<excludes>
-						<exclude>com.arthurscarpin.acs/core/accessevent/gateway/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/capture/gateway/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/owner/gateway/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/user/gateway/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/vehicle/gateway/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/accessevent/exception/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/capture/exception/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/owner/exception/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/user/exception/**</exclude>
-						<exclude>com.arthurscarpin.acs/core/vehicle/exception/**</exclude>
-						<exclude>com.arthurscarpin.acs/infrastructure/configuration/**</exclude>
-						<exclude>com.arthurscarpin.acs/infrastructure/presentation/advice/**</exclude>
-						<exclude>com.arthurscarpin.acs/infrastructure/presentation/documentation/**</exclude>
-						<exclude>com.arthurscarpin.acs/infrastructure/presentation/request/**</exclude>
-						<exclude>com.arthurscarpin.acs/infrastructure/presentation/response/**</exclude>
+						<exclude>com/arthurscarpin/acs/core/*/gateway/**</exclude>
+						<exclude>com/arthurscarpin/acs/core/*/exception/**</exclude>
+						<exclude>com/arthurscarpin/acs/infrastructure/configuration/**</exclude>
+						<exclude>com/arthurscarpin/acs/infrastructure/presentation/advice/**</exclude>
+						<exclude>com/arthurscarpin/acs/infrastructure/presentation/documentation/**</exclude>
+						<exclude>com/arthurscarpin/acs/infrastructure/presentation/request/**</exclude>
+						<exclude>com/arthurscarpin/acs/infrastructure/presentation/response/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
