@@ -1,4 +1,4 @@
-package com.arthurscarpin.acs.core.vehicle.scope.exception;
+package com.arthurscarpin.acs.core.scope.exception;
 
 public class ScopeNotFoundException extends RuntimeException {
 

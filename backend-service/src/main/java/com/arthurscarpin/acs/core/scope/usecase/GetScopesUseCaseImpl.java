@@ -1,7 +1,7 @@
-package com.arthurscarpin.acs.core.vehicle.scope.usecase;
+package com.arthurscarpin.acs.core.scope.usecase;
 
-import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
-import com.arthurscarpin.acs.core.vehicle.scope.gateway.ScopeGateway;
+import com.arthurscarpin.acs.core.scope.domain.Scope;
+import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
 
 import java.util.List;
 

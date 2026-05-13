@@ -1,4 +1,4 @@
-package com.arthurscarpin.acs.core.vehicle.scope.domain;
+package com.arthurscarpin.acs.core.scope.domain;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.mapper;
 
-import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
+import com.arthurscarpin.acs.core.scope.domain.Scope;
 import com.arthurscarpin.acs.infrastructure.persistence.entity.table.ScopeEntity;
 import com.arthurscarpin.acs.infrastructure.presentation.response.ScopeResponse;
 import org.junit.jupiter.api.DisplayName;

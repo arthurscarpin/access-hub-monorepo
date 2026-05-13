@@ -1,6 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.gateway;
 
-import com.arthurscarpin.acs.core.vehicle.scope.domain.Scope;
+import com.arthurscarpin.acs.core.scope.domain.Scope;
 import com.arthurscarpin.acs.core.user.domain.User;
 import com.arthurscarpin.acs.core.user.gateway.LoginGateway;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package com.arthurscarpin.acs.infrastructure.presentation.advice;
 
 import com.arthurscarpin.acs.core.capture.exception.CaptureNotFoundException;
 import com.arthurscarpin.acs.core.owner.exception.*;
-import com.arthurscarpin.acs.core.vehicle.scope.exception.ScopeNotFoundException;
+import com.arthurscarpin.acs.core.scope.exception.ScopeNotFoundException;
 import com.arthurscarpin.acs.core.user.exception.BadCredentialsException;
 import com.arthurscarpin.acs.core.user.exception.EmailUserAlreadyExistsException;
 import com.arthurscarpin.acs.core.vehicle.exception.PlateDuplicateException;

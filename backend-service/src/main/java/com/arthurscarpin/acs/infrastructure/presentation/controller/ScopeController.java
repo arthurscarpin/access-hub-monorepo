@@ -1,6 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
-import com.arthurscarpin.acs.core.vehicle.scope.usecase.GetScopesUseCase;
+import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCase;
 import com.arthurscarpin.acs.infrastructure.mapper.ScopeMapper;
 import com.arthurscarpin.acs.infrastructure.presentation.documentation.ScopeControllerDoc;
 import com.arthurscarpin.acs.infrastructure.presentation.response.ScopeResponse;
