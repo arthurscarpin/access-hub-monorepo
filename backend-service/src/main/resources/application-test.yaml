@@ -10,11 +10,14 @@ spring:
   rabbitmq:
     exchange: ${RABBITMQ_EXCHANGE:test.exchange}
     # File Received to OCR
-    ocr-routing-key: ${RABBITMQ_OCR_ROUTING_KEY:test.ocr.routing}
-    ocr-queue: ${RABBITMQ_OCR_QUEUE:test.ocr.queue}
+    ocr-routing-key: ${RABBITMQ_OCR_ROUTING_KEY:test.ocr.requested}
+    ocr-queue: ${RABBITMQ_OCR_QUEUE:test.ocr.processing}
     # File OCR Status
-    ocr-status-routing-key: ${RABBITMQ_OCR_STATUS_ROUTING_KEY:test.ocrstatus.routing}
-    ocr-status-queue: ${RABBITMQ_OCR_STATUS_QUEUE:test.ocrstatus.queue}
+    ocr-status-routing-key: ${RABBITMQ_OCR_STATUS_ROUTING_KEY:test.ocr.updated}
+    ocr-status-queue: ${RABBITMQ_OCR_STATUS_QUEUE:test.status.aggregator}
     # File AI validation
-    ai-validation-routing-key: ${RABBITMQ_AI_VALIDATION_ROUTING_KEY:test.aivalidation.routing}
-    ai-validation-queue: ${RABBITMQ_AI_VALIDATION_QUEUE:test.aivalidation.queue}
+    ai-validation-routing-key: ${RABBITMQ_AI_VALIDATION_ROUTING_KEY:test.all.ready}
+    ai-validation-queue: ${RABBITMQ_AI_VALIDATION_QUEUE:test.ai.validation}
+    # File AI Results
+    ai-result-queue: ${RABBITMQ_AI_RESULT_ROUTING_KEY:test.ai.processed}
+    ai-result-routing-key: ${RABBITMQ_AI_RESULT_QUEUE:test.ai.results}

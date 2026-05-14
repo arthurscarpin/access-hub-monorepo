@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.mapper;
 
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.core.capture.domain.*;
 import com.arthurscarpin.acs.infrastructure.persistence.entity.document.CaptureEntity;
 import com.arthurscarpin.acs.infrastructure.persistence.entity.document.CaptureImageEntity;
@@ -37,8 +38,10 @@ class CaptureMapperTest {
                 "capture-1",
                 List.of(image),
                 CaptureStatus.PROCESSING,
+                Direction.IN,
                 "ABC-1234",
                 95.5,
+                "AI analysis",
                 now,
                 now,
                 now,
@@ -129,8 +132,10 @@ class CaptureMapperTest {
                 "new-id",
                 List.of(),
                 CaptureStatus.COMPLETED,
+                Direction.IN,
                 "NEW-123",
                 100.0,
+                "IA Analysis",
                 Instant.now(),
                 Instant.now(),
                 Instant.now(),

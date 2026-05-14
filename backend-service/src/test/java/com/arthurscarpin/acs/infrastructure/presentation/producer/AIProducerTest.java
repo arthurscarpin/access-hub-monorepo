@@ -1,6 +1,7 @@
 package com.arthurscarpin.acs.infrastructure.presentation.producer;
 
 import com.arthurscarpin.acs.AccessControlSystemIntegrationTest;
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.core.capture.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -100,8 +101,10 @@ class AIProducerTest extends AccessControlSystemIntegrationTest {
                 id,
                 List.of(image),
                 CaptureStatus.PROCESSING,
+                Direction.IN,
                 "ABC1234",
                 0.99,
+                "AI Analysis",
                 Instant.now(),
                 Instant.now(),
                 Instant.now(),

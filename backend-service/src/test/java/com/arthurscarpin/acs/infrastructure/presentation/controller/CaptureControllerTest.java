@@ -1,6 +1,7 @@
 package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
 import com.arthurscarpin.acs.AccessControlSystemIntegrationTest;
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.infrastructure.presentation.request.CaptureRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +25,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @DisplayName("Given valid capture request When saving Then returns 201 Created with capture data")
     @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_capture:write"})
     void shouldCreateCaptureSuccessfully() throws Exception {
-        CaptureRequest request =
-                new CaptureRequest(List.of("plate1.jpg", "plate2.jpg"));
+        CaptureRequest request = new CaptureRequest(List.of("plate1.jpg", "plate2.jpg"), Direction.IN);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -40,8 +40,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @DisplayName("Given capture request with single filename When saving Then returns 201 Created")
     @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldCreateCaptureWithSingleFilename() throws Exception {
-        CaptureRequest request =
-                new CaptureRequest(List.of("license_plate.jpg"));
+        CaptureRequest request = new CaptureRequest(List.of("license_plate.jpg"), Direction.IN);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +60,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
                         "plate1.jpg",
                         "plate2.jpg",
                         "plate3.jpg"
-                ));
+                ), Direction.IN);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +76,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldReturnBadRequestWhenEmptyFilenames() throws Exception {
         CaptureRequest request =
-                new CaptureRequest(List.of());
+                new CaptureRequest(List.of(), null);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +104,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @DisplayName("Given no authentication When saving capture Then returns 401 Unauthorized")
     void shouldReturnUnauthorizedWhenNoAuth() throws Exception {
         CaptureRequest request =
-                new CaptureRequest(List.of("plate1.jpg"));
+                new CaptureRequest(List.of("plate1.jpg"), Direction.IN);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +117,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @WithMockUser(authorities = {"SCOPE_capture:read"})
     void shouldReturnForbiddenWhenNoPermission() throws Exception {
         CaptureRequest request =
-                new CaptureRequest(List.of("plate1.jpg"));
+                new CaptureRequest(List.of("plate1.jpg"), Direction.IN);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -131,7 +130,7 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @WithMockUser(authorities = {"SCOPE_capture:read", "SCOPE_admin:read"})
     void shouldReturnForbiddenWhenOnlyReadPermission() throws Exception {
         CaptureRequest request =
-                new CaptureRequest(List.of("plate1.jpg"));
+                new CaptureRequest(List.of("plate1.jpg"), Direction.IN);
 
         mockMvc.perform(post("/captures")
                         .contentType(MediaType.APPLICATION_JSON)

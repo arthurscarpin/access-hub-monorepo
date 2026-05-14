@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.core.capture.usecase;
 
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.core.capture.domain.*;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 import org.junit.jupiter.api.DisplayName;
@@ -136,6 +137,8 @@ class StatusCaptureUseCaseImplTest {
                 id,
                 images,
                 CaptureStatus.RECEIVED,
+                Direction.IN,
+                null,
                 null,
                 null,
                 Instant.now(),

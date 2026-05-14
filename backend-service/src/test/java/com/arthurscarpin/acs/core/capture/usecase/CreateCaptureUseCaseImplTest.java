@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.core.capture.usecase;
 
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.core.capture.domain.*;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 import org.junit.jupiter.api.DisplayName;
@@ -30,12 +31,13 @@ class CreateCaptureUseCaseImplTest {
     @DisplayName("Given list of filenames, when executing use case, then should create capture and return id")
     void shouldCreateCaptureAndReturnId() {
         List<String> filenames = List.of("plate1.jpg", "plate2.jpg");
+        Direction direction = Direction.IN;
         String expectedId = UUID.randomUUID().toString();
         Capture savedCapture = createMockCapture(expectedId, filenames);
 
         when(gateway.saveAndPublish(any(Capture.class))).thenReturn(savedCapture);
 
-        String result = useCase.execute(filenames);
+        String result = useCase.execute(filenames, direction);
 
         assertEquals(expectedId, result);
         verify(gateway, times(1)).saveAndPublish(any(Capture.class));
@@ -45,12 +47,13 @@ class CreateCaptureUseCaseImplTest {
     @DisplayName("Given filenames, when executing use case, then should create capture images with RECEIVED status")
     void shouldCreateCaptureImagesWithReceivedStatus() {
         List<String> filenames = List.of("plate1.jpg");
+        Direction direction = Direction.IN;
         String expectedId = UUID.randomUUID().toString();
         Capture savedCapture = createMockCapture(expectedId, filenames);
 
         when(gateway.saveAndPublish(any(Capture.class))).thenReturn(savedCapture);
 
-        useCase.execute(filenames);
+        useCase.execute(filenames, direction);
 
         verify(gateway, times(1)).saveAndPublish(argThat(capture -> {
             assertNotNull(capture);
@@ -69,12 +72,13 @@ class CreateCaptureUseCaseImplTest {
     @DisplayName("Given multiple filenames, when executing use case, then should create capture with correct counts")
     void shouldCreateCaptureWithCorrectCounts() {
         List<String> filenames = List.of("img1.jpg", "img2.jpg");
+        Direction direction = Direction.IN;
         String expectedId = UUID.randomUUID().toString();
         Capture savedCapture = createMockCapture(expectedId, filenames);
 
         when(gateway.saveAndPublish(any(Capture.class))).thenReturn(savedCapture);
 
-        useCase.execute(filenames);
+        useCase.execute(filenames, direction);
 
         verify(gateway, times(1)).saveAndPublish(argThat(capture -> {
             assertEquals(2, capture.images().size());
@@ -87,9 +91,10 @@ class CreateCaptureUseCaseImplTest {
     @DisplayName("Given gateway failure, when executing use case, then should propagate exception")
     void shouldPropagateExceptionWhenGatewayFails() {
         List<String> filenames = List.of("plate1.jpg");
+        Direction direction = Direction.IN;
         when(gateway.saveAndPublish(any(Capture.class))).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(RuntimeException.class, () -> useCase.execute(filenames));
+        assertThrows(RuntimeException.class, () -> useCase.execute(filenames, direction));
     }
 
     private Capture createMockCapture(String id, List<String> filenames) {
@@ -107,6 +112,8 @@ class CreateCaptureUseCaseImplTest {
                 id,
                 images,
                 CaptureStatus.RECEIVED,
+                Direction.IN,
+                null,
                 null,
                 null,
                 Instant.now(),
