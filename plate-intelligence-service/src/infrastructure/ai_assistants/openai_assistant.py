@@ -9,7 +9,7 @@ from langchain_core.globals import set_debug
 class OpenAIAssistant:
 
     def __init__(
-            self, 
+            self,
             llm: ChatOpenAI, 
             parser: JsonOutputParser, 
             prompt_template: ChatPromptTemplate,

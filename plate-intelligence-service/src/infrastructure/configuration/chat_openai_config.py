@@ -10,12 +10,13 @@ T = TypeVar("T", bound=BaseModel)
 
 class ChatOpenAIConfig:
 
-    def __init__(self, model: str, temperature: float, max_tokens: int, max_retries: int=3):
+    def __init__(self, model: str, temperature: float, max_tokens: int, max_retries: int=3, key: str):
         self.llm = ChatOpenAI(
             model=model, 
             temperature=temperature,
             max_completion_tokens=max_tokens,
-            max_retries=max_retries
+            max_retries=max_retries,
+            api_key=key
         )
         self.prompt_template = None
         self.parser = None

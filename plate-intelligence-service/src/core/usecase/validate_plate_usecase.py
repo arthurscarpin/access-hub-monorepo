@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from core.plate.gateway.plate_gateway import PlateGateway
+from core.gateway.plate_gateway import PlateGateway
 
 class ValidatePlateUseCaseUseCase(ABC):
 
@@ -10,7 +10,12 @@ class ValidatePlateUseCaseUseCase(ABC):
                 message: dict[str, Any], 
                 gateway: PlateGateway,
                 model: str,
+                connection: Any, 
+                exchange: str, 
+                routing_key: str,
+                logger: Any,
                 temperature: float,
                 max_tokens: int,
-                langchain_debug: bool):
+                langchain_debug: bool,
+                key: str):
         pass

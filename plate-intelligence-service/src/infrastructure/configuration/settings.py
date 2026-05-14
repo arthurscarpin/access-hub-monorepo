@@ -1,24 +1,27 @@
-from dotenv import load_dotenv
-# from pathlib import Path
+from pathlib import Path
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# ROOT_DIR = Path(__file__).resolve().parents[4]
-# env_idea = ROOT_DIR / ".env.idea"
-# env = ROOT_DIR / ".env"
-
-load_dotenv()
+ROOT_DIR = Path(__file__).resolve().parents[4]
+env_idea = ROOT_DIR / ".env.idea"
+env = ROOT_DIR / ".env"
 
 class Settings(BaseSettings):
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: int
+    RABBITMQ_USERNAME: str
+    RABBITMQ_PASSWORD: str
+    RABBITMQ_EXCHANGE: str
+    RABBITMQ_AI_VALIDATION_QUEUE: str
+    RABBITMQ_AI_RESULT_ROUTING_KEY: str
     OPENAI_API_KEY: str
     LANGCHAIN_DEBUG: bool
-    MODEL: str
+    LLM_MODEL: str
     TEMPERATURE: float
     MAX_TOKENS: int
 
     model_config = SettingsConfigDict(
-        # env_file=env_idea if env_idea.exists() else env,
-        env_file=".env",
+        env_file=env_idea if env_idea.exists() else env,
         extra="ignore",
     )
 

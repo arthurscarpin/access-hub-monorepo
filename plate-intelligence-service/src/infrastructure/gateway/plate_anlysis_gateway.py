@@ -5,6 +5,7 @@ from infrastructure.plate_analysis.plate_candidate_aggregator import PlateCandid
 from infrastructure.parsers.output_parsers import PlateOutputParser
 from infrastructure.configuration.chat_openai_config import ChatOpenAIConfig
 from infrastructure.ai_assistants.openai_assistant import OpenAIAssistant
+from infrastructure.producer.plate_result_producer import PlateResultProducer
 
 class PlateAnlysisGateway(PlateGateway):
 
@@ -17,9 +18,9 @@ class PlateAnlysisGateway(PlateGateway):
                 plate_aggregator.add_to_report(ocr_item)
         return plate_aggregator.get_final_report()
     
-    def get_analysis_ai(self, model: str, temperature: float, max_tokens: int, langchain_debug: bool, input: str) -> dict[str, Any]:
+    def get_analysis_ai(self, model: str, temperature: float, max_tokens: int, langchain_debug: bool, input: str, key: str) -> dict[str, Any]:
         chat_openai_config = (
-            ChatOpenAIConfig(model=model, temperature=temperature, max_tokens=max_tokens)
+            ChatOpenAIConfig(model=model, temperature=temperature, max_tokens=max_tokens, key=key)
                 .set_prompt_template(human_prompt="OCR batch: {input}", system_prompt_filename="argo_assistant_system_prompt")
                 .set_parser(output_parser=PlateOutputParser)
         )
@@ -32,3 +33,7 @@ class PlateAnlysisGateway(PlateGateway):
             debug=langchain_debug
         )
         return argus_assistant.execute(input)
+    
+    def message_publisher(self, message: dict[str, str], connection: Any, exchange: str, routing_key: str):
+        producer = PlateResultProducer(connection=connection, exchange=exchange)
+        producer.publish(routing_key=routing_key, payload=message)
