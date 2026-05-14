@@ -70,6 +70,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
+      SPRING_PROFILES_ACTIVE: ${ENVIRONMENT}
       ENVIRONMENT: ${ENVIRONMENT}
       STORAGE_PATH: ${STORAGE_PATH}
       POSTGRES_HOST: ${POSTGRES_HOST}
@@ -134,7 +135,33 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
     volumes:
       - ./storage:/app/storage
-      - ./recognize-plate-service/log:/app/log
+    restart: unless-stopped
+
+  plate_intelligence-service:
+    build:
+      context: ./plate_intelligence-service
+      dockerfile: Dockerfile
+    container_name: plate_intelligence-service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      backend-service:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_VIRTUAL_HOST: ${RABBITMQ_VIRTUAL_HOST}
+      RABBITMQ_EXCHANGE: ${RABBITMQ_EXCHANGE}
+      RABBITMQ_AI_VALIDATION_QUEUE: ${RABBITMQ_AI_VALIDATION_QUEUE}
+      RABBITMQ_AI_RESULT_ROUTING_KEY: ${RABBITMQ_AI_RESULT_ROUTING_KEY}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      LANGCHAIN_DEBUG: ${LANGCHAIN_DEBUG}
+      LLM_MODEL: ${LLM_MODEL}
+      TEMPERATURE: ${TEMPERATURE}
+      MAX_TOKENS: ${MAX_TOKENS}
     restart: unless-stopped
 
 volumes:

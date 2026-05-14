@@ -1,0 +1,45 @@
+# IDEs
+.idea
+.vscode
+*.iml
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# Envs
+.venv
+venv
+.env
+.env.*
+
+# Build / cache
+build
+dist
+*.egg-info
+
+# Gradle (se tiver no monorepo)
+.gradle
+target
+
+# Logs
+logs
+
+# Tests (evita levar peso desnecessário pro container)
+tests
+test
+
+# Node (caso exista no monorepo)
+node_modules
+
+# Docker / misc
+docker-compose*.yml
+Dockerfile*
