@@ -1,0 +1,18 @@
+[run]
+relative_files = True
+source = src
+omit = 
+    src/core/gateway/plate_gateway.py
+    src/core/usecase/validate_plate_usecase.py
+    src/infrastructure/configuration/settings.py
+    src/infrastructure/configuration/logging.py
+    src/infrastructure/configuration/rabbitmq_config.py
+    src/infrastructure/configuration/chat_openai_config.py
+    src/infrastructure/parsers/output_parsers.py
+    src/infrastructure/gateway/plate_anlysis_gateway.py
+    src/main.py
+    **/__init__.py
+
+[paths]
+source =
+    src
