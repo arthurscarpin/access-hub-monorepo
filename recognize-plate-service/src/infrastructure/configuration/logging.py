@@ -41,7 +41,7 @@ def get_logger() -> logging.Logger:
 
     if logger.handlers:
         return logger
-    
+
     settings = get_settings()
     env = settings.ENVIRONMENT.lower()
 
@@ -50,6 +50,10 @@ def get_logger() -> logging.Logger:
 
     logger.propagate = False
 
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(ConsoleFormatter())
+    logger.addHandler(console_handler)
+
     if env != "prod":
         root = Path(__file__).resolve().parents[3]
         log_dir = root / "logs"
@@ -57,17 +61,14 @@ def get_logger() -> logging.Logger:
 
         log_file = log_dir / f"{datetime.now():%Y%m%d}.ndjson"
 
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setFormatter(ConsoleFormatter())
-
         file_handler = logging.FileHandler(
             filename=log_file,
             encoding="utf-8"
         )
         file_handler.setFormatter(NDJSONFormatter())
 
-        logger.addHandler(console_handler)
         logger.addHandler(file_handler)
+
     return logger
 
 
