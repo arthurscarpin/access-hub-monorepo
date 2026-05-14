@@ -1,0 +1,142 @@
+name: Plate Intelligence Service CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plate-intelligence-service/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'plate-intelligence-service/**'
+
+jobs:
+  # =========================
+  # JOB 1 - TESTS + COVERAGE
+  # =========================
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plate-intelligence-service
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install uv
+        run: pip install uv
+      - name: Cache uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ hashFiles('plate-intelligence-service/uv.lock') }}
+      - name: Sync dependencies
+        run: uv sync --frozen --no-dev
+      - name: Set environment variables
+        run: |
+          echo "ENVIRONMENT=${{ vars.ENVIRONMENT }}" >> $GITHUB_ENV
+          echo "STORAGE_PATH=${{ vars.STORAGE_PATH }}" >> $GITHUB_ENV
+          echo "RABBITMQ_HOST=${{ vars.RABBITMQ_HOST }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PORT=${{ vars.RABBITMQ_PORT }}" >> $GITHUB_ENV
+          echo "RABBITMQ_VIRTUAL_HOST=${{ vars.RABBITMQ_VIRTUAL_HOST }}" >> $GITHUB_ENV
+          echo "RABBITMQ_EXCHANGE=${{ vars.RABBITMQ_EXCHANGE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_AI_RESULT_ROUTING_KEY=${{ vars.RABBITMQ_AI_RESULT_ROUTING_KEY }}" >> $GITHUB_ENV
+          echo "RABBITMQ_AI_VALIDATION_QUEUE=${{ vars.RABBITMQ_AI_VALIDATION_QUEUE }}" >> $GITHUB_ENV
+          echo "RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+          echo "LANGCHAIN_DEBUG=${{ vars.LANGCHAIN_DEBUG }}" >> $GITHUB_ENV
+          echo "LLM_MODEL=${{ vars.LLM_MODEL }}" >> $GITHUB_ENV
+          echo "TEMPERATURE=${{ vars.TEMPERATURE }}" >> $GITHUB_ENV
+          echo "MAX_TOKENS=${{ vars.MAX_TOKENS }}" >> $GITHUB_ENV
+      - name: Run tests with coverage
+        working-directory: plate-intelligence-service
+        run: |
+          uv run pytest \
+            --cov=src \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term \
+            --cov-config=.coveragerc
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: plate-intelligence-service/coverage.xml
+
+
+  # =========================
+  # JOB 2 - SONAR
+  # =========================
+  sonar:
+    runs-on: ubuntu-latest
+    needs: build-test
+    defaults:
+      run:
+        working-directory: plate-intelligence-service
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: plate-intelligence-service/
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install uv
+        run: pip install uv
+      - name: Sync dependencies
+        run: uv sync --frozen --no-dev
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
+            -Dsonar.projectBaseDir=plate-intelligence-service
+            -Dsonar.sources=src
+            -Dsonar.tests=test
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.sourceEncoding=UTF-8
+
+  # =========================
+  # JOB 3 - SECURITY
+  # =========================
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install uv
+        run: pip install uv
+      - name: Sync dependencies
+        run: |
+          cd plate-intelligence-service
+          uv sync --frozen --no-dev
+      - name: Build project
+        run: |
+          cd plate-intelligence-service
+          python -m compileall src
+      - name: Analyze security
+        uses: github/codeql-action/analyze@v3
