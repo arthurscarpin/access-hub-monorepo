@@ -33,6 +33,12 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.ai-validation-routing-key}")
     private String aiValidationRoutingKey;
 
+    // AI Results Configuration
+    @Value("${spring.rabbitmq.ai-result-queue}")
+    private String aiResultQueue;
+    @Value("${spring.rabbitmq.ai-result-routing-key}")
+    private String aiResultRoutingKey;
+
     // Core Infrastructure Beans
     @Bean
     public JacksonJsonMessageConverter messageConverter() {
@@ -75,6 +81,11 @@ public class RabbitMQConfig {
         return QueueBuilder.durable(aiValidationQueue).build();
     }
 
+    @Bean
+    public Queue aiResultQueue() {
+        return QueueBuilder.durable(aiResultQueue).build();
+    }
+
     // Bindings (Connecting Queues to the Topic Exchange)
     @Bean
     public Binding ocrProcessingBinding(TopicExchange captureEventsExchange) {
@@ -98,5 +109,13 @@ public class RabbitMQConfig {
                 .bind(aiValidationQueue())
                 .to(captureEventsExchange)
                 .with(aiValidationRoutingKey);
+    }
+
+    @Bean
+    public Binding aiResultBinding(TopicExchange captureEventsExchange) {
+        return BindingBuilder
+                .bind(aiResultQueue())
+                .to(captureEventsExchange)
+                .with(aiResultRoutingKey);
     }
 }
