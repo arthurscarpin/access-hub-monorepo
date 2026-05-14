@@ -137,11 +137,11 @@ services:
       - ./storage:/app/storage
     restart: unless-stopped
 
-  plate_intelligence-service:
+  plate-intelligence-service:
     build:
-      context: ./plate_intelligence-service
+      context: ./plate-intelligence-service
       dockerfile: Dockerfile
-    container_name: plate_intelligence-service
+    container_name: plate-intelligence-service
     depends_on:
       rabbitmq:
         condition: service_healthy
