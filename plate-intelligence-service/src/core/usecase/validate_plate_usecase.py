@@ -17,5 +17,5 @@ class ValidatePlateUseCaseUseCase(ABC):
                 temperature: float,
                 max_tokens: int,
                 langchain_debug: bool,
-                key: str):
+                key: str) -> dict[str, Any]:
         pass

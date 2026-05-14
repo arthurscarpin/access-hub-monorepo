@@ -18,7 +18,7 @@ class ValidatePlateUseCaseUseCaseImpl(ValidatePlateUseCaseUseCase):
             temperature: float,
             max_tokens: int,
             langchain_debug: bool,
-            key: str):
+            key: str) -> dict[str, Any]:
         
         capture_id = message.get("id", "unknown")
         logger.info(f"Starting plate validation use case for capture ID: {capture_id}")
@@ -58,6 +58,7 @@ class ValidatePlateUseCaseUseCaseImpl(ValidatePlateUseCaseUseCase):
                 message=output_payload
             )
             logger.info(f"Validation completed and published for ID: {capture_id}")
+            return output_payload
 
         except Exception as e:
             logger.error(f"Error in ValidatePlateUseCase for ID {capture_id}: {str(e)}", exc_info=True)
@@ -70,3 +71,4 @@ class ValidatePlateUseCaseUseCaseImpl(ValidatePlateUseCaseUseCase):
                 routing_key=routing_key, 
                 message=error_payload
             )
+            return error_payload
