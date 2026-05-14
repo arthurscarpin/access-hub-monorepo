@@ -30,7 +30,8 @@ class PlateAnlysisGateway(PlateGateway):
             prompt_template=chat_openai_config.prompt_template, # type: ignore
             assistant_name="Argus--Plate-Reconstructor-Assistant",
             tags=["v1-release", "plate-service"],
-            debug=langchain_debug
+            debug=langchain_debug,
+        
         )
         return argus_assistant.execute(input)
     
