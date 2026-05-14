@@ -7,6 +7,7 @@ env_idea = ROOT_DIR / ".env.idea"
 env = ROOT_DIR / ".env"
 
 class Settings(BaseSettings):
+    ENVIRONMENT: str
     RABBITMQ_HOST: str
     RABBITMQ_PORT: int
     RABBITMQ_USERNAME: str
