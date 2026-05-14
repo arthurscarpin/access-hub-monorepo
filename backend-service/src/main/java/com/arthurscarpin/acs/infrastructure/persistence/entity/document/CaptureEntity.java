@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.persistence.entity.document;
 
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.core.capture.domain.CaptureStatus;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
@@ -24,9 +25,13 @@ public class CaptureEntity {
 
     private CaptureStatus status;
 
+    private Direction direction;
+
     private String finalPlate;
 
     private Double finalConfidence;
+
+    private String reasoning;
 
     private Instant createdAt;
 

@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.presentation.request;
 
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,9 @@ public record CaptureRequest(
                 "filename3.jpg"
                 ]
                 """)
-        List<String> filenames
+        List<String> filenames,
+
+        @NotNull
+        Direction direction
 ) {
 }

@@ -1,5 +1,6 @@
 package com.arthurscarpin.acs.core.capture.usecase;
 
+import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.core.capture.domain.*;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 
@@ -16,7 +17,7 @@ public class CreateCaptureUseCaseImpl implements CreateCaptureUseCase {
     }
 
     @Override
-    public String execute(List<String> filenames) {
+    public String execute(List<String> filenames, Direction direction) {
         List<CaptureImage> captureImages = filenames.stream()
                 .map(filename -> new CaptureImage(
                         UUID.randomUUID().toString(),
@@ -30,6 +31,8 @@ public class CreateCaptureUseCaseImpl implements CreateCaptureUseCase {
                 null,
                 captureImages,
                 CaptureStatus.RECEIVED,
+                direction,
+                null,
                 null,
                 null,
                 Instant.now(),
