@@ -30,8 +30,8 @@ spring:
     ai-validation-routing-key: ${RABBITMQ_AI_VALIDATION_ROUTING_KEY}
     ai-validation-queue: ${RABBITMQ_AI_VALIDATION_QUEUE}
     # File AI Results
-    ai-result-queue: ${RABBITMQ_AI_RESULT_ROUTING_KEY}
-    ai-result-routing-key: ${RABBITMQ_AI_RESULT_QUEUE}
+    ai-result-queue: ${RABBITMQ_AI_RESULT_QUEUE}
+    ai-result-routing-key: ${RABBITMQ_AI_RESULT_ROUTING_KEY}
     template:
       mandatory: true
     listener:
