@@ -48,7 +48,7 @@ class ValidatePlateUseCaseUseCaseImpl(ValidatePlateUseCaseUseCase):
             message["reasoning"] = response["reasoning"]
             message["status"] = "COMPLETED"
 
-            output_payload: dict[str, Any] = {"capture": message, "message": None}
+            output_payload: dict[str, Any] = {"capture": message, "error": None}
             logger.debug(f"Publishing success message: {output_payload}")
 
             gateway.message_publisher(
@@ -62,7 +62,7 @@ class ValidatePlateUseCaseUseCaseImpl(ValidatePlateUseCaseUseCase):
         except Exception as e:
             logger.error(f"Error in ValidatePlateUseCase for ID {capture_id}: {str(e)}", exc_info=True)
             message["status"] = "FAILED"
-            error_payload: dict[str, Any] = {"capture": message, "message": str(e)}
+            error_payload: dict[str, Any] = {"capture": message, "error": str(e)}
             logger.debug(f"Publishing failure message: {error_payload}")
             gateway.message_publisher(
                 connection=connection, 
