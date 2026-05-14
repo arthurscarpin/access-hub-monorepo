@@ -34,6 +34,6 @@ class PlateAnlysisGateway(PlateGateway):
         )
         return argus_assistant.execute(input)
     
-    def message_publisher(self, message: dict[str, str], connection: Any, exchange: str, routing_key: str):
+    def message_publisher(self, message: dict[str, Any], connection: Any, exchange: str, routing_key: str):
         producer = PlateResultProducer(connection=connection, exchange=exchange)
         producer.publish(routing_key=routing_key, payload=message)

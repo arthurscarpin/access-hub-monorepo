@@ -17,5 +17,5 @@ class PlateGateway(ABC):
         pass
 
     @abstractmethod
-    def message_publisher(self, message: dict[str, str], connection: Any, exchange: str, routing_key: str):
+    def message_publisher(self, message: dict[str, Any], connection: Any, exchange: str, routing_key: str):
         pass
