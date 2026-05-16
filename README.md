@@ -86,7 +86,7 @@ flowchart TD
 - Owner, vehicle, user, scope, capture, and access-event management.
 - PostgreSQL persistence with Flyway migrations.
 - MongoDB capture storage for image-level OCR state and AI result metadata.
-- RabbitMQ-based asynchronous orchestration between backend, OCR, and AI services.
+- RabbitMQ-based asynchronous orchestration between backend, OCR, and AI services, with retry and dead-letter handling for failed messages.
 - OpenCV-based plate image pre-processing.
 - EasyOCR text extraction with bounding boxes and confidence scores.
 - LangChain/OpenAI plate reconstruction for Brazilian Mercosul and legacy formats.
@@ -128,6 +128,22 @@ flowchart TD
 | OCR status update | `recognize-plate-service` | `backend-service` | Reports image status and extracted OCR candidates. |
 | AI validation request | `backend-service` | `plate-intelligence-service` | Sends completed capture OCR data for final plate reconstruction. |
 | AI validation result | `plate-intelligence-service` | `backend-service` | Returns the final plate, confidence, reasoning, and processing status. |
+
+## Retry and Dead-Letter Handling
+
+RabbitMQ failures are handled at the queue boundary:
+
+- `backend-service` declares the topic exchange, a derived dead-letter exchange named `${RABBITMQ_EXCHANGE}.dlx`, the main queues, and one `.dlq` queue per main queue.
+- Backend consumers use Spring AMQP stateless retry with `3` attempts and exponential backoff from `1000ms` to `10000ms`.
+- Python workers retry failed message processing using `RABBITMQ_MAX_RETRIES` and `RABBITMQ_BASE_DELAY_SECONDS`, republishing the message with an `x-retry-count` header.
+- Messages that still fail after retries are negatively acknowledged without requeue and are routed to the corresponding dead-letter queue.
+
+| Main queue | Dead-letter queue |
+| --- | --- |
+| OCR request queue | `${RABBITMQ_OCR_QUEUE}.dlq` |
+| OCR status queue | `${RABBITMQ_OCR_STATUS_QUEUE}.dlq` |
+| AI validation queue | `${RABBITMQ_AI_VALIDATION_QUEUE}.dlq` |
+| AI result queue | `${RABBITMQ_AI_RESULT_QUEUE}.dlq` |
 
 ## Persistence Overview
 

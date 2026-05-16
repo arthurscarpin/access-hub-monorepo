@@ -10,7 +10,7 @@ The project was designed as more than a CRUD API: it combines relational consist
 - Stateless authentication with JWT, RSA key pairs, BCrypt password hashing, and method-level authorization through OAuth2 scopes.
 - PostgreSQL persistence for owners, vehicles, users, scopes, and access events, versioned with Flyway migrations.
 - MongoDB persistence for multi-image capture workflows and OCR/AI processing state.
-- RabbitMQ topic exchange for asynchronous capture processing, OCR status updates, AI validation requests, and AI result consumption.
+- RabbitMQ topic exchange for asynchronous capture processing, OCR status updates, AI validation requests, AI result consumption, retries, and dead-letter handling.
 - OpenAPI and Swagger UI documentation exposed by the application.
 - Centralized exception handling with structured error responses.
 - Automated test suite covering domain rules, use cases, mappers, controllers, producers, consumers, and integration behavior.
@@ -53,6 +53,8 @@ The capture workflow is asynchronous and message-driven:
 7. The service updates the capture and creates the corresponding access event.
 
 This design keeps HTTP requests fast while allowing OCR and AI processing to scale independently.
+
+Message consumers use retry handling before a failed message is rejected. Messages that still fail after the configured retry attempts are rejected without requeue and routed by RabbitMQ to the matching dead-letter queue.
 
 ## Architecture
 
@@ -161,6 +163,26 @@ export ENVIRONMENT=prod
 | `RABBITMQ_AI_VALIDATION_QUEUE` | Queue consumed by AI validation workers. |
 | `RABBITMQ_AI_RESULT_ROUTING_KEY` | Routing key for AI validation results. |
 | `RABBITMQ_AI_RESULT_QUEUE` | Queue consumed by this service for AI results. |
+
+### RabbitMQ Retry and Dead-Letter Handling
+
+The backend declares the RabbitMQ topology at startup:
+
+- Main topic exchange: `${RABBITMQ_EXCHANGE}`.
+- Dead-letter exchange: `${RABBITMQ_EXCHANGE}.dlx`.
+- Durable main queues for OCR requests, OCR status updates, AI validation requests, and AI validation results.
+- One DLQ per main queue, named with the `.dlq` suffix.
+
+Each main queue is configured with `x-dead-letter-exchange` and `x-dead-letter-routing-key`, so rejected messages are routed to the queue-specific DLQ:
+
+| Main queue variable | DLQ name |
+| --- | --- |
+| `RABBITMQ_OCR_QUEUE` | `${RABBITMQ_OCR_QUEUE}.dlq` |
+| `RABBITMQ_OCR_STATUS_QUEUE` | `${RABBITMQ_OCR_STATUS_QUEUE}.dlq` |
+| `RABBITMQ_AI_VALIDATION_QUEUE` | `${RABBITMQ_AI_VALIDATION_QUEUE}.dlq` |
+| `RABBITMQ_AI_RESULT_QUEUE` | `${RABBITMQ_AI_RESULT_QUEUE}.dlq` |
+
+Spring AMQP listener containers use stateless retry with `3` attempts and exponential backoff from `1000ms` to `10000ms`. After retries are exhausted, `RejectAndDontRequeueRecoverer` rejects the message without requeue, allowing RabbitMQ to dead-letter it.
 
 ## JWT Key Pair
 
@@ -315,5 +337,6 @@ MongoDB stores capture documents, including image-level OCR status, OCR results,
 - The API is stateless; authenticated requests must include `Authorization: Bearer <token>`.
 - Token expiration is currently configured by the login use case as `600` seconds.
 - Flyway runs automatically and validates the relational schema on startup.
-- RabbitMQ queues and bindings are declared by the application at startup.
+- RabbitMQ exchanges, main queues, DLQs, and bindings are declared by the application at startup.
+- Backend consumers retry failed messages before rejecting them without requeue; rejected messages are routed to the corresponding `.dlq` queue.
 - Capture processing depends on external OCR and AI workers that publish and consume the configured RabbitMQ messages.

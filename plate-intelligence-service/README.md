@@ -6,7 +6,7 @@ This service is the intelligence layer of the access-control platform. It does n
 
 ## Highlights
 
-- Message-driven Python worker built around RabbitMQ and durable JSON messages.
+- Message-driven Python worker built around RabbitMQ, durable JSON messages, bounded retries, and dead-letter routing.
 - Clean separation between core use case contracts and infrastructure adapters.
 - Deterministic OCR candidate aggregation before invoking the LLM.
 - Brazilian plate support for Mercosul (`ABC1D23`) and legacy (`ABC1234`) formats.
@@ -150,7 +150,17 @@ If validation fails, the service marks the capture as failed and publishes the e
 }
 ```
 
-The consumer acknowledges valid messages after the use case completes. Invalid JSON or unexpected processing failures are negatively acknowledged without requeue.
+The consumer acknowledges valid messages after the use case completes. Invalid JSON is negatively acknowledged without requeue. Unexpected processing failures are retried with an `x-retry-count` header before the message is negatively acknowledged without requeue, allowing RabbitMQ to route it to the AI validation DLQ configured by the backend.
+
+### Retry Behavior
+
+For unexpected processing failures, the worker:
+
+- reads the current retry count from the `x-retry-count` message header;
+- acknowledges the failed delivery before scheduling the retry;
+- waits `RABBITMQ_BASE_DELAY_SECONDS ** retry_count` seconds;
+- republishes the original message to the configured AI result routing key with an incremented `x-retry-count`;
+- negatively acknowledges without requeue when `RABBITMQ_MAX_RETRIES` is reached.
 
 ## Plate Reconstruction Rules
 
@@ -178,6 +188,8 @@ Settings are loaded from environment variables. When present, `.env.idea` is use
 | `RABBITMQ_EXCHANGE` | RabbitMQ exchange used to publish results. |
 | `RABBITMQ_AI_VALIDATION_QUEUE` | Queue consumed by this service. |
 | `RABBITMQ_AI_RESULT_ROUTING_KEY` | Routing key used to publish AI validation results. |
+| `RABBITMQ_MAX_RETRIES` | Maximum number of processing retries before the message is rejected without requeue. |
+| `RABBITMQ_BASE_DELAY_SECONDS` | Base used to calculate retry delay as `base ** retry_count` seconds. |
 | `OPENAI_API_KEY` | OpenAI API key used by LangChain. |
 | `LANGCHAIN_DEBUG` | Enables LangChain debug output when `true`. |
 | `LLM_MODEL` | OpenAI model name used for plate reconstruction. |
@@ -195,6 +207,8 @@ RABBITMQ_PASSWORD=guest
 RABBITMQ_EXCHANGE=access-control.exchange
 RABBITMQ_AI_VALIDATION_QUEUE=capture.ai.validation
 RABBITMQ_AI_RESULT_ROUTING_KEY=capture.ai.result
+RABBITMQ_MAX_RETRIES=3
+RABBITMQ_BASE_DELAY_SECONDS=2
 OPENAI_API_KEY=sk-...
 LANGCHAIN_DEBUG=false
 LLM_MODEL=gpt-4o-mini
@@ -260,6 +274,7 @@ The current tests cover:
 - OCR candidate normalization, aggregation, ranking, and format detection.
 - Plate validation use case success and failure publishing paths.
 - RabbitMQ consumer acknowledgment and negative acknowledgment behavior.
+- RabbitMQ retry behavior with `x-retry-count` before DLQ routing.
 - RabbitMQ result producer payload encoding and delivery properties.
 - OpenAI assistant chain invocation and error propagation.
 
@@ -278,6 +293,7 @@ The GitHub Actions workflow for this service runs when files under `plate-intell
 - This worker requires RabbitMQ to be reachable before startup.
 - The service creates a dedicated channel for consuming and a producer channel when publishing results.
 - Message prefetch is set to `1` to process one AI validation task at a time per worker instance.
+- Processing failures are retried up to `RABBITMQ_MAX_RETRIES`; after that the message is rejected without requeue and should land in `${RABBITMQ_AI_VALIDATION_QUEUE}.dlq` when the backend-declared topology is active.
 - Published messages use JSON content type and delivery mode `2` for persistence.
 - In non-production environments, logs are also written to `logs/YYYYMMDD.ndjson`.
 - Horizontal scaling is achieved by running multiple worker instances against the same queue.

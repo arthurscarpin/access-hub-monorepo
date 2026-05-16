@@ -6,7 +6,7 @@ This service does not expose an HTTP API. It is a message-driven OCR worker desi
 
 ## Highlights
 
-- RabbitMQ worker for asynchronous license-plate OCR processing.
+- RabbitMQ worker for asynchronous license-plate OCR processing with bounded retries before dead-letter routing.
 - Three-stage status publishing: `STARTED`, `PROCESSING`, and `COMPLETED` or `FAILED`.
 - OpenCV image pre-processing with contour-based plate crop detection.
 - EasyOCR text extraction configured for Portuguese OCR.
@@ -187,7 +187,17 @@ Published when the filename is missing or image/OCR processing raises an excepti
 }
 ```
 
-The consumer acknowledges valid messages after the use case completes. Invalid JSON or unexpected callback failures are negatively acknowledged without requeue.
+The consumer acknowledges valid messages after the use case completes. Invalid JSON is negatively acknowledged without requeue. Unexpected processing failures are retried with an `x-retry-count` header before the message is negatively acknowledged without requeue, allowing RabbitMQ to route it to the OCR queue DLQ configured by the backend.
+
+### Retry Behavior
+
+For unexpected processing failures, the worker:
+
+- reads the current retry count from the `x-retry-count` message header;
+- acknowledges the failed delivery before scheduling the retry;
+- waits `RABBITMQ_BASE_DELAY_SECONDS ** retry_count` seconds;
+- republishes the original message to the configured OCR status routing key with an incremented `x-retry-count`;
+- negatively acknowledges without requeue when `RABBITMQ_MAX_RETRIES` is reached.
 
 ## Image Processing
 
@@ -222,6 +232,8 @@ Settings are loaded from environment variables. When present, `.env.idea` is use
 | `RABBITMQ_OCR_QUEUE` | Queue consumed by this service. |
 | `RABBITMQ_OCR_STATUS_ROUTING_KEY` | Routing key used to publish OCR status updates. |
 | `RABBITMQ_AI_VALIDATION_ROUTING_KEY` | Platform routing key required by the current settings model. |
+| `RABBITMQ_MAX_RETRIES` | Maximum number of processing retries before the message is rejected without requeue. |
+| `RABBITMQ_BASE_DELAY_SECONDS` | Base used to calculate retry delay as `base ** retry_count` seconds. |
 | `STORAGE_PATH` | Root directory where image filenames are resolved. |
 
 Example `.env`:
@@ -236,6 +248,8 @@ RABBITMQ_EXCHANGE=access-control.exchange
 RABBITMQ_OCR_QUEUE=capture.ocr.processing
 RABBITMQ_OCR_STATUS_ROUTING_KEY=capture.ocr.updated
 RABBITMQ_AI_VALIDATION_ROUTING_KEY=capture.ai.validation
+RABBITMQ_MAX_RETRIES=3
+RABBITMQ_BASE_DELAY_SECONDS=2
 STORAGE_PATH=/data/access-control/images
 ```
 
@@ -300,6 +314,7 @@ The current tests cover:
 - storage path validation and construction;
 - success, missing filename, and exception flows in the capture use case;
 - RabbitMQ consumer acknowledgment and negative acknowledgment behavior;
+- RabbitMQ retry behavior with `x-retry-count` before DLQ routing;
 - OCR status producer payload encoding and delivery properties;
 - OpenCV pre-processing behavior for valid, invalid, and contour edge cases;
 - EasyOCR processor output transformation, empty-text filtering, and sorting.
@@ -318,6 +333,7 @@ The GitHub Actions workflow for this service runs when files under `recognize-pl
 
 - This worker requires RabbitMQ and image storage to be available before processing jobs.
 - Message prefetch is set to `1` to process one image at a time per worker instance.
+- Processing failures are retried up to `RABBITMQ_MAX_RETRIES`; after that the message is rejected without requeue and should land in `${RABBITMQ_OCR_QUEUE}.dlq` when the backend-declared topology is active.
 - Published messages use JSON content type and delivery mode `2` for persistence.
 - EasyOCR is initialized with `gpu=True`; runtime environments should provide compatible GPU support or adjust the processor configuration when running CPU-only deployments.
 - `STORAGE_PATH` must point to the same storage location where the backend or capture ingestion flow writes image files.
