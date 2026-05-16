@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="430" viewBox="0 0 1050 430" role="img" aria-labelledby="title desc">
+  <title id="title">CI/CD Overview</title>
+  <desc id="desc">CI/CD flow showing service changes triggering GitHub Actions tests, artifacts, SonarCloud, and CodeQL.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; } .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 10; }
+      .test { fill: #eef6ff; stroke: #2563eb; } .quality { fill: #f0fdf4; stroke: #16a34a; } .security { fill: #fef2f2; stroke: #dc2626; }
+      .text { font: 15px Arial, sans-serif; fill: #0f172a; text-anchor: middle; } .small { font: 12px Arial, sans-serif; fill: #475569; text-anchor: middle; }
+      .title { font: 22px Arial, sans-serif; font-weight: 700; fill: #0f172a; } .line { stroke: #475569; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  </defs>
+  <rect class="bg" width="1050" height="430"/><text class="title" x="42" y="46">CI/CD Overview</text>
+  <rect class="box" x="60" y="150" width="170" height="76"/><text class="text" x="145" y="182">Service changes</text><text class="small" x="145" y="205">push or pull request</text>
+  <rect class="box" x="310" y="150" width="170" height="76"/><text class="text" x="395" y="182">GitHub Actions</text><text class="small" x="395" y="205">service workflow</text>
+  <rect class="box test" x="560" y="80" width="180" height="76"/><text class="text" x="650" y="112">Tests and coverage</text><text class="small" x="650" y="135">Maven or pytest</text>
+  <rect class="box quality" x="820" y="80" width="170" height="76"/><text class="text" x="905" y="112">SonarCloud</text><text class="small" x="905" y="135">quality analysis</text>
+  <rect class="box quality" x="560" y="245" width="180" height="76"/><text class="text" x="650" y="277">Artifacts</text><text class="small" x="650" y="300">JAR or coverage report</text>
+  <rect class="box security" x="820" y="245" width="170" height="76"/><text class="text" x="905" y="277">CodeQL</text><text class="small" x="905" y="300">security analysis</text>
+  <path class="line" d="M230 188 H310"/><path class="line" d="M480 175 C510 140, 530 118, 560 118"/><path class="line" d="M740 118 H820"/>
+  <path class="line" d="M480 200 C510 240, 530 283, 560 283"/><path class="line" d="M480 188 C610 190, 700 260, 820 283"/>
+</svg>

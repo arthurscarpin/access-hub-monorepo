@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" role="img" aria-labelledby="title desc">
+  <title id="title">Persistence Overview</title>
+  <desc id="desc">Persistence diagram showing PostgreSQL tables and MongoDB capture documents owned by backend service.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; } .backend { fill: #eef6ff; stroke: #2563eb; stroke-width: 2; rx: 10; }
+      .sql { fill: #f0fdf4; stroke: #16a34a; stroke-width: 2; rx: 10; } .mongo { fill: #ecfdf5; stroke: #059669; stroke-width: 2; rx: 10; }
+      .text { font: 15px Arial, sans-serif; fill: #0f172a; text-anchor: middle; } .small { font: 12px Arial, sans-serif; fill: #475569; text-anchor: middle; }
+      .title { font: 22px Arial, sans-serif; font-weight: 700; fill: #0f172a; } .line { stroke: #475569; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  </defs>
+  <rect class="bg" width="1100" height="560"/><text class="title" x="42" y="46">Persistence Overview</text>
+  <rect class="backend" x="430" y="80" width="230" height="72"/><text class="text" x="545" y="112">backend-service</text><text class="small" x="545" y="134">persistence orchestration</text>
+  <rect class="sql" x="90" y="230" width="150" height="64"/><text class="text" x="165" y="266">owner</text>
+  <rect class="sql" x="290" y="230" width="150" height="64"/><text class="text" x="365" y="266">vehicle</text>
+  <rect class="sql" x="490" y="230" width="150" height="64"/><text class="text" x="565" y="266">access_event</text>
+  <rect class="sql" x="690" y="230" width="150" height="64"/><text class="text" x="765" y="266">users</text>
+  <rect class="sql" x="890" y="230" width="150" height="64"/><text class="text" x="965" y="266">scopes</text>
+  <rect class="sql" x="690" y="380" width="150" height="64"/><text class="text" x="765" y="416">users_scopes</text>
+  <rect class="mongo" x="330" y="380" width="220" height="64"/><text class="text" x="440" y="408">MongoDB captures</text><text class="small" x="440" y="430">OCR and AI metadata</text>
+  <path class="line" d="M500 152 C390 175, 215 190, 165 230"/><path class="line" d="M520 152 C450 180, 390 200, 365 230"/>
+  <path class="line" d="M550 152 C560 180, 565 200, 565 230"/><path class="line" d="M585 152 C650 180, 735 200, 765 230"/>
+  <path class="line" d="M615 152 C750 175, 915 195, 965 230"/><path class="line" d="M545 152 C510 250, 470 310, 440 380"/>
+  <path class="line" d="M765 294 V380"/><path class="line" d="M240 262 H290"/><text class="small" x="265" y="250">owns</text>
+</svg>

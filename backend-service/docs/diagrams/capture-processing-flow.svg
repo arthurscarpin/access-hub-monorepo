@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Capture Processing Flow</title>
+  <desc id="desc">Sequence-style diagram for capture processing from backend to OCR worker to AI worker and final access event.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; } .lane { stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 6 6; }
+      .head { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 8; } .text { font: 15px Arial, sans-serif; fill: #0f172a; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; } .title { font: 22px Arial, sans-serif; font-weight: 700; fill: #0f172a; }
+      .arrow { stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrow); } .event { fill: #eef6ff; stroke: #2563eb; stroke-width: 1.5; rx: 8; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="700"/><text class="title" x="42" y="46">Capture Processing Flow</text>
+  <rect class="head" x="55" y="80" width="140" height="52"/><text class="text" x="99" y="112">Client</text><line class="lane" x1="125" y1="132" x2="125" y2="650"/>
+  <rect class="head" x="275" y="80" width="160" height="52"/><text class="text" x="300" y="112">Backend API</text><line class="lane" x1="355" y1="132" x2="355" y2="650"/>
+  <rect class="head" x="520" y="80" width="140" height="52"/><text class="text" x="555" y="112">RabbitMQ</text><line class="lane" x1="590" y1="132" x2="590" y2="650"/>
+  <rect class="head" x="745" y="80" width="150" height="52"/><text class="text" x="772" y="112">OCR Worker</text><line class="lane" x1="820" y1="132" x2="820" y2="650"/>
+  <rect class="head" x="980" y="80" width="150" height="52"/><text class="text" x="1012" y="112">AI Worker</text><line class="lane" x1="1055" y1="132" x2="1055" y2="650"/>
+  <path class="arrow" d="M125 170 H355"/><rect class="event" x="155" y="150" width="175" height="36"/><text class="small" x="170" y="173">POST /captures</text>
+  <path class="arrow" d="M355 230 H590"/><rect class="event" x="390" y="210" width="165" height="36"/><text class="small" x="405" y="233">Publish OCR jobs</text>
+  <path class="arrow" d="M590 290 H820"/><rect class="event" x="620" y="270" width="170" height="36"/><text class="small" x="637" y="293">Deliver image job</text>
+  <path class="arrow" d="M820 350 H590"/><rect class="event" x="625" y="330" width="170" height="36"/><text class="small" x="646" y="353">OCR status update</text>
+  <path class="arrow" d="M590 410 H355"/><rect class="event" x="395" y="390" width="160" height="36"/><text class="small" x="410" y="413">Backend updates state</text>
+  <path class="arrow" d="M355 470 H590"/><rect class="event" x="385" y="450" width="180" height="36"/><text class="small" x="400" y="473">Publish AI validation</text>
+  <path class="arrow" d="M590 530 H1055"/><rect class="event" x="745" y="510" width="155" height="36"/><text class="small" x="762" y="533">Deliver OCR batch</text>
+  <path class="arrow" d="M1055 590 H590"/><rect class="event" x="755" y="570" width="145" height="36"/><text class="small" x="777" y="593">Final plate result</text>
+  <path class="arrow" d="M590 630 H355"/><text class="small" x="390" y="622">Create access event</text>
+</svg>

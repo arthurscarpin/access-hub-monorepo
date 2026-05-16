@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Access Decision Flow</title>
+  <desc id="desc">Decision flow that authorizes active vehicles and denies missing or blocked vehicles.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8fafc; } .node { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 10; }
+      .decision { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; } .ok { fill: #f0fdf4; stroke: #16a34a; stroke-width: 2; rx: 10; }
+      .bad { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; rx: 10; } .text { font: 15px Arial, sans-serif; fill: #0f172a; text-anchor: middle; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; text-anchor: middle; } .title { font: 22px Arial, sans-serif; font-weight: 700; fill: #0f172a; }
+      .line { stroke: #475569; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  </defs>
+  <rect class="bg" width="960" height="520"/><text class="title" x="40" y="46">Access Decision Flow</text>
+  <rect class="node" x="340" y="80" width="280" height="70"/><text class="text" x="480" y="110">Final plate received</text><text class="small" x="480" y="132">from Plate Intelligence result</text>
+  <polygon class="decision" points="480,200 610,270 480,340 350,270"/><text class="text" x="480" y="265">Vehicle exists?</text><text class="small" x="480" y="286">lookup by normalized plate</text>
+  <polygon class="decision" points="730,200 860,270 730,340 600,270"/><text class="text" x="730" y="265">Vehicle status?</text><text class="small" x="730" y="286">ACTIVE or BLOCKED</text>
+  <rect class="bad" x="120" y="235" width="170" height="70"/><text class="text" x="205" y="266">DENIED</text><text class="small" x="205" y="288">vehicle not found</text>
+  <rect class="ok" x="620" y="410" width="180" height="70"/><text class="text" x="710" y="441">AUTHORIZED</text><text class="small" x="710" y="463">active vehicle</text>
+  <rect class="bad" x="820" y="410" width="120" height="70"/><text class="text" x="880" y="441">DENIED</text><text class="small" x="880" y="463">blocked</text>
+  <path class="line" d="M480 150 V200"/><path class="line" d="M350 270 H290"/><text class="small" x="320" y="255">No</text>
+  <path class="line" d="M610 270 H600"/><text class="small" x="626" y="255">Yes</text>
+  <path class="line" d="M730 340 V410"/><text class="small" x="703" y="378">ACTIVE</text>
+  <path class="line" d="M795 325 C855 350, 880 370, 880 410"/><text class="small" x="858" y="364">BLOCKED</text>
+</svg>
