@@ -32,6 +32,16 @@ public class CaptureRepositoryGateway implements CaptureGateway {
 
     private final CaptureMapper mapper;
 
+    @Override
+    public Capture findById(String captureId) {
+        CaptureEntity entity = repository.findById(captureId)
+                .orElseThrow(() -> {
+            log.warn("Capture not found: Capture [{}]", captureId);
+            return new CaptureNotFoundException("Capture not found");
+        });
+        return mapper.fromEntityToDomain(entity);
+    }
+
     @Transactional
     @Override
     public Capture saveAndPublish(Capture domain) {
@@ -70,6 +80,14 @@ public class CaptureRepositoryGateway implements CaptureGateway {
     @Transactional
     @Override
     public void updateAndPublish(Capture domain) {
+        Capture updatedDomain = update(domain);
+        if (updatedDomain.processedImagesCount() >= updatedDomain.images().size()) {
+            iAProducer.publish(updatedDomain);
+        }
+    }
+
+    @Override
+    public Capture update(Capture domain) {
         log.info("Updating capture ID: {}", domain.id());
 
         CaptureEntity entity = repository.findById(domain.id())
@@ -95,10 +113,6 @@ public class CaptureRepositoryGateway implements CaptureGateway {
         CaptureEntity updatedEntity = repository.save(entity);
         log.info("Capture ID: {} successfully updated.", domain.id());
 
-        Capture updatedDomain = mapper.fromEntityToDomain(updatedEntity);
-
-        if (updatedDomain.processedImagesCount() >= updatedDomain.images().size()) {
-            iAProducer.publish(updatedDomain);
-        }
+        return mapper.fromEntityToDomain(updatedEntity);
     }
 }
