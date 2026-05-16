@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     RABBITMQ_OCR_QUEUE: str
     RABBITMQ_OCR_STATUS_ROUTING_KEY: str
     RABBITMQ_AI_VALIDATION_ROUTING_KEY: str
+    RABBITMQ_MAX_RETRIES: int
+    RABBITMQ_BASE_DELAY_SECONDS: int
     STORAGE_PATH: str
 
     model_config = SettingsConfigDict(

@@ -1,3 +1,4 @@
+import time
 import json
 import logging
 from typing import Any
@@ -24,7 +25,9 @@ class PlateConsumer:
             temperature: float,
             max_tokens: int,
             langchain_debug: bool,
-            key: str):
+            key: str,
+            max_retries: int=3,
+            base_delay_seconds: int=2):
         self._connection = connection
         self._channel: Any = connection.channel()
         self._queue = queue
@@ -39,6 +42,8 @@ class PlateConsumer:
         self._max_tokens = max_tokens
         self._langchain_debug = langchain_debug
         self._key = key
+        self._max_retries = max_retries
+        self._base_delay_seconds = base_delay_seconds
 
     def start(self):
         try:
@@ -78,8 +83,29 @@ class PlateConsumer:
             self._logger.error(f"Error {type(e).__name__}: {e}")
             ch.basic_nack(delivery_tag=delivery_tag, requeue=False)
         except Exception as e:
-            self._logger.error(f"Error {type(e).__name__}: {e}")
-            ch.basic_nack(delivery_tag=delivery_tag, requeue=False)
+            retry_count = self._get_retry_count(properties)
+            self._logger.error(f"Error {type(e).__name__}: {e} | {message_id=} retry_count={retry_count}")
+
+            if retry_count < self._max_retries:
+                self._retry(ch, method, properties, body, retry_count)
+            else:
+                self._logger.error(f"Max retries reached, sending to DLQ: {message_id=} retry_count={retry_count}")
+                ch.basic_nack(delivery_tag=delivery_tag, requeue=False)
+
+    def _get_retry_count(self, properties: BasicProperties) -> int:
+        headers = properties.headers or {}
+        return int(headers.get("x-retry-count", 0))
+    
+    def _retry(self, ch: BlockingChannel, method: Basic.Deliver, properties: BasicProperties, body: bytes, retry_count: int,):
+        delay = self._base_delay_seconds ** retry_count
+        next_retry = retry_count + 1
+        self._logger.warning(f"Retrying message in {delay}s | retry_count={retry_count} -> {next_retry} | routing_key={self._routing_key}")
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        time.sleep(delay)
+        headers = dict(properties.headers or {})
+        headers["x-retry-count"] = next_retry
+        retry_properties = BasicProperties(content_type="application/json",delivery_mode=2,headers=headers)
+        ch.basic_publish(exchange=self._exchange, routing_key=self._routing_key, body=body, properties=retry_properties) 
 
     def _stop(self):
         try:
@@ -90,4 +116,3 @@ class PlateConsumer:
             self._logger.info("Connection closed with Capture Consumer")
         except Exception as e:
             self._logger.error(f"Error {type(e).__name__}: {e}")
-    

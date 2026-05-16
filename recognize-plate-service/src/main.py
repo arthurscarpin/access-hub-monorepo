@@ -22,7 +22,9 @@ def main():
         exchange=settings.RABBITMQ_EXCHANGE, 
         routing_key=settings.RABBITMQ_OCR_STATUS_ROUTING_KEY,
         logger=logger,
-        storage=settings.STORAGE_PATH
+        storage=settings.STORAGE_PATH,
+        max_retries=settings.RABBITMQ_MAX_RETRIES,
+        base_delay_seconds=settings.RABBITMQ_BASE_DELAY_SECONDS
     )
     consumer.start()
 

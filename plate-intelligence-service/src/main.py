@@ -26,7 +26,9 @@ def main():
         temperature=settings.TEMPERATURE, 
         max_tokens=settings.MAX_TOKENS, 
         langchain_debug=settings.LANGCHAIN_DEBUG,
-        key=settings.OPENAI_API_KEY
+        key=settings.OPENAI_API_KEY,
+        max_retries=settings.RABBITMQ_MAX_RETRIES,
+        base_delay_seconds=settings.RABBITMQ_BASE_DELAY_SECONDS
     )
     consumer.start()
 

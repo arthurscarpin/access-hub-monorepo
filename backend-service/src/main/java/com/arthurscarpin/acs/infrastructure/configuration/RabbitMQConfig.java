@@ -39,6 +39,10 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.ai-result-routing-key}")
     private String aiResultRoutingKey;
 
+    // Dead Letter Exchange name
+    @Value("${spring.rabbitmq.exchange}.dlx")
+    private String deadLetterExchange;
+
     // Core Infrastructure Beans
     @Bean
     public JacksonJsonMessageConverter messageConverter() {
@@ -65,57 +69,132 @@ public class RabbitMQConfig {
                 .build();
     }
 
-    // Queues Declaration
+    // Dead Letter Exchange
+    @Bean
+    public DirectExchange deadLetterExchange() {
+        return ExchangeBuilder
+                .directExchange(deadLetterExchange)
+                .durable(true)
+                .build();
+    }
+
+    // Dead Letter Queues
+    @Bean
+    public Queue ocrProcessingDlq() {
+        return QueueBuilder.durable(ocrQueue + ".dlq").build();
+    }
+
+    @Bean
+    public Queue ocrStatusDlq() {
+        return QueueBuilder.durable(ocrStatusQueue + ".dlq").build();
+    }
+
+    @Bean
+    public Queue aiValidationDlq() {
+        return QueueBuilder.durable(aiValidationQueue + ".dlq").build();
+    }
+
+    @Bean
+    public Queue aiResultDlq() {
+        return QueueBuilder.durable(aiResultQueue + ".dlq").build();
+    }
+
+    // DLQs Bindings on DLX
+    @Bean
+    public Binding ocrProcessingDlqBinding() {
+        return BindingBuilder
+                .bind(ocrProcessingDlq())
+                .to(deadLetterExchange())
+                .with(ocrQueue + ".dlq");
+    }
+
+    @Bean
+    public Binding ocrStatusDlqBinding() {
+        return BindingBuilder
+                .bind(ocrStatusDlq())
+                .to(deadLetterExchange())
+                .with(ocrStatusQueue + ".dlq");
+    }
+
+    @Bean
+    public Binding aiValidationDlqBinding() {
+        return BindingBuilder
+                .bind(aiValidationDlq())
+                .to(deadLetterExchange())
+                .with(aiValidationQueue + ".dlq");
+    }
+
+    @Bean
+    public Binding aiResultDlqBinding() {
+        return BindingBuilder
+                .bind(aiResultDlq())
+                .to(deadLetterExchange())
+                .with(aiResultQueue + ".dlq");
+    }
+
+    // Queues
     @Bean
     public Queue ocrProcessingQueue() {
-        return QueueBuilder.durable(ocrQueue).build();
+        return QueueBuilder.durable(ocrQueue)
+                .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                .withArgument("x-dead-letter-routing-key", ocrQueue + ".dlq")
+                .build();
     }
 
     @Bean
     public Queue ocrStatusQueue() {
-        return QueueBuilder.durable(ocrStatusQueue).build();
+        return QueueBuilder.durable(ocrStatusQueue)
+                .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                .withArgument("x-dead-letter-routing-key", ocrStatusQueue + ".dlq")
+                .build();
     }
 
     @Bean
     public Queue aiValidationQueue() {
-        return QueueBuilder.durable(aiValidationQueue).build();
+        return QueueBuilder.durable(aiValidationQueue)
+                .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                .withArgument("x-dead-letter-routing-key", aiValidationQueue + ".dlq")
+                .build();
     }
 
     @Bean
     public Queue aiResultQueue() {
-        return QueueBuilder.durable(aiResultQueue).build();
+        return QueueBuilder.durable(aiResultQueue)
+                .withArgument("x-dead-letter-exchange", deadLetterExchange)
+                .withArgument("x-dead-letter-routing-key", aiResultQueue + ".dlq")
+                .build();
     }
 
-    // Bindings (Connecting Queues to the Topic Exchange)
+    // Bindings
     @Bean
-    public Binding ocrProcessingBinding(TopicExchange captureEventsExchange) {
+    public Binding ocrProcessingBinding(TopicExchange captureTopicExchange) {
         return BindingBuilder
                 .bind(ocrProcessingQueue())
-                .to(captureEventsExchange)
+                .to(captureTopicExchange)
                 .with(ocrRoutingKey);
     }
 
     @Bean
-    public Binding ocrStatusBinding(TopicExchange captureEventsExchange) {
+    public Binding ocrStatusBinding(TopicExchange captureTopicExchange) {
         return BindingBuilder
                 .bind(ocrStatusQueue())
-                .to(captureEventsExchange)
+                .to(captureTopicExchange)
                 .with(ocrStatusRoutingKey);
     }
 
     @Bean
-    public Binding aiValidationBinding(TopicExchange captureEventsExchange) {
+    public Binding aiValidationBinding(TopicExchange captureTopicExchange) {
         return BindingBuilder
                 .bind(aiValidationQueue())
-                .to(captureEventsExchange)
+                .to(captureTopicExchange)
                 .with(aiValidationRoutingKey);
     }
 
     @Bean
-    public Binding aiResultBinding(TopicExchange captureEventsExchange) {
+    public Binding aiResultBinding(TopicExchange captureTopicExchange) {
         return BindingBuilder
                 .bind(aiResultQueue())
-                .to(captureEventsExchange)
+                .to(captureTopicExchange)
                 .with(aiResultRoutingKey);
     }
 }
