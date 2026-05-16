@@ -2,16 +2,12 @@ package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
 import com.arthurscarpin.acs.core.accessevent.domain.AccessEvent;
 import com.arthurscarpin.acs.core.accessevent.usecase.GetAccessHistoryUseCase;
-import com.arthurscarpin.acs.core.accessevent.usecase.ValidateAccessUseCase;
 import com.arthurscarpin.acs.core.pagination.PageInput;
 import com.arthurscarpin.acs.core.pagination.PageOutput;
 import com.arthurscarpin.acs.infrastructure.configuration.annotations.CanReadAccessEvent;
-import com.arthurscarpin.acs.infrastructure.configuration.annotations.CanWriteAccessEvent;
 import com.arthurscarpin.acs.infrastructure.mapper.AccessEventMapper;
 import com.arthurscarpin.acs.infrastructure.presentation.documentation.AccessEventControllerDoc;
-import com.arthurscarpin.acs.infrastructure.presentation.request.AccessEventRequest;
 import com.arthurscarpin.acs.infrastructure.presentation.response.AccessEventResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,24 +25,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccessEventController implements AccessEventControllerDoc {
 
-    private final ValidateAccessUseCase validateAccessUseCase;
-
     private final GetAccessHistoryUseCase getAccessHistoryUseCase;
 
     private final AccessEventMapper mapper;
-
-    @CanWriteAccessEvent
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AccessEventResponse save(@Valid @RequestBody AccessEventRequest request) {
-        log.info("Starting access validation for plate: {}, direction: {}, timestamp: {}", request.plate(), request.direction(), request.timestamp());
-        AccessEvent domain = mapper.fromRequestToDomain(request);
-        log.debug("Mapped request to domain: {}", domain);
-        AccessEvent accessEvent = validateAccessUseCase.execute(domain);
-        log.debug("Access event after validation: {}", accessEvent);
-        log.info("Access validation completed for plate: {}, result: {}", accessEvent.plate(), accessEvent.result());
-        return mapper.fromDomainToResponse(accessEvent);
-    }
 
     @CanReadAccessEvent
     @GetMapping
