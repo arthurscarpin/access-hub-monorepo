@@ -1,411 +1,562 @@
 {
-  "info": {
-    "_postman_id": "51b8c338-5813-4391-a90a-7bfb492d8c6b",
-    "name": "Access Control System",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "37882254"
-  },
-  "item": [
-    {
-      "name": "Development",
-      "item": [
-        {
-          "name": "Users",
-          "item": [
-            {
-              "name": "Register User",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"67b0b900-8439-41c4-9146-1087df2df45f\"\r\n    ]\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "localhost:8080/users",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "users"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Scopes",
-          "item": [
-            {
-              "name": "Get Scopes",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "localhost:8080/scopes",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "scopes"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Vehicles",
-          "item": [
-            {
-              "name": "Register Vehicle",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"plate\": \"BRA1S23\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"bf913720-abc4-4069-a302-8c8a1b339b7d\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "localhost:8080/vehicles",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "vehicles"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Update Vehicle Status",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "PATCH",
-                "header": [],
-                "url": {
-                  "raw": "localhost:8080/vehicles/ba780a43-40e4-4672-9e49-fdd2313ab0cf",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "vehicles",
-                    "ba780a43-40e4-4672-9e49-fdd2313ab0cf"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Owners",
-          "item": [
-            {
-              "name": "Register Owner",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"name\": \"Maria Oliveira\",\r\n    \"document\": \"111.444.777-35\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"contact@example.com\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "localhost:8080/owners",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "owners"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Authentication",
-          "item": [
-            {
-              "name": "User Login",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "var response = pm.response.json();\r",
-                      "var token = response.accessToken;\r",
-                      "pm.collectionVariables.set(\"token\", token);\r",
-                      "console.log(\"Access Token captured: \" + token);"
-                    ],
-                    "type": "text/javascript",
-                    "packages": {},
-                    "requests": {}
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "localhost:8080/login",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "login"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Access Event",
-          "item": [
-            {
-              "name": "Get Access Event History",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "http://localhost:8080/access-events?page=0&size=10",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "access-events"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "0"
-                    },
-                    {
-                      "key": "size",
-                      "value": "10"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Validate And Record Access Event",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"plate\": \"BRA1S23\",\r\n  \"direction\": \"OUT\",\r\n  \"timestamp\": \"2026-01-01 00:00:00-03:00\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "http://localhost:8080/access-events",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "access-events"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Capture",
-          "item": [
-            {
-              "name": "Create Capture",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "{{token}}",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"filenames\": [\r\n        \"car1.webp\"\r\n    ]\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "http://localhost:8080/captures",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "captures"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "Health Check",
-          "item": [
-            {
-              "name": "Health",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "http://localhost:8080/actuator/health",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "actuator",
-                    "health"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "token",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "51b8c338-5813-4391-a90a-7bfb492d8c6b",
+		"name": "Access Control System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37882254"
+	},
+	"item": [
+		{
+			"name": "Development",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Register User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"5f95ace0-19af-49ab-a57a-77b2616e9d07\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/users",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Scopes",
+					"item": [
+						{
+							"name": "Get Scopes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/scopes",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"scopes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Vehicles",
+					"item": [
+						{
+							"name": "Register Vehicle",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"plate\": \"BRA1S23\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"bf913720-abc4-4069-a302-8c8a1b339b7d\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/vehicles",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"vehicles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Vehicle Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/vehicles/ba780a43-40e4-4672-9e49-fdd2313ab0cf",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"vehicles",
+										"ba780a43-40e4-4672-9e49-fdd2313ab0cf"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Owners",
+					"item": [
+						{
+							"name": "Register Owner",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Maria Oliveira\",\r\n    \"document\": \"111.444.777-35\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"contact@example.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/owners",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"owners"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "User Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var response = pm.response.json();\r",
+											"var token = response.accessToken;\r",
+											"pm.collectionVariables.set(\"token\", token);\r",
+											"console.log(\"Access Token captured: \" + token);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Access Event",
+					"item": [
+						{
+							"name": "Get Access Event History",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/access-events?page=0&size=10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"access-events"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Validate And Record Access Event",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"plate\": \"BRA1S23\",\r\n  \"direction\": \"OUT\",\r\n  \"timestamp\": \"2026-01-01 00:00:00-03:00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/access-events",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"access-events"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Capture",
+					"item": [
+						{
+							"name": "Create Capture",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"filenames\": [\r\n        \"test.webp\"\r\n    ],\r\n    \"direction\": \"IN\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/captures",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"captures"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health Check",
+					"item": [
+						{
+							"name": "Health",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/actuator/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Payload Examples",
+					"item": [
+						{
+							"name": "OCR Payload",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"captureId\": \"6a03414bc2d067e22df02148\",\r\n    \"imageId\": \"0e347d43-8f72-4c2e-ab72-c1416a71266d\",\r\n    \"filename\": \"car1.webp\",\r\n    \"timestamp\": \"2026-05-12T15: 03: 40.040304880Z\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OCR Status Payload - STARTED",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"captureId\": \"6a03414bc2d067e22df02148\",\r\n    \"imageId\": \"0e347d43-8f72-4c2e-ab72-c1416a71266d\",\r\n    \"filename\": \"car1.webp\",\r\n    \"timestamp\": \"2026-05-12T15:03:40.040304880Z\",\r\n    \"image_status\": \"STARTED\",\r\n    \"capture_status\": \"PROCESSING\",\r\n    \"message\": \"Execution started\",\r\n    \"ocr\": []\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OCR Status Payload - PROCESSING",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"captureId\": \"6a03414bc2d067e22df02148\",\r\n    \"imageId\": \"0e347d43-8f72-4c2e-ab72-c1416a71266d\",\r\n    \"filename\": \"car1.webp\",\r\n    \"timestamp\": \"2026-05-12T15:03:40.040304880Z\",\r\n    \"image_status\": \"PROCESSING\",\r\n    \"capture_status\": \"PROCESSING\",\r\n    \"message\": \"Execution in processing...\",\r\n    \"ocr\": []\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OCR Status Payload - FAILED",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"captureId\": \"6a03414bc2d067e22df02148\",\r\n    \"imageId\": \"0e347d43-8f72-4c2e-ab72-c1416a71266d\",\r\n    \"filename\": \"car1.webp\",\r\n    \"timestamp\": \"2026-05-12T15:03:40.040304880Z\",\r\n    \"image_status\": \"FAILED\",\r\n    \"capture_status\": \"PROCESSING\",\r\n    \"message\": \"Error message...\",\r\n    \"ocr\": []\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OCR Status Payload - COMPLETED",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"captureId\": \"6a03414bc2d067e22df02148\",\r\n    \"imageId\": \"0e347d43-8f72-4c2e-ab72-c1416a71266d\",\r\n    \"filename\": \"car1.webp\",\r\n    \"timestamp\": \"2026-05-12T15:03:40.040304880Z\",\r\n    \"image_status\": \"COMPLETED\",\r\n    \"capture_status\": \"PROCESSING\",\r\n    \"message\": \"Execution completed\",\r\n    \"ocr\": [\r\n        {\r\n            \"text\": \"HAT\",\r\n            \"confidence\": 0.48065905256943753,\r\n            \"bbox\": [\r\n                [\r\n                    710,\r\n                    534\r\n                ],\r\n                [\r\n                    774,\r\n                    534\r\n                ],\r\n                [\r\n                    774,\r\n                    588\r\n                ],\r\n                [\r\n                    710,\r\n                    588\r\n                ]\r\n            ]\r\n        },\r\n        {\r\n            \"text\": \"R102a19?\",\r\n            \"confidence\": 0.29243414907131077,\r\n            \"bbox\": [\r\n                [\r\n                    601,\r\n                    669\r\n                ],\r\n                [\r\n                    889,\r\n                    669\r\n                ],\r\n                [\r\n                    889,\r\n                    745\r\n                ],\r\n                [\r\n                    601,\r\n                    745\r\n                ]\r\n            ]\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AI Validation Payload",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"6a03866da5fc100cf9d6028b\",\r\n    \"images\": [\r\n        {\r\n            \"id\": \"2fec72e1-4109-49b3-a001-7c3edd07c351\",\r\n            \"filename\": \"car1.webp\",\r\n            \"status\": \"COMPLETED\",\r\n            \"ocr\": [\r\n                {\r\n                    \"text\": \"HAT\",\r\n                    \"confidence\": 0.48065905256943753,\r\n                    \"bbox\": [\r\n                        [\r\n                            710,\r\n                            534\r\n                        ],\r\n                        [\r\n                            774,\r\n                            534\r\n                        ],\r\n                        [\r\n                            774,\r\n                            588\r\n                        ],\r\n                        [\r\n                            710,\r\n                            588\r\n                        ]\r\n                    ]\r\n                },\r\n                {\r\n                    \"text\": \"R102a19?\",\r\n                    \"confidence\": 0.29243414907131077,\r\n                    \"bbox\": [\r\n                        [\r\n                            601,\r\n                            669\r\n                        ],\r\n                        [\r\n                            889,\r\n                            669\r\n                        ],\r\n                        [\r\n                            889,\r\n                            745\r\n                        ],\r\n                        [\r\n                            601,\r\n                            745\r\n                        ]\r\n                    ]\r\n                }\r\n            ],\r\n            \"timestamp\": \"2026-05-12T19:58:56.598217269Z\"\r\n        }\r\n    ],\r\n    \"direction\": \"IN\",\r\n    \"status\": \"PROCESSING\",\r\n    \"finalPlate\": null,\r\n    \"finalConfidence\": null,\r\n    \"createdAt\": \"2026-05-12T19:58:37.138Z\",\r\n    \"updatedAt\": \"2026-05-12T19:58:56.598219845Z\",\r\n    \"reasoning\": null, \r\n    \"processedAt\": null,\r\n    \"processedImagesCount\": 1,\r\n    \"version\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AI Result Payload",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"capture\": {\r\n        \"id\": \"6a076bebe6875fbcb4429c58\",\r\n        \"images\": [\r\n            {\r\n                \"id\": \"0d3a110c-ca78-4dd5-aa4c-0e0c4f82478a\",\r\n                \"filename\": \"test.webp\",\r\n                \"status\": \"COMPLETED\",\r\n                \"ocr\": [\r\n                    {\r\n                        \"text\": \"(FIAT\",\r\n                        \"confidence\": 0.443525707126585,\r\n                        \"bbox\": [\r\n                            [\r\n                                1190,\r\n                                1012\r\n                            ],\r\n                            [\r\n                                1312,\r\n                                1012\r\n                            ],\r\n                            [\r\n                                1312,\r\n                                1112\r\n                            ],\r\n                            [\r\n                                1190,\r\n                                1112\r\n                            ]\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"text\": \"Grasil\",\r\n                        \"confidence\": 0.18896274993668935,\r\n                        \"bbox\": [\r\n                            [\r\n                                1194,\r\n                                1252\r\n                            ],\r\n                            [\r\n                                1296,\r\n                                1252\r\n                            ],\r\n                            [\r\n                                1296,\r\n                                1284\r\n                            ],\r\n                            [\r\n                                1194,\r\n                                1284\r\n                            ]\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"text\": \"[102a19:\",\r\n                        \"confidence\": 0.28191050860887484,\r\n                        \"bbox\": [\r\n                            [\r\n                                993,\r\n                                1275\r\n                            ],\r\n                            [\r\n                                1523,\r\n                                1275\r\n                            ],\r\n                            [\r\n                                1523,\r\n                                1411\r\n                            ],\r\n                            [\r\n                                993,\r\n                                1411\r\n                            ]\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"text\": \"BR\",\r\n                        \"confidence\": 0.9999043279943808,\r\n                        \"bbox\": [\r\n                            [\r\n                                971,\r\n                                1361\r\n                            ],\r\n                            [\r\n                                1015,\r\n                                1361\r\n                            ],\r\n                            [\r\n                                1015,\r\n                                1403\r\n                            ],\r\n                            [\r\n                                971,\r\n                                1403\r\n                            ]\r\n                        ]\r\n                    }\r\n                ],\r\n                \"timestamp\": \"2026-05-15T18:55:09.578685351Z\"\r\n            }\r\n        ],\r\n        \"status\": \"COMPLETED\",\r\n        \"direction\": \"IN\",\r\n        \"finalPlate\": \"RIO2A19\",\r\n        \"finalConfidence\": 0.28,\r\n        \"reasoning\": \"Selected the most complete usable OCR fragment '102A19' and normalized it to a 7-character plate. Applied positional reconstruction: 1->I and 0->O for the first two letter positions, kept 2 at POS3 as the OCR candidate's best preserved value, retained A at POS5 as Mercosul letter position, and kept 1/9 in numeric positions. Result forced into a valid Mercosul-style mask.\",\r\n        \"createdAt\": \"2026-05-15T18:54:35.923Z\",\r\n        \"updatedAt\": \"2026-05-15T18:55:09.578694313Z\",\r\n        \"processedAt\": null,\r\n        \"processedImagesCount\": 1,\r\n        \"version\": null\r\n    },\r\n    \"error\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
 }
