@@ -84,7 +84,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"plate\": \"BRA1S23\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"bf913720-abc4-4069-a302-8c8a1b339b7d\"\r\n}",
+									"raw": "{\r\n    \"plate\": \"RIO2A19\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"c3c32b19-7e41-4da0-897d-df9ab20b8900\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -155,7 +155,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Maria Oliveira\",\r\n    \"document\": \"111.444.777-35\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"contact@example.com\"\r\n}",
+									"raw": "{\r\n    \"name\": \"Maria Oliveira\",\r\n    \"document\": \"111.444.777-34\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"contact1@example.com\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -266,44 +266,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "Validate And Record Access Event",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{token}}",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"plate\": \"BRA1S23\",\r\n  \"direction\": \"OUT\",\r\n  \"timestamp\": \"2026-01-01 00:00:00-03:00\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:8080/access-events",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"access-events"
-									]
-								}
-							},
-							"response": []
 						}
 					]
 				},
@@ -327,7 +289,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"filenames\": [\r\n        \"test.webp\"\r\n    ],\r\n    \"direction\": \"IN\"\r\n}",
+									"raw": "{\r\n    \"filenames\": [\r\n        \"test.webp\"\r\n    ],\r\n    \"direction\": \"OUT\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
