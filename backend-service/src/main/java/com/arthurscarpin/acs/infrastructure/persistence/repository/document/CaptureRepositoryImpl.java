@@ -18,20 +18,17 @@ public class CaptureRepositoryImpl implements CustomCaptureRepository {
 
     @Override
     public CaptureEntity incrementProcessedCountAndUpsertSingleImage(String id, String imageId, CaptureImageEntity image) {
-        // Filtra pela captura E garante que essa imagem específica NÃO está COMPLETED
         Query query = new Query(
                 Criteria.where("id").is(id)
                         .and("images").elemMatch(Criteria.where("id").is(imageId).and("status").ne("COMPLETED"))
         );
 
-        // Atualiza atomicamente apenas os campos da imagem que mudou e soma 1 no contador global
         Update update = new Update()
                 .set("images.$.ocr", image.getOcr())
                 .set("images.$.status", "COMPLETED")
                 .set("images.$.timestamp", image.getTimestamp())
                 .inc("processedImagesCount", 1);
 
-        // returnNew(true) garante que o retorno trará o contador já atualizado (ex: 10/10)
         return mongoTemplate.findAndModify(
                 query,
                 update,
