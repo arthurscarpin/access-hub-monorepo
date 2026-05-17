@@ -111,12 +111,12 @@ The service consumes OCR jobs from the configured RabbitMQ OCR queue. The releva
 {
   "captureId": "capture-id",
   "imageId": "image-id",
-  "filename": "vehicle-frame-001.jpg",
+  "filename": "storage/tmp/capture-id/image-id.jpg",
   "timestamp": "2026-01-01T00:00:00Z"
 }
 ```
 
-The `filename` field is required. It is resolved against `STORAGE_PATH` before image loading.
+The `filename` field is required. It is resolved against `STORAGE_PATH` before image loading. The worker accepts filenames relative to the storage root, such as `tmp/capture-id/image-id.jpg`, and backend-published paths prefixed with the storage directory, such as `storage/tmp/capture-id/image-id.jpg`.
 
 ### Started Status
 
@@ -234,7 +234,7 @@ Settings are loaded from environment variables. When present, `.env.idea` is use
 | `RABBITMQ_AI_VALIDATION_ROUTING_KEY` | Platform routing key required by the current settings model. |
 | `RABBITMQ_MAX_RETRIES` | Maximum number of processing retries before the message is rejected without requeue. |
 | `RABBITMQ_BASE_DELAY_SECONDS` | Base used to calculate retry delay as `base ** retry_count` seconds. |
-| `STORAGE_PATH` | Root directory where image filenames are resolved. |
+| `STORAGE_PATH` | Root directory where image filenames are resolved. In Docker Compose this is usually `storage`, mounted as `/app/storage`. |
 
 Example `.env`:
 
@@ -336,6 +336,6 @@ The GitHub Actions workflow for this service runs when files under `recognize-pl
 - Processing failures are retried up to `RABBITMQ_MAX_RETRIES`; after that the message is rejected without requeue and should land in `${RABBITMQ_OCR_QUEUE}.dlq` when the backend-declared topology is active.
 - Published messages use JSON content type and delivery mode `2` for persistence.
 - EasyOCR is initialized with `gpu=True`; runtime environments should provide compatible GPU support or adjust the processor configuration when running CPU-only deployments.
-- `STORAGE_PATH` must point to the same storage location where the backend or capture ingestion flow writes image files.
+- `STORAGE_PATH` must point to the same storage location where the backend or capture ingestion flow writes image files. With the monorepo Docker Compose, both backend and OCR worker mount repository-root `./storage` at `/app/storage`.
 - In non-production environments, logs are also written to `logs/YYYYMMDD.ndjson`.
 - Horizontal scaling is achieved by running multiple worker instances against the same OCR queue.

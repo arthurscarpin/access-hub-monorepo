@@ -192,6 +192,8 @@ export ENVIRONMENT=prod
 
 Capture creation expects the submitted ZIP file to already exist in the configured storage root. The backend derives the capture id from the ZIP filename, extracts valid image files, moves successfully processed ZIP files to backup storage, and moves invalid or failed ZIP files to error storage.
 
+When running through the monorepo Docker Compose, the host directory `./storage` from the repository root is mounted into the backend container at `/app/storage`. Place incoming ZIP files in that repository-root `storage/` directory before calling `POST /captures/upload`.
+
 | Property | Default | Purpose |
 | --- | --- | --- |
 | `storage.root` | `storage` | Directory where incoming capture ZIP files are read. |

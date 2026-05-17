@@ -43,3 +43,9 @@ spring:
     publisher-returns: true
     ssl:
       enabled: false
+
+storage:
+  root: ${STORAGE_ROOT:${STORAGE_PATH:storage}}
+  backup: ${STORAGE_BACKUP:${STORAGE_PATH:storage}/backup}
+  error: ${STORAGE_ERROR:${STORAGE_PATH:storage}/error}
+  tmp: ${STORAGE_TMP:${STORAGE_PATH:storage}/tmp}
