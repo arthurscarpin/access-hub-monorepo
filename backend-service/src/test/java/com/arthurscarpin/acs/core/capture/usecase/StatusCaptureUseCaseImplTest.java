@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,7 +38,7 @@ class StatusCaptureUseCaseImplTest {
         CaptureOCRStatus request = createMockRequest(captureId, targetImageId);
         Capture existingCapture = createMockCapture(captureId, List.of(targetImageId, otherImageId));
 
-        when(gateway.findByCaptureIdAndImageId(captureId, targetImageId)).thenReturn(existingCapture);
+        when(gateway.findById(captureId)).thenReturn(existingCapture);
 
         useCase.execute(request);
 
@@ -52,12 +53,13 @@ class StatusCaptureUseCaseImplTest {
 
             assertEquals(request.imageStatus(), updatedImg.status());
             assertEquals(request.ocr().size(), updatedImg.ocr().size());
-            assertEquals(request.captureStatus(), capture.status());
+            assertEquals(CaptureStatus.RECEIVED, capture.status());
+            assertEquals(1, capture.processedImagesCount());
             assertNotNull(updatedImg.timestamp());
             assertEquals(ImageStatus.RECEIVED, unchangedImg.status());
 
             return true;
-        }));
+        }), eq(targetImageId));
     }
 
     @Test
@@ -78,7 +80,7 @@ class StatusCaptureUseCaseImplTest {
         );
 
         Capture existingCapture = createMockCapture(captureId, List.of(imageId));
-        when(gateway.findByCaptureIdAndImageId(captureId, imageId)).thenReturn(existingCapture);
+        when(gateway.findById(captureId)).thenReturn(existingCapture);
 
         useCase.execute(request);
 
@@ -86,8 +88,29 @@ class StatusCaptureUseCaseImplTest {
             CaptureImage img = capture.images().get(0);
             assertNotNull(img.ocr());
             assertTrue(img.ocr().isEmpty());
+            assertEquals(CaptureStatus.COMPLETED, capture.status());
+            assertEquals(1, capture.processedImagesCount());
             return true;
-        }));
+        }), eq(imageId));
+    }
+
+    @Test
+    @DisplayName("Given image status is not completed, when executing use case, then should not update capture")
+    void shouldNotUpdateCaptureWhenImageStatusIsNotCompleted() {
+        CaptureOCRStatus request = new CaptureOCRStatus(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                "image.jpg",
+                Instant.now(),
+                ImageStatus.PROCESSING,
+                CaptureStatus.RECEIVED,
+                "Processing",
+                null
+        );
+
+        useCase.execute(request);
+
+        verifyNoInteractions(gateway);
     }
 
     @Test
@@ -95,11 +118,11 @@ class StatusCaptureUseCaseImplTest {
     void shouldPropagateExceptionWhenGatewayFails() {
         CaptureOCRStatus request = createMockRequest(UUID.randomUUID().toString(), UUID.randomUUID().toString());
 
-        when(gateway.findByCaptureIdAndImageId(any(), any()))
+        when(gateway.findById(any()))
                 .thenThrow(new RuntimeException("Capture not found"));
 
         assertThrows(RuntimeException.class, () -> useCase.execute(request));
-        verify(gateway, never()).updateAndPublish(any());
+        verify(gateway, never()).updateAndPublish(any(), any());
     }
 
     private CaptureOCRStatus createMockRequest(String captureId, String imageId) {

@@ -27,6 +27,15 @@ def test_build_with_subdirectory(tmp_path: Path):
     expected = str(tmp_path.resolve() / "folder/file.txt")
     assert result == expected
 
+def test_build_with_filename_prefixed_by_storage_root(tmp_path: Path):
+    storage_root = tmp_path / "storage"
+    storage = Storage(str(storage_root))
+
+    result = storage.build("storage/tmp/file.txt")
+
+    expected = str(storage_root.resolve() / "tmp/file.txt")
+    assert result == expected
+
 def test_build_with_absolute_filename(tmp_path: Path):
     storage = Storage(str(tmp_path))
     absolute_path = "/tmp/other/file.txt"

@@ -8,9 +8,7 @@ public interface CaptureGateway {
 
     Capture saveAndPublish(Capture capture);
 
-    Capture findByCaptureIdAndImageId(String captureId, String imageId);
-
     Capture update(Capture capture);
 
-    void updateAndPublish(Capture capture);
+    void updateAndPublish(Capture domain, String processedImageId);
 }

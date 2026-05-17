@@ -1,6 +1,8 @@
 package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
 import com.arthurscarpin.acs.core.accessevent.domain.Direction;
+import com.arthurscarpin.acs.core.capture.domain.Capture;
+import com.arthurscarpin.acs.core.capture.domain.CaptureImage;
 import com.arthurscarpin.acs.core.capture.usecase.CreateCaptureUseCase;
 import com.arthurscarpin.acs.infrastructure.configuration.annotations.CanWriteCapture;
 import com.arthurscarpin.acs.infrastructure.presentation.documentation.CaptureControllerDoc;
@@ -23,16 +25,23 @@ public class CaptureController implements CaptureControllerDoc {
     private final CreateCaptureUseCase createCaptureUseCase;
 
     @CanWriteCapture
-    @PostMapping
+    @PostMapping("/upload")
     @ResponseStatus(HttpStatus.CREATED)
     public CaptureResponse save(@Valid @RequestBody CaptureRequest request) {
-        log.info("Starting capture creation with {} filenames", request.filenames().size());
-        List<String> filenames = request.filenames();
+        String filename = request.filename();
         Direction direction = request.direction();
-        log.debug("Processing filenames: {}", filenames);
-        String captureId = createCaptureUseCase.execute(filenames, direction);
-        log.debug("Generated capture ID: {}", captureId);
-        log.info("Capture creation completed successfully with ID: {}", captureId);
-        return new CaptureResponse(captureId, "Capture registered successfully");
+        log.info("Starting capture creation with {} filename", request.filename());
+        log.debug("Processing filename: {}", filename);
+        Capture capture = createCaptureUseCase.execute(filename, direction);
+        log.debug("Capture created: {}", capture);
+        List<String> captureImages = capture.images().stream()
+                .map(CaptureImage::filename)
+                .toList();
+        return new CaptureResponse(
+                capture.id(),
+                capture.status(),
+                "Capture created with success",
+                captureImages
+        );
     }
 }

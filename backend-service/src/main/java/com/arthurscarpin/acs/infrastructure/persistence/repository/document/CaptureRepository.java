@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CaptureRepository extends MongoRepository<CaptureEntity, String> {
+public interface CaptureRepository extends MongoRepository<CaptureEntity, String>, CustomCaptureRepository {
 
     Optional<CaptureEntity> findByIdAndImages_Id(String id, String imageId);
 }

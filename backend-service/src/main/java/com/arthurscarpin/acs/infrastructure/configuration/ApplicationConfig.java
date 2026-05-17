@@ -6,6 +6,7 @@ import com.arthurscarpin.acs.core.accessevent.usecase.GetAccessHistoryUseCaseImp
 import com.arthurscarpin.acs.core.accessevent.usecase.ValidateAccessUseCase;
 import com.arthurscarpin.acs.core.accessevent.usecase.ValidateAccessUseCaseImpl;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
+import com.arthurscarpin.acs.core.capture.gateway.CaptureZipGateway;
 import com.arthurscarpin.acs.core.capture.usecase.*;
 import com.arthurscarpin.acs.core.owner.gateway.OwnerGateway;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerImpl;
@@ -66,8 +67,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public CreateCaptureUseCase createCaptureUseCase(CaptureGateway captureGateway) {
-        return new CreateCaptureUseCaseImpl(captureGateway);
+    public CreateCaptureUseCase createCaptureUseCase(CaptureGateway captureGateway, CaptureZipGateway captureZipGateway) {
+        return new CreateCaptureUseCaseImpl(captureGateway, captureZipGateway);
     }
 
     @Bean
