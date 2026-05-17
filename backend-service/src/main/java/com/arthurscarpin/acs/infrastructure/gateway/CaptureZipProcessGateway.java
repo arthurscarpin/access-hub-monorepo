@@ -4,7 +4,7 @@ import com.arthurscarpin.acs.core.capture.exception.CaptureNotFoundException;
 import com.arthurscarpin.acs.core.capture.exception.CaptureZipException;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureZipGateway;
 import com.arthurscarpin.acs.infrastructure.configuration.StorageConfigProperties;
-import com.arthurscarpin.acs.infrastructure.storage.CaptureZipExtractor;
+import com.arthurscarpin.acs.infrastructure.zip.CaptureZipExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
