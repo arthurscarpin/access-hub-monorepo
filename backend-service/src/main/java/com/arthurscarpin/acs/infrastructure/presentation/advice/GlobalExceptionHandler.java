@@ -1,6 +1,7 @@
 package com.arthurscarpin.acs.infrastructure.presentation.advice;
 
 import com.arthurscarpin.acs.core.capture.exception.CaptureNotFoundException;
+import com.arthurscarpin.acs.core.capture.exception.CaptureZipException;
 import com.arthurscarpin.acs.core.owner.exception.*;
 import com.arthurscarpin.acs.core.scope.exception.ScopeNotFoundException;
 import com.arthurscarpin.acs.core.user.exception.BadCredentialsException;
@@ -80,6 +81,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         log.error("Invalid request body: {}", ex.getMessage(), ex);
+        return ErrorResponse.builder()
+                .timestamp(OffsetDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(CaptureZipException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCaptureZipException(CaptureZipException ex) {
+        log.error("Unzip extraction error: {}", ex.getMessage(), ex);
         return ErrorResponse.builder()
                 .timestamp(OffsetDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
