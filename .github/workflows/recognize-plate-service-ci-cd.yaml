@@ -1,10 +1,6 @@
 name: Recognize Plate Service CI/CD Pipeline
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'recognize-plate-service/**'
   pull_request:
     branches: [main]
     paths:
