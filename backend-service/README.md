@@ -44,15 +44,39 @@ The project was designed as more than a CRUD API: it combines relational consist
 
 The capture workflow is asynchronous and message-driven:
 
-1. A client submits one or more image filenames to `/captures`.
-2. The service stores a capture document in MongoDB.
-3. One RabbitMQ message is published for each image to request OCR processing.
-4. OCR workers publish image-level status updates back to the service.
-5. When every image reaches a terminal state, the service publishes the capture to the AI validation queue.
-6. The AI result consumer receives the final plate decision.
-7. The service updates the capture and creates the corresponding access event.
+1. A client places a capture ZIP file in the configured storage root.
+2. The client submits the ZIP filename and direction to `POST /captures/upload`.
+3. The service validates the ZIP filename, derives the capture id from the UUID filename, validates and extracts the image files, and moves the ZIP to backup or error storage.
+4. The service stores a capture document in MongoDB with one image entry per extracted file.
+5. One RabbitMQ message is published for each extracted image to request OCR processing.
+6. OCR workers publish image-level status updates back to the service.
+7. When every image reaches `COMPLETED`, the service publishes the capture to the AI validation queue.
+8. The AI result consumer receives the final plate decision.
+9. The service updates the capture and creates the corresponding access event.
 
 This design keeps HTTP requests fast while allowing OCR and AI processing to scale independently.
+
+Capture ZIP filenames must follow the UUID pattern:
+
+```json
+{
+  "filename": "550e8400-e29b-41d4-a716-446655440000.zip",
+  "direction": "IN"
+}
+```
+
+The response returns the created capture id, current status, and the extracted files registered for OCR:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "RECEIVED",
+  "message": "Capture created with success",
+  "extractedFiles": [
+    "storage/tmp/550e8400-e29b-41d4-a716-446655440000/image-1.jpg"
+  ]
+}
+```
 
 Message consumers use retry handling before a failed message is rejected. Messages that still fail after the configured retry attempts are rejected without requeue and routed by RabbitMQ to the matching dead-letter queue.
 
@@ -107,7 +131,7 @@ The `core` package contains business rules and gateway contracts. The `infrastru
 | `POST` | `/vehicles` | Register a vehicle | Bearer token + `vehicle:write` or admin |
 | `PATCH` | `/vehicles/{id}` | Toggle vehicle status | Bearer token + `vehicle:write` or admin |
 | `GET` | `/access-events` | Query access history with filters and pagination | Bearer token + `access_event:read` or admin |
-| `POST` | `/captures` | Register a capture and publish OCR jobs | Bearer token + `capture:write` or admin |
+| `POST` | `/captures/upload` | Create a capture from a ZIP file in storage and publish OCR jobs for extracted images | Bearer token + `capture:write` or admin |
 | `GET` | `/actuator/health` | Health check | Public |
 | `GET` | `/api/api-docs` | OpenAPI JSON | Public |
 | `GET` | `/swagger/index.html` | Swagger UI | Public |
@@ -163,6 +187,18 @@ export ENVIRONMENT=prod
 | `RABBITMQ_AI_VALIDATION_QUEUE` | Queue consumed by AI validation workers. |
 | `RABBITMQ_AI_RESULT_ROUTING_KEY` | Routing key for AI validation results. |
 | `RABBITMQ_AI_RESULT_QUEUE` | Queue consumed by this service for AI results. |
+
+### Capture Storage
+
+Capture creation expects the submitted ZIP file to already exist in the configured storage root. The backend derives the capture id from the ZIP filename, extracts valid image files, moves successfully processed ZIP files to backup storage, and moves invalid or failed ZIP files to error storage.
+
+| Property | Default | Purpose |
+| --- | --- | --- |
+| `storage.root` | `storage` | Directory where incoming capture ZIP files are read. |
+| `storage.backup` | `storage/backup` | Directory where successfully processed ZIP files are moved. |
+| `storage.error` | `storage/error` | Directory where failed ZIP files are moved. |
+| `storage.tmp` | `storage/tmp` | Directory used for extracted image files. |
+| `storage.max-files` | `10` | Maximum number of files accepted inside a capture ZIP. |
 
 ### RabbitMQ Retry and Dead-Letter Handling
 

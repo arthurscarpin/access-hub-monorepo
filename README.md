@@ -45,9 +45,10 @@ sequenceDiagram
     participant AI as plate-intelligence-service
     participant DB as PostgreSQL/MongoDB
 
-    Client->>Backend: POST /captures with filenames and direction
-    Backend->>DB: Persist capture document
-    Backend->>RabbitMQ: Publish one OCR job per image
+    Client->>Backend: POST /captures/upload with ZIP filename and direction
+    Backend->>Backend: Validate and extract ZIP from storage
+    Backend->>DB: Persist capture document with extracted images
+    Backend->>RabbitMQ: Publish one OCR job per extracted image
 
     RabbitMQ->>OCR: Deliver OCR image job
     OCR->>RabbitMQ: Publish STARTED status
@@ -85,7 +86,8 @@ flowchart TD
 - JWT-secured REST API with OAuth2 scopes and method-level authorization.
 - Owner, vehicle, user, scope, capture, and access-event management.
 - PostgreSQL persistence with Flyway migrations.
-- MongoDB capture storage for image-level OCR state and AI result metadata.
+- ZIP-based capture ingestion with storage backup/error handling.
+- MongoDB capture storage for extracted image OCR state and AI result metadata.
 - RabbitMQ-based asynchronous orchestration between backend, OCR, and AI services, with retry and dead-letter handling for failed messages.
 - OpenCV-based plate image pre-processing.
 - EasyOCR text extraction with bounding boxes and confidence scores.

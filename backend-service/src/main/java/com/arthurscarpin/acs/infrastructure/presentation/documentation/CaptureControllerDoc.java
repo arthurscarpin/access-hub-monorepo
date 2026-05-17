@@ -17,12 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Tag(name = "Captures", description = "Operations related to captures")
 public interface CaptureControllerDoc {
 
-    @Operation(summary = "Create capture", description = "Creates a new capture with the provided filenames.")
+    @Operation(
+            summary = "Upload capture ZIP",
+            description = "Creates a capture from a ZIP file already available in storage. The ZIP filename must be a UUID with the .zip extension. The service validates and extracts the images, stores the capture document, and publishes one OCR job per extracted image."
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Capture created successfully", content = @Content(schema = @Schema(implementation = CaptureResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request data", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "201", description = "Capture created successfully from the ZIP file", content = @Content(schema = @Schema(implementation = CaptureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid filename or request data", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    CaptureResponse save(@Valid @RequestBody CaptureRequest request);
+    CaptureResponse save(
+            @Valid
+            @RequestBody
+            CaptureRequest request
+    );
 }
