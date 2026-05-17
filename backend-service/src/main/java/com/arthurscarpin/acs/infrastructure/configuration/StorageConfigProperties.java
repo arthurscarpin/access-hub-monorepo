@@ -6,13 +6,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "capture.storage")
+@ConfigurationProperties(prefix = "storage")
 @Setter
 @Getter
 public class StorageConfigProperties {
-    private static String root = "storage";
-    private static String backup = "storage/backup";
-    private static String error = "storage/error";
-    private static String tmp = "storage/tmp";
-    private static int maxFiles = 10;
+    private String root = "storage";
+    private String backup = "storage/backup";
+    private String error = "storage/error";
+    private String tmp = "storage/tmp";
+    private int maxFiles = 10;
 }

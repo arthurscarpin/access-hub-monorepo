@@ -1,6 +1,7 @@
 package com.arthurscarpin.acs.infrastructure.gateway;
 
 import com.arthurscarpin.acs.core.capture.domain.Capture;
+import com.arthurscarpin.acs.core.capture.domain.CaptureImage;
 import com.arthurscarpin.acs.core.capture.domain.CaptureMessage;
 import com.arthurscarpin.acs.core.capture.domain.ImageStatus;
 import com.arthurscarpin.acs.core.capture.exception.CaptureNotFoundException;
@@ -64,24 +65,47 @@ public class CaptureRepositoryGateway implements CaptureGateway {
         return savedDomain;
     }
 
-    @Override
-    public Capture findByCaptureIdAndImageId(String captureId, String imageId) {
-        log.debug("Searching for capture with ID: {} and image ID: {}", captureId, imageId);
-
-        CaptureEntity entity = repository.findByIdAndImages_Id(captureId, imageId)
-                .orElseThrow(() -> {
-                    log.warn("Capture not found for IDs: Capture [{}], Image [{}]", captureId, imageId);
-                    return new CaptureNotFoundException("Capture not found");
-                });
-
-        return mapper.fromEntityToDomain(entity);
-    }
-
     @Transactional
     @Override
-    public void updateAndPublish(Capture domain) {
-        Capture updatedDomain = update(domain);
-        if (updatedDomain.processedImagesCount() >= updatedDomain.images().size()) {
+    public void updateAndPublish(Capture domain, String processedImageId) {
+        CaptureImage processedImage = domain.images().stream()
+                .filter(img -> img.id().equals(processedImageId))
+                .findFirst()
+                .orElse(null);
+
+        if (processedImage == null) {
+            log.warn("Image ID {} not found in domain for Capture ID: {}", processedImageId, domain.id());
+            return;
+        }
+
+        CaptureImageEntity imageEntity = mapper.toImageEntity(processedImage);
+
+        CaptureEntity updatedEntity = repository.incrementProcessedCountAndUpsertSingleImage(
+                domain.id(),
+                processedImageId,
+                imageEntity
+        );
+
+        if (updatedEntity == null) {
+            log.info("The image {} has already been processed. Ignoring to prevent duplication.", processedImageId);
+            return;
+        }
+
+        int totalImages = updatedEntity.getImages().size();
+        log.info("Mongo Atomic Update - Capture ID: {} | Processed: {}/{}",
+                domain.id(), updatedEntity.getProcessedImagesCount(), totalImages);
+
+        if (updatedEntity.getProcessedImagesCount() == totalImages) {
+            log.info("Success! This thread atomically processed the last image. Forcing fresh database reload...");
+
+            CaptureEntity freshEntity = repository.findById(domain.id())
+                    .orElseThrow(() -> new CaptureNotFoundException(
+                            "Capture not found for publishing: " + domain.id()
+                    ));
+
+            Capture updatedDomain = mapper.fromEntityToDomain(freshEntity);
+
+            log.info("Publishing consolidated payload with all extracted OCRs to RabbitMQ...");
             iAProducer.publish(updatedDomain);
         }
     }

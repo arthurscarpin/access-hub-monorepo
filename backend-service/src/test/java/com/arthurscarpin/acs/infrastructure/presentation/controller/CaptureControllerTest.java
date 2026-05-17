@@ -2,7 +2,6 @@ package com.arthurscarpin.acs.infrastructure.presentation.controller;
 
 import com.arthurscarpin.acs.AccessControlSystemIntegrationTest;
 import com.arthurscarpin.acs.core.accessevent.domain.Direction;
-import com.arthurscarpin.acs.infrastructure.presentation.request.CaptureRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
