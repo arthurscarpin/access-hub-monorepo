@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PageTitle } from './page-title';
+import { EventContent } from './event-content';
 
-describe('PageTitle', () => {
-  let component: PageTitle;
-  let fixture: ComponentFixture<PageTitle>;
+describe('EventContent', () => {
+  let component: EventContent;
+  let fixture: ComponentFixture<EventContent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PageTitle],
+      imports: [EventContent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageTitle);
+    fixture = TestBed.createComponent(EventContent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

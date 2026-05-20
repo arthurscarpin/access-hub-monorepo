@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { Sidebar } from '../../../../shared/components/sidebar/sidebar';
-import { Container } from '../../components/container/container';
+import { SidebarContent } from '../../../../shared/components/menu/sidebar-content/sidebar-content';
+import { EventContent } from '../../components/event-content/event-content';
 
 
 @Component({
   selector: 'app-access-events',
   standalone: true,
   imports: [
-    Sidebar,
-    Container
+    SidebarContent,
+    EventContent
   ],
   templateUrl: './access-events.html',
 })

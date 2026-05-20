@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { StatusBadge } from '../status-badge/status-badge';
-import { DirectionBadge } from '../direction-badge/direction-badge';
+import { EventStatusBadge } from '../event-status-badge/event-status-badge';
+import { EventDirectionBadge } from '../event-direction-badge/event-direction-badge';
 
 @Component({
   standalone: true,
   selector: 'tr[app-event-table-row]',
-  imports: [StatusBadge, DirectionBadge],
+  imports: [EventStatusBadge, EventDirectionBadge],
   templateUrl: './event-table-row.html',
 })
 export class EventTableRow {}

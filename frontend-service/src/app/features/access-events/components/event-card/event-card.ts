@@ -5,13 +5,13 @@ import { EventPagination } from '../event-pagination/event-pagination';
 
 
 @Component({
-  selector: 'app-events-card',
+  selector: 'app-event-card',
   imports: [
     EventFilters,
     EventTable,
     EventPagination
   ],
-  templateUrl: './events-card.html',
-  styleUrl: './events-card.css',
+  templateUrl: './event-card.html',
+  styleUrl: './event-card.css',
 })
-export class EventsCard {}
+export class EventCard {}

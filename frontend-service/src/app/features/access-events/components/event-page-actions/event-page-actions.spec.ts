@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DirectionBadge } from './direction-badge';
+import { EventPageActions } from './event-page-actions';
 
-describe('DirectionBadge', () => {
-  let component: DirectionBadge;
-  let fixture: ComponentFixture<DirectionBadge>;
+describe('EventPageActions', () => {
+  let component: EventPageActions;
+  let fixture: ComponentFixture<EventPageActions>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DirectionBadge],
+      imports: [EventPageActions],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DirectionBadge);
+    fixture = TestBed.createComponent(EventPageActions);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

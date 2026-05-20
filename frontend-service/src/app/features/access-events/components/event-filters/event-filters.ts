@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { TabButton } from '../tab-button/tab-button';
-import { InputSearch } from '../../../../shared/components/content/input-search/input-search';
+import { EventTabButton } from '../event-tab-button/event-tab-button';
+import { InputSearch } from '../../../../shared/components/main/input-search/input-search';
 
 @Component({
   selector: 'app-event-filters',
-  imports: [TabButton, InputSearch],
+  imports: [EventTabButton, InputSearch],
   templateUrl: './event-filters.html',
   styleUrl: './event-filters.css',
 })

@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { LucideAngularModule, ArrowDownLeft } from 'lucide-angular';
 
 @Component({
-  selector: 'app-direction-badge',
+  selector: 'app-event-direction-badge',
   imports: [LucideAngularModule],
-  templateUrl: './direction-badge.html',
-  styleUrl: './direction-badge.css',
+  templateUrl: './event-direction-badge.html',
+  styleUrl: './event-direction-badge.css',
 })
-export class DirectionBadge {
+export class EventDirectionBadge {
   readonly ArrowDownLeft = ArrowDownLeft;
 }
