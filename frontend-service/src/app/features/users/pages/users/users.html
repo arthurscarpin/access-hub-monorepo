@@ -1,0 +1,206 @@
+<div class="flex h-screen w-full bg-slate-50 font-sans text-slate-800">
+  
+  <aside class="flex w-64 flex-col border-r border-slate-200 bg-white">
+    <div class="flex items-center gap-3 border-b border-slate-100 p-4">
+      <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
+        <lucide-icon [img]="Shield" class="w-5 h-5"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-sm font-bold text-slate-900 leading-tight">AccessHub</h2>
+        <p class="text-xs text-slate-400">Control Center</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 space-y-6 p-4">
+      <div>
+        <span class="px-3 text-xxs font-semibold uppercase tracking-wider text-slate-400 block mb-2">Visão geral</span>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
+            <lucide-icon [img]="LayoutDashboard" class="w-4 h-4 text-slate-400"></lucide-icon> Dashboard
+          </a>
+          <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
+            <lucide-icon [img]="Activity" class="w-4 h-4 text-slate-400"></lucide-icon> Eventos de Acesso
+          </a>
+          <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
+            <lucide-icon [img]="Camera" class="w-4 h-4 text-slate-400"></lucide-icon> Capturas
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <span class="px-3 text-xxs font-semibold uppercase tracking-wider text-slate-400 block mb-2">Gestão</span>
+        <div class="space-y-0.5">
+          <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
+            <lucide-icon [img]="Car" class="w-4 h-4 text-slate-400"></lucide-icon> Veículos
+          </a>
+          <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
+            <lucide-icon [img]="Users" class="w-4 h-4 text-slate-400"></lucide-icon> Proprietários
+          </a>
+          <a href="#" class="flex items-center gap-3 rounded-lg bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900">
+            <lucide-icon [img]="UserCog" class="w-4 h-4 text-slate-800"></lucide-icon> Usuários
+          </a>
+          <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors">
+            <lucide-icon [img]="ShieldCheck" class="w-4 h-4 text-slate-400"></lucide-icon> Escopos
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="border-t border-slate-100 p-4 flex items-center justify-between bg-white">
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600 text-sm border border-blue-100">
+          A
+        </div>
+        <div>
+          <h4 class="text-xs font-semibold text-slate-900 leading-tight">Arthur</h4>
+          <p class="text-xxs text-slate-400 font-medium">arthur&#64;accesshub.io</p>
+        </div>
+      </div>
+      <button class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded hover:bg-slate-50">
+        <lucide-icon [img]="LogOut" class="w-4 h-4"></lucide-icon>
+      </button>
+    </div>
+  </aside>
+
+  <main class="flex flex-1 flex-col overflow-y-auto">
+    
+    <header class="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-8">
+      <div class="flex items-center gap-2 text-xs text-slate-400">
+        <lucide-icon [img]="LayoutGrid" class="w-3.5 h-3.5"></lucide-icon>
+        <span class="hover:text-slate-600 cursor-pointer">Gestão</span>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-600 font-medium">Usuários</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="relative w-80">
+          <lucide-icon [img]="Search" class="absolute left-3 top-2.5 h-4 w-4 text-slate-400"></lucide-icon>
+          <input 
+            type="text" 
+            placeholder="Buscar placa, proprietário, even..." 
+            class="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-9 pr-12 text-xs outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
+          />
+          <kbd class="absolute right-2.5 top-2 rounded bg-white px-1.5 py-0.5 text-xxs font-medium text-slate-400 border border-slate-200 shadow-xs">⌘ K</kbd>
+        </div>
+        <button class="relative rounded-lg p-1.5 text-slate-400 hover:bg-slate-50 hover:text-slate-600 transition-colors border border-slate-100">
+          <lucide-icon [img]="Bell" class="w-4 h-4"></lucide-icon>
+          <span class="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-red-500"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="p-10 max-w-[1400px] w-full mx-auto">
+      
+      <div class="flex items-start justify-between mb-8">
+        <div>
+          <span class="text-xxs font-bold uppercase tracking-wider text-slate-400">Gestão</span>
+          <h1 class="text-2xl font-bold text-slate-900 mt-0.5 tracking-tight">Usuários</h1>
+          <p class="text-xs text-slate-400 font-medium mt-1">Membros da equipe com acesso à plataforma e seus respectivos escopos.</p>
+        </div>
+        <button class="flex items-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 shadow-sm transition-colors">
+          <lucide-icon [img]="Plus" class="w-4 h-4"></lucide-icon> Convidar usuário
+        </button>
+      </div>
+
+      <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs">
+        <table class="w-full border-collapse text-left text-sm text-slate-600">
+          <thead class="bg-slate-50/70 text-xxs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200">
+            <tr>
+              <th scope="col" class="px-6 py-3.5 font-semibold">Nome</th>
+              <th scope="col" class="px-6 py-3.5 font-semibold">E-mail</th>
+              <th scope="col" class="px-6 py-3.5 font-semibold">Escopos</th>
+              <th scope="col" class="px-6 py-3.5 w-10"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+            
+            <tr class="hover:bg-slate-50/50 transition-colors">
+              <td class="whitespace-nowrap px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600 text-xs border border-blue-100">
+                    AS
+                  </div>
+                  <span class="font-semibold text-slate-900 text-sm">Arthur Scarpin</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-slate-500 text-xs">arthur&#64;accesshub.io</td>
+              <td class="whitespace-nowrap px-6 py-4">
+                <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-xxs font-bold text-blue-600 border border-blue-100 uppercase tracking-wide">Admin</span>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-right">
+                <button class="text-slate-400 hover:text-slate-600 p-1 rounded hover:bg-slate-100 transition-colors">
+                  <lucide-icon [img]="MoreHorizontal" class="w-4 h-4"></lucide-icon>
+                </button>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 transition-colors">
+              <td class="whitespace-nowrap px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600 text-xs border border-blue-100">
+                    BL
+                  </div>
+                  <span class="font-semibold text-slate-900 text-sm">Beatriz Lopes</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-slate-500 text-xs">bia&#64;accesshub.io</td>
+              <td class="whitespace-nowrap px-6 py-4">
+                <div class="flex gap-1.5">
+                  <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-xxs font-bold text-emerald-600 border border-emerald-100 uppercase tracking-wide">Operator</span>
+                  <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xxs font-bold text-slate-500 uppercase tracking-wide">Viewer</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-right">
+                <button class="text-slate-400 hover:text-slate-600 p-1 rounded hover:bg-slate-100 transition-colors">
+                  <lucide-icon [img]="MoreHorizontal" class="w-4 h-4"></lucide-icon>
+                </button>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 transition-colors">
+              <td class="whitespace-nowrap px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600 text-xs border border-blue-100">
+                    DR
+                  </div>
+                  <span class="font-semibold text-slate-900 text-sm">Diego Ramos</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-slate-500 text-xs">diego&#64;accesshub.io</td>
+              <td class="whitespace-nowrap px-6 py-4">
+                <span class="inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-xxs font-bold text-amber-600 border border-amber-100 uppercase tracking-wide">Security</span>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-right">
+                <button class="text-slate-400 hover:text-slate-600 p-1 rounded hover:bg-slate-100 transition-colors">
+                  <lucide-icon [img]="MoreHorizontal" class="w-4 h-4"></lucide-icon>
+                </button>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 transition-colors">
+              <td class="whitespace-nowrap px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600 text-xs border border-blue-100">
+                    HC
+                  </div>
+                  <span class="font-semibold text-slate-900 text-sm">Helena Costa</span>
+                </div>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-slate-500 text-xs">helena&#64;accesshub.io</td>
+              <td class="whitespace-nowrap px-6 py-4">
+                <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xxs font-bold text-slate-500 uppercase tracking-wide">Viewer</span>
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-right">
+                <button class="text-slate-400 hover:text-slate-600 p-1 rounded hover:bg-slate-100 transition-colors">
+                  <lucide-icon [img]="MoreHorizontal" class="w-4 h-4"></lucide-icon>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>

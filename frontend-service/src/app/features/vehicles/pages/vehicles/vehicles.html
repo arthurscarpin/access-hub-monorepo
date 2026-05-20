@@ -1,0 +1,565 @@
+<div class="flex min-h-screen bg-slate-100">
+
+  <!-- SIDEBAR -->
+  <aside
+    class="hidden w-72 border-r border-slate-200 bg-white lg:flex lg:flex-col"
+  >
+
+    <!-- logo -->
+    <div class="border-b border-slate-200 p-6">
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900"
+        >
+          <lucide-angular
+            [img]="ShieldCheck"
+            class="h-5 w-5 text-white"
+          ></lucide-angular>
+        </div>
+
+        <div>
+          <h2 class="font-semibold text-slate-900">
+            AccessHub
+          </h2>
+
+          <p class="text-sm text-slate-500">
+            Control Center
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- menu -->
+    <nav class="flex-1 space-y-8 p-4">
+
+      <!-- overview -->
+      <div>
+
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Overview
+        </p>
+
+        <div class="space-y-1">
+
+          <a
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            <lucide-angular
+              [img]="LayoutDashboard"
+              class="h-4 w-4"
+            ></lucide-angular>
+
+            Dashboard
+          </a>
+
+          <a
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            <lucide-angular
+              [img]="Activity"
+              class="h-4 w-4"
+            ></lucide-angular>
+
+            Access Events
+          </a>
+
+          <a
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            <lucide-angular
+              [img]="Upload"
+              class="h-4 w-4"
+            ></lucide-angular>
+
+            Captures
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- management -->
+      <div>
+
+        <p
+          class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+        >
+          Management
+        </p>
+
+        <div class="space-y-1">
+
+          <a
+            class="flex items-center gap-3 rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-900"
+          >
+            <lucide-angular
+              [img]="Car"
+              class="h-4 w-4"
+            ></lucide-angular>
+
+            Vehicles
+          </a>
+
+          <a
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            <lucide-angular
+              [img]="Users"
+              class="h-4 w-4"
+            ></lucide-angular>
+
+            Owners
+          </a>
+
+          <a
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+          >
+            <lucide-angular
+              [img]="Shield"
+              class="h-4 w-4"
+            ></lucide-angular>
+
+            Scopes
+          </a>
+
+        </div>
+
+      </div>
+
+    </nav>
+
+    <!-- user -->
+    <div class="border-t border-slate-200 p-4">
+
+      <div class="flex items-center gap-3">
+
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-sm font-medium"
+        >
+          A
+        </div>
+
+        <div>
+          <p class="text-sm font-medium text-slate-900">
+            Arthur
+          </p>
+
+          <p class="text-xs text-slate-500">
+            arthur@accesshub.io
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="flex flex-1 flex-col">
+
+    <!-- NAVBAR -->
+    <header
+      class="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6"
+    >
+
+      <div class="flex items-center gap-3">
+
+        <p class="text-sm text-slate-500">
+          Management
+        </p>
+
+        <span class="text-slate-300">
+          /
+        </span>
+
+        <p class="text-sm font-medium text-slate-900">
+          Vehicles
+        </p>
+
+      </div>
+
+      <div class="flex items-center gap-4">
+
+        <!-- search -->
+        <div class="relative hidden md:block">
+
+          <lucide-angular
+            [img]="Search"
+            class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+          ></lucide-angular>
+
+          <input
+            type="text"
+            placeholder="Search plate or owner..."
+            class="h-11 w-80 rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm outline-none focus:border-slate-300"
+          />
+
+        </div>
+
+        <!-- bell -->
+        <button
+          class="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white"
+        >
+          <lucide-angular
+            [img]="Bell"
+            class="h-5 w-5 text-slate-600"
+          ></lucide-angular>
+        </button>
+
+      </div>
+
+    </header>
+
+    <!-- PAGE -->
+    <main class="flex-1 p-6">
+
+      <!-- header -->
+      <div
+        class="flex flex-col gap-4 border-b border-slate-200 pb-6 lg:flex-row lg:items-center lg:justify-between"
+      >
+
+        <div>
+
+          <p class="text-sm text-slate-500">
+            Management
+          </p>
+
+          <h1 class="mt-1 text-3xl font-semibold text-slate-900">
+            Vehicles
+          </h1>
+
+          <p class="mt-2 text-slate-500">
+            Register, monitor and manage authorized vehicles.
+          </p>
+
+        </div>
+
+        <!-- button -->
+        <button
+          class="flex h-11 items-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800"
+        >
+
+          <lucide-angular
+            [img]="Plus"
+            class="h-4 w-4"
+          ></lucide-angular>
+
+          New vehicle
+
+        </button>
+
+      </div>
+
+      <!-- table -->
+      <div
+        class="mt-6 overflow-hidden rounded-3xl border border-slate-200 bg-white"
+      >
+
+        <!-- top -->
+        <div
+          class="flex flex-col gap-4 border-b border-slate-200 p-5 lg:flex-row lg:items-center lg:justify-between"
+        >
+
+          <!-- search -->
+          <div class="relative w-full max-w-md">
+
+            <lucide-angular
+              [img]="Search"
+              class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            ></lucide-angular>
+
+            <input
+              type="text"
+              placeholder="Search plate or model..."
+              class="h-12 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm outline-none focus:border-slate-300"
+            />
+
+          </div>
+
+          <!-- total -->
+          <p class="text-sm text-slate-500">
+            6 vehicles
+          </p>
+
+        </div>
+
+        <!-- table -->
+        <div class="overflow-x-auto">
+
+          <table class="w-full">
+
+            <!-- head -->
+            <thead
+              class="border-b border-slate-200 bg-slate-50"
+            >
+
+              <tr
+                class="text-left text-sm font-medium text-slate-500"
+              >
+
+                <th class="px-6 py-4">
+                  Plate
+                </th>
+
+                <th class="px-6 py-4">
+                  Model
+                </th>
+
+                <th class="px-6 py-4">
+                  Owner
+                </th>
+
+                <th class="px-6 py-4">
+                  Status
+                </th>
+
+                <th class="px-6 py-4 text-right">
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <!-- body -->
+            <tbody class="divide-y divide-slate-100">
+
+              <!-- row -->
+              <tr class="hover:bg-slate-50">
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700"
+                  >
+                    ABC1D23
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-slate-700">
+                  Toyota Corolla
+                </td>
+
+                <td class="px-6 py-5 text-slate-500">
+                  Mariana Silva
+                </td>
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700"
+                  >
+                    Active
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-right">
+
+                  <button>
+                    <lucide-angular
+                      [img]="Ellipsis"
+                      class="h-5 w-5 text-slate-400"
+                    ></lucide-angular>
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <!-- row -->
+              <tr class="hover:bg-slate-50">
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700"
+                  >
+                    DEF4G56
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-slate-700">
+                  Volvo FH 540
+                </td>
+
+                <td class="px-6 py-5 text-slate-500">
+                  Logistics Andrade Ltda
+                </td>
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700"
+                  >
+                    Active
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-right">
+
+                  <button>
+                    <lucide-angular
+                      [img]="Ellipsis"
+                      class="h-5 w-5 text-slate-400"
+                    ></lucide-angular>
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <!-- row -->
+              <tr class="hover:bg-slate-50">
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700"
+                  >
+                    GH17J89
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-slate-700">
+                  Honda Civic
+                </td>
+
+                <td class="px-6 py-5 text-slate-500">
+                  Carlos Mendes
+                </td>
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700"
+                  >
+                    Blocked
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-right">
+
+                  <button>
+                    <lucide-angular
+                      [img]="Ellipsis"
+                      class="h-5 w-5 text-slate-400"
+                    ></lucide-angular>
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <!-- row -->
+              <tr class="hover:bg-slate-50">
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700"
+                  >
+                    JKL0M12
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-slate-700">
+                  Scania R450
+                </td>
+
+                <td class="px-6 py-5 text-slate-500">
+                  Atlas Transport
+                </td>
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700"
+                  >
+                    Pending
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-right">
+
+                  <button>
+                    <lucide-angular
+                      [img]="Ellipsis"
+                      class="h-5 w-5 text-slate-400"
+                    ></lucide-angular>
+                  </button>
+
+                </td>
+
+              </tr>
+
+              <!-- row -->
+              <tr class="hover:bg-slate-50">
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700"
+                  >
+                    MN03P45
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-slate-700">
+                  Jeep Compass
+                </td>
+
+                <td class="px-6 py-5 text-slate-500">
+                  Júlia Ferreira
+                </td>
+
+                <td class="px-6 py-5">
+
+                  <span
+                    class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700"
+                  >
+                    Active
+                  </span>
+
+                </td>
+
+                <td class="px-6 py-5 text-right">
+
+                  <button>
+                    <lucide-angular
+                      [img]="Ellipsis"
+                      class="h-5 w-5 text-slate-400"
+                    ></lucide-angular>
+                  </button>
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</div>
