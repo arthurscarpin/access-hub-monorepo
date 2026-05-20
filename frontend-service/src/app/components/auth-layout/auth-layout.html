@@ -1,0 +1,64 @@
+<div class="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+
+  <!-- LEFT -->
+  <section class="relative hidden overflow-hidden bg-slate-950 lg:flex">
+    <!-- gradient -->
+    <div
+      class="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-blue-600"
+    ></div>
+
+    <!-- dots -->
+    <div
+      class="absolute inset-0 opacity-20"
+      style="
+        background-image: radial-gradient(white 1px, transparent 1px);
+        background-size: 24px 24px;
+      "
+    ></div>
+
+    <div
+      class="relative z-10 flex h-full flex-col justify-between p-16 text-white"
+    >
+      <!-- logo -->
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 backdrop-blur">
+          <lucide-angular
+            [img]="ShieldCheck"
+            class="h-5 w-5 text-white-400"
+          ></lucide-angular>
+        </div>
+        <span class="text-lg font-semibold text-white">
+          AccessHub
+        </span>
+      </div>
+
+      <!-- content -->
+      <div class="max-w-xl">
+        <h1 class="text-5xl text-center font-semibold leading-tight">
+          Vehicle access control
+        </h1>
+
+        <p class="mt-6 text-center text-slate-300">
+          Monitor events in real time, manage vehicles and owners,
+          and process batches of captures.
+        </p>
+      </div>
+
+      <!-- footer -->
+      <div class="text-sm text-slate-500">
+        © 2026 AccessHub. 
+        All rights reserved
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT -->
+  <section
+  class="flex items-center justify-center bg-slate-50 px-6 py-10"
+  >
+    <div class="w-full max-w-xl">
+      <ng-content></ng-content>
+    </div>
+  </section>
+
+</div>
