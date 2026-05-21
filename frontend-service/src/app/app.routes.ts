@@ -7,6 +7,7 @@ import { Vehicles } from './features/vehicles/pages/vehicles/vehicles';
 import { Owners } from './features/owners/pages/owners/owners';
 import { UsersControl } from './features/users/pages/users/users';
 import { Scopes } from './features/scopes/pages/scopes/scopes';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,31 +20,37 @@ export const routes: Routes = [
     component: Login
   },
   {
-    path: 'dashboard',
-    component: Dashboard
-  },
-  {
-    path: 'access-events',
-    component: AccessEvents
-  },
-  {
-    path: 'captures',
-    component: Captures
-  },
-  {
-    path: 'vehicles',
-    component: Vehicles
-  },
-  {
-    path: 'owners',
-    component: Owners
-  },
-  {
-    path: 'users',
-    component: UsersControl
-  },
-  {
-    path: 'scopes',
-    component: Scopes
+    path: '',
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'dashboard',
+        component: Dashboard
+      },
+      {
+        path: 'access-events',
+        component: AccessEvents
+      },
+      {
+        path: 'captures',
+        component: Captures
+      },
+      {
+        path: 'vehicles',
+        component: Vehicles
+      },
+      {
+        path: 'owners',
+        component: Owners
+      },
+      {
+        path: 'users',
+        component: UsersControl
+      },
+      {
+        path: 'scopes',
+        component: Scopes
+      }
+    ]
   }
 ];
