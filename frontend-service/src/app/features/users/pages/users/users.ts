@@ -13,5 +13,5 @@ import { LucideAngularModule, Plus } from 'lucide-angular';
   templateUrl: './users.html',
 })
 export class UsersControl {
-  readonly Plus = Plus;
+  readonly Plus: any = Plus;
 }

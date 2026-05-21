@@ -7,6 +7,6 @@ import { LucideAngularModule, FileArchive, ArrowDownLeft } from 'lucide-angular'
   templateUrl: './captures-table-item.html'
 })
 export class CapturesTableItem {
-  readonly FileArchive = FileArchive;
-  readonly ArrowDownLeft = ArrowDownLeft;
+  readonly FileArchive: any = FileArchive;
+  readonly ArrowDownLeft: any = ArrowDownLeft;
 }

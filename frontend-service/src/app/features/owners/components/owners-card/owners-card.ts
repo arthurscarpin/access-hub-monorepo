@@ -7,6 +7,6 @@ import { LucideAngularModule, FileText, Mail } from 'lucide-angular';
   templateUrl: './owners-card.html'
 })
 export class OwnersCard {
-  readonly FileText = FileText;
+  readonly FileText: any = FileText;
   readonly Mail = Mail;
 }

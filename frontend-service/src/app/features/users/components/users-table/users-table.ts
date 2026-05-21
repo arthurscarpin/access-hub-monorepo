@@ -8,5 +8,5 @@ import { LucideAngularModule, MoreHorizontal } from 'lucide-angular';
   templateUrl: './users-table.html'
 })
 export class UsersTable {
-  readonly MoreHorizontal = MoreHorizontal;
+  readonly MoreHorizontal: any = MoreHorizontal;
 }

@@ -8,13 +8,13 @@ import { RouterLink, RouterLinkActive} from '@angular/router';
   templateUrl: './side-menu.html'
 })
 export class SideMenu {
-  readonly ShieldCheck = ShieldCheck;
-  readonly LayoutDashboard = LayoutDashboard;
-  readonly Activity = Activity;
-  readonly Upload = Upload;
-  readonly Car = Car;
-  readonly Users = Users;
-  readonly Shield = Shield;
-  readonly CircleUserIcon = CircleUserIcon;
-  readonly LogOut = LogOut;
+  readonly ShieldCheck: any = ShieldCheck;
+  readonly LayoutDashboard: any = LayoutDashboard;
+  readonly Activity: any = Activity;
+  readonly Upload: any = Upload;
+  readonly Car: any = Car;
+  readonly Users: any = Users;
+  readonly Shield: any = Shield;
+  readonly CircleUserIcon: any = CircleUserIcon;
+  readonly LogOut: any = LogOut;
 }

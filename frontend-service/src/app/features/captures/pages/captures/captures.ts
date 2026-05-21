@@ -14,5 +14,5 @@ import { LucideAngularModule, CloudUpload } from 'lucide-angular';
   templateUrl: './captures.html',
 })
 export class Captures {
-  readonly CloudUpload = CloudUpload;
+  readonly CloudUpload: any = CloudUpload;
 }

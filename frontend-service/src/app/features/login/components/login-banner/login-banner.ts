@@ -8,5 +8,5 @@ import { LucideAngularModule, ShieldCheck} from 'lucide-angular';
   styleUrl: './login-banner.css',
 })
 export class LoginBanner {
-  readonly ShieldCheck = ShieldCheck;
+  readonly ShieldCheck: any = ShieldCheck;
 }

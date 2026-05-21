@@ -7,5 +7,5 @@ import { LucideAngularModule, ArrowUpRight } from 'lucide-angular';
   templateUrl: './dashboard-table-item.html',
 })
 export class DashboardTableItem {
-  readonly ArrowUpRight = ArrowUpRight;
+  readonly ArrowUpRight: any = ArrowUpRight;
 }

@@ -14,6 +14,6 @@ import { LucideAngularModule, Filter, Download } from 'lucide-angular';
   templateUrl: './access-events.html',
 })
 export class AccessEvents { 
-  readonly Filter = Filter;
-  readonly Download = Download;
+  readonly Filter: any = Filter;
+  readonly Download: any = Download;
 }

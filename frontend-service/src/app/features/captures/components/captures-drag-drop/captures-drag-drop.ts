@@ -7,5 +7,5 @@ import { LucideAngularModule, CloudUpload } from 'lucide-angular';
   templateUrl: './captures-drag-drop.html'
 })
 export class CapturesDragDrop {
-  readonly CloudUpload = CloudUpload;
+  readonly CloudUpload: any = CloudUpload;
 }

@@ -7,5 +7,5 @@ import { LucideAngularModule, Activity } from 'lucide-angular';
   templateUrl: './dashboard-card.html'
 })
 export class DashboardCard {
-  readonly Activity = Activity;
+  readonly Activity: any = Activity;
 }

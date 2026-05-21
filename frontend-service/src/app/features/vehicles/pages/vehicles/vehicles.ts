@@ -14,5 +14,5 @@ import { LucideAngularModule, Plus } from 'lucide-angular';
   templateUrl: './vehicles.html',
 })
 export class Vehicles{
-  readonly Plus = Plus;
+  readonly Plus: any = Plus;
 }

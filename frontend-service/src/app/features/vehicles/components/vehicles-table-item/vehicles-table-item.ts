@@ -7,5 +7,5 @@ import { LucideAngularModule, Ellipsis } from 'lucide-angular';
   templateUrl: './vehicles-table-item.html'
 })
 export class VehiclesTableItem {
-  readonly Ellipsis = Ellipsis;
+  readonly Ellipsis: any = Ellipsis;
 }

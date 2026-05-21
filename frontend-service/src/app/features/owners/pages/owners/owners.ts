@@ -13,5 +13,5 @@ import { LucideAngularModule, Plus } from 'lucide-angular';
   templateUrl: './owners.html',
 })
 export class Owners {
-  readonly Plus = Plus;
+  readonly Plus: any = Plus;
 }

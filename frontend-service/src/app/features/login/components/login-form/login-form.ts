@@ -7,8 +7,8 @@ import { LucideAngularModule, Mail, Lock, ArrowRight, Eye } from 'lucide-angular
   templateUrl: './login-form.html'
 })
 export class LoginForm {
-  readonly Mail = Mail
-  readonly Lock = Lock
-  readonly ArrowRight = ArrowRight
-  readonly Eye = Eye
+  readonly Mail: any = Mail
+  readonly Lock: any = Lock
+  readonly ArrowRight: any = ArrowRight
+  readonly Eye: any = Eye
 }

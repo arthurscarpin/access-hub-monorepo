@@ -9,5 +9,5 @@ import { LucideAngularModule, ArrowDownLeft } from 'lucide-angular';
   templateUrl: './dashboard-table.html'
 })
 export class DashboardTable {
-  readonly ArrowDownLeft = ArrowDownLeft;
+  readonly ArrowDownLeft: any = ArrowDownLeft;
 }

@@ -9,5 +9,5 @@ import { LucideAngularModule, Search } from 'lucide-angular';
   templateUrl: './input-search.html'
 })
 export class InputSearch {
-  readonly Search = Search;
+  readonly Search: any = Search;
 }

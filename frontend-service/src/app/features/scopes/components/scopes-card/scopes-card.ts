@@ -7,5 +7,5 @@ import { LucideAngularModule, ShieldCheck } from 'lucide-angular';
   templateUrl: './scopes-card.html'
 })
 export class ScopesCard {
-  readonly ShieldCheck = ShieldCheck;
+  readonly ShieldCheck: any = ShieldCheck;
 }

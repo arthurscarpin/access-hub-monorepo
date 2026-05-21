@@ -7,5 +7,5 @@ import { LucideAngularModule, ArrowDownLeft} from 'lucide-angular';
   templateUrl: './access-events-card-table-item.html',
 })
 export class AccessEventsCardTableItem {
-  readonly ArrowDownLeft = ArrowDownLeft;
+  readonly ArrowDownLeft: any = ArrowDownLeft;
 }
