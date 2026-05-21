@@ -1,48 +1,17 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  LucideAngularModule,
-  Shield,
-  LayoutDashboard,
-  Activity,
-  Camera,
-  Car,
-  Users,
-  UserCog,
-  ShieldCheck,
-  LogOut,
-  LayoutGrid,
-  Search,
-  Bell,
-  Plus,
-  FileText,
-  Mail,
-  Ellipsis,
-  Upload
-} from 'lucide-angular';
+import { SideMenu } from '../../../../shared/components/side-menu/side-menu';
+import { TopMenu } from '../../../../shared/components/top-menu/top-menu';
+import { PageTitle } from '../../../../shared/components/page-title/page-title';
+import { OwnersCard } from '../../components/owners-card/owners-card';
+
+import { LucideAngularModule, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-owners-page',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [LucideAngularModule, SideMenu, TopMenu, PageTitle, OwnersCard],
   templateUrl: './owners.html',
 })
 export class Owners {
-  readonly Shield = Shield;
-  readonly LayoutDashboard = LayoutDashboard;
-  readonly Activity = Activity;
-  readonly Camera = Camera;
-  readonly Car = Car;
-  readonly Users = Users;
-  readonly UserCog = UserCog;
-  readonly ShieldCheck = ShieldCheck;
-  readonly LogOut = LogOut;
-  readonly LayoutGrid = LayoutGrid;
-  readonly Search = Search;
-  readonly Bell = Bell;
   readonly Plus = Plus;
-  readonly FileText = FileText;
-  readonly Mail = Mail;
-  readonly Ellipsis = Ellipsis;
-  readonly Upload = Upload;
 }

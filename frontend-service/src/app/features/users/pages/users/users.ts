@@ -1,47 +1,17 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  LucideAngularModule,
-  Shield,
-  LayoutDashboard,
-  Activity,
-  Camera,
-  Car,
-  Users,
-  UserCog,
-  ShieldCheck,
-  LogOut,
-  LayoutGrid,
-  Search,
-  Bell,
-  Plus,
-  MoreHorizontal
-} from 'lucide-angular';
+import { SideMenu } from '../../../../shared/components/side-menu/side-menu';
+import { TopMenu } from '../../../../shared/components/top-menu/top-menu';
+import { PageTitle } from '../../../../shared/components/page-title/page-title';
+import { UsersTable } from '../../components/users-table/users-table';
+
+import { LucideAngularModule, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-users-page',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [LucideAngularModule, SideMenu, TopMenu, PageTitle, UsersTable],
   templateUrl: './users.html',
 })
 export class UsersControl {
-  // Ícones da Sidebar
-  readonly Shield = Shield;
-  readonly LayoutDashboard = LayoutDashboard;
-  readonly Activity = Activity;
-  readonly Camera = Camera;
-  readonly Car = Car;
-  readonly Users = Users;
-  readonly UserCog = UserCog;
-  readonly ShieldCheck = ShieldCheck;
-  readonly LogOut = LogOut;
-
-  // Ícones do Header e Conteúdo
-  readonly LayoutGrid = LayoutGrid;
-  readonly Search = Search;
-  readonly Bell = Bell;
   readonly Plus = Plus;
-  
-  // Ícones da Tabela
-  readonly MoreHorizontal = MoreHorizontal;
 }

@@ -1,35 +1,18 @@
 import { Component } from '@angular/core';
-import {
-  LucideAngularModule,
-  ShieldCheck,
-  LayoutDashboard,
-  Activity,
-  Upload,
-  Car,
-  Users,
-  Shield,
-  Search,
-  Bell,
-  Plus,
-  Ellipsis
-} from 'lucide-angular';
+import { SideMenu } from '../../../../shared/components/side-menu/side-menu';
+import { TopMenu } from '../../../../shared/components/top-menu/top-menu';
+import { PageTitle } from '../../../../shared/components/page-title/page-title';
+import { InputSearch } from '../../../../shared/components/input-search/input-search';
+import { VehiclesTable } from '../../components/vehicles-table/vehicles-table';
+
+import { LucideAngularModule, Plus } from 'lucide-angular';
 
 @Component({
   selector: 'app-vehicles',
   standalone: true,
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, SideMenu, TopMenu, PageTitle, InputSearch, VehiclesTable],
   templateUrl: './vehicles.html',
 })
 export class Vehicles{
-  readonly ShieldCheck = ShieldCheck;
-  readonly LayoutDashboard = LayoutDashboard;
-  readonly Activity = Activity;
-  readonly Upload = Upload;
-  readonly Car = Car;
-  readonly Users = Users;
-  readonly Shield = Shield;
-  readonly Search = Search;
-  readonly Bell = Bell;
   readonly Plus = Plus;
-  readonly Ellipsis = Ellipsis;
 }

@@ -1,0 +1,56 @@
+<div class="flex min-h-screen bg-slate-100">
+  <!-- Side Menu Component -->
+  <app-side-menu
+    class="fixed left-0 top-0 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:flex lg:flex-col">
+  </app-side-menu>
+
+  <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
+
+    <!-- Top Menu Component -->
+    <header 
+      app-top-menu 
+      class="fixed left-0 top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white px-6 lg:left-72 lg:w-[calc(100%-18rem)]"
+    ></header>
+
+    <main class="flex-1 p-6 pt-22">
+      
+      <div class="flex items-start justify-between">
+        <!-- Page Title Component -->
+        <app-page-title 
+          category="Overview" 
+          title="Good afternoon, Admin 👋"
+          description="Monitor your operation and latest access events.">
+        </app-page-title>
+
+        <div class="flex items-center gap-3">
+          <button
+            class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100">
+            Export
+          </button>
+          <button
+            class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800">
+            New capture
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <!-- card -->
+        <app-dashboard-card></app-dashboard-card>
+        <app-dashboard-card></app-dashboard-card>
+        <app-dashboard-card></app-dashboard-card>
+        <app-dashboard-card></app-dashboard-card>
+      </div>
+
+      <div class="mt-6 grid gap-6 xl:grid-cols-3">
+        <app-dashboard-table class="xl:col-span-2"></app-dashboard-table>
+        <div class="space-y-6">
+          <!-- Gate Traffic -->
+          <app-dashboard-gate-traffic></app-dashboard-gate-traffic>
+          <!-- Capture Chart -->
+          <app-dashboard-capture-chart></app-dashboard-capture-chart>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,40 +1,18 @@
 import { Component } from '@angular/core';
+import { SideMenu } from '../../../../shared/components/side-menu/side-menu';
+import { TopMenu } from '../../../../shared/components/top-menu/top-menu';
+import { PageTitle } from '../../../../shared/components/page-title/page-title';
+import { CapturesDragDrop } from '../../components/captures-drag-drop/captures-drag-drop';
+import { CapturesTable } from '../../components/captures-table/captures-table';
 
-import {
-  LucideAngularModule,
-  ShieldCheck,
-  LayoutDashboard,
-  Activity,
-  Upload,
-  Car,
-  Users,
-  Shield,
-  Search,
-  Bell,
-  CloudUpload,
-  FileArchive,
-  ArrowDownLeft,
-  ArrowUpRight
-} from 'lucide-angular';
+import { LucideAngularModule, CloudUpload } from 'lucide-angular';
 
 @Component({
   selector: 'app-captures',
   standalone: true,
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, SideMenu, TopMenu, PageTitle, CapturesDragDrop, CapturesTable],
   templateUrl: './captures.html',
 })
 export class Captures {
-  readonly ShieldCheck = ShieldCheck;
-  readonly LayoutDashboard = LayoutDashboard;
-  readonly Activity = Activity;
-  readonly Upload = Upload;
-  readonly Car = Car;
-  readonly Users = Users;
-  readonly Shield = Shield;
-  readonly Search = Search;
-  readonly Bell = Bell;
   readonly CloudUpload = CloudUpload;
-  readonly FileArchive = FileArchive;
-  readonly ArrowDownLeft = ArrowDownLeft;
-  readonly ArrowUpRight = ArrowUpRight;
 }
