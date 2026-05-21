@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, ShieldCheck, LayoutDashboard, Activity, Upload, Car, Users, Shield } from 'lucide-angular';
+import { LucideAngularModule, ShieldCheck, LayoutDashboard, Activity, Upload, Car, Users, Shield, CircleUserIcon, LogOut} from 'lucide-angular';
+import { RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-side-menu',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, RouterLink, RouterLinkActive],
   templateUrl: './side-menu.html'
 })
 export class SideMenu {
@@ -14,4 +15,6 @@ export class SideMenu {
   readonly Car = Car;
   readonly Users = Users;
   readonly Shield = Shield;
+  readonly CircleUserIcon = CircleUserIcon;
+  readonly LogOut = LogOut;
 }
