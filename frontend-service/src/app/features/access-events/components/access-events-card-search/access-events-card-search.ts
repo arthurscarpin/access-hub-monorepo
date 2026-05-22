@@ -3,6 +3,7 @@ import { InputSearch } from '../../../../shared/components/input-search/input-se
 
 @Component({
   selector: 'app-access-events-card-search',
+  standalone: true,
   imports: [InputSearch],
   templateUrl: './access-events-card-search.html'
 })

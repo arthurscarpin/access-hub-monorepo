@@ -5,6 +5,7 @@ import { AccessEventsCardTable } from '../access-events-card-table/access-events
 
 @Component({
   selector: 'app-access-events-card',
+  standalone: true,
   imports: [AccessEventsCardPagination, AccessEventsCardSearch, AccessEventsCardTable],
   templateUrl: './access-events-card.html'
 })

@@ -1,40 +1,35 @@
 <div class="min-h-screen bg-[#f6f8fb] text-slate-900 flex">
-  <!-- Side Menu Component -->
+  <!-- Side Menu -->
   <app-side-menu
     class="fixed left-0 top-0 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:flex lg:flex-col"
   >
   </app-side-menu>
-
   <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
-    <!-- Top Menu Component -->
-    <header 
+    <!-- Top Menu -->
+    <header
       app-top-menu
       operation="Management"
       page="Scopes"
       class="fixed left-0 top-0 z-40 flex h-16 w-full items-center justify-between border-b border-slate-200 bg-white px-6 lg:left-72 lg:w-[calc(100%-18rem)]"
-    ></header>
-
+    >
+    </header>
     <main class="flex-1 p-6 pt-22">
-
       <div class="flex items-start justify-between">
-        
-        <!-- Page Title Component -->
-        <app-page-title 
-          category="Management" 
+        <app-page-title
+          category="Management"
           title="Scopes"
-          description="Sets of permissions that can be assigned to platform users.">
+          description="Sets of permissions that can be assigned to platform users."
+        >
         </app-page-title>
-        
       </div>
-
       <section class="px-10 py-8">
-        <div class="grid grid-cols-2 gap-5">
-          <!-- Scopes Card Component -->
-          <app-scopes-card></app-scopes-card>
-          <app-scopes-card></app-scopes-card>
-          <app-scopes-card></app-scopes-card>
-          <app-scopes-card></app-scopes-card>
-          <app-scopes-card></app-scopes-card>
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+          @for (scope of scopes; track scope.id) {
+            <app-scopes-card
+              [scope]="scope"
+            >
+            </app-scopes-card>
+          }
         </div>
       </section>
     </main>

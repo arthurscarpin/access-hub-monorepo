@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, MoreHorizontal } from 'lucide-angular';
 
 @Component({
   selector: '[app-users-table-item]',
-  imports: [LucideAngularModule],
+  standalone: true,
   templateUrl: './users-table-item.html'
 })
-export class UsersTableItem {
-  readonly MoreHorizontal: any = MoreHorizontal;
-}
+export class UsersTableItem {}

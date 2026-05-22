@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, FileText, Mail } from 'lucide-angular';
 
 @Component({
   selector: 'app-owners-card',
-  imports: [LucideAngularModule],
+  standalone: true,
   templateUrl: './owners-card.html'
 })
-export class OwnersCard {
-  readonly FileText: any = FileText;
-  readonly Mail = Mail;
-}
+export class OwnersCard {}

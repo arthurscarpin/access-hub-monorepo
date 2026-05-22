@@ -4,6 +4,7 @@ import { AccessEventsCardTableItem } from '../access-events-card-table-item/acce
 @Component({
   selector: 'app-access-events-card-table',
   imports: [AccessEventsCardTableItem],
+  standalone: true,
   templateUrl: './access-events-card-table.html',
 })
 export class AccessEventsCardTable {}

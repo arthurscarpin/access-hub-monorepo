@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, Ellipsis } from 'lucide-angular';
 
 @Component({
   selector: '[app-vehicles-table-item]',
-  imports: [LucideAngularModule],
+  standalone: true,
   templateUrl: './vehicles-table-item.html'
 })
-export class VehiclesTableItem {
-  readonly Ellipsis: any = Ellipsis;
-}
+export class VehiclesTableItem {}

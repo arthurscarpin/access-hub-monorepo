@@ -1,20 +1,33 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, ShieldCheck, LayoutDashboard, Activity, Upload, Car, Users, Shield, CircleUserIcon, LogOut} from 'lucide-angular';
-import { RouterLink, RouterLinkActive} from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  LucideShieldCheck,
+  LucideLayoutDashboard,
+  LucideActivity,
+  LucideUpload,
+  LucideCar,
+  LucideCircleUser,
+  LucideUsers,
+  LucideShield,
+  LucideLogOut,
+} from '@lucide/angular';
 
 @Component({
   selector: 'app-side-menu',
-  imports: [LucideAngularModule, RouterLink, RouterLinkActive],
-  templateUrl: './side-menu.html'
+  standalone: true,
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    LucideShieldCheck,
+    LucideLayoutDashboard,
+    LucideActivity,
+    LucideUpload,
+    LucideCar,
+    LucideCircleUser,
+    LucideUsers,
+    LucideShield,
+    LucideLogOut,
+  ],
+  templateUrl: './side-menu.html',
 })
-export class SideMenu {
-  readonly ShieldCheck: any = ShieldCheck;
-  readonly LayoutDashboard: any = LayoutDashboard;
-  readonly Activity: any = Activity;
-  readonly Upload: any = Upload;
-  readonly Car: any = Car;
-  readonly Users: any = Users;
-  readonly Shield: any = Shield;
-  readonly CircleUserIcon: any = CircleUserIcon;
-  readonly LogOut: any = LogOut;
-}
+export class SideMenu {}

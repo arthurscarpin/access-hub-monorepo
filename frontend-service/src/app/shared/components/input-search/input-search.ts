@@ -1,13 +1,10 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, Search } from 'lucide-angular';
+import { LucideSearch } from '@lucide/angular';
 
 @Component({
   selector: 'app-input-search',
-  imports: [
-    LucideAngularModule,
-  ],
+  standalone: true,
+  imports: [LucideSearch],
   templateUrl: './input-search.html'
 })
-export class InputSearch {
-  readonly Search: any = Search;
-}
+export class InputSearch {}

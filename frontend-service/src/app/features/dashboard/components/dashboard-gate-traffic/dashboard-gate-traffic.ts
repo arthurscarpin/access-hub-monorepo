@@ -4,6 +4,7 @@ import { DashboardGateTrafficItem } from '../dashboard-gate-traffic-item/dashboa
 @Component({
   selector: 'app-dashboard-gate-traffic',
   imports: [DashboardGateTrafficItem],
+  standalone: true,
   templateUrl: './dashboard-gate-traffic.html',
 })
 export class DashboardGateTraffic {}

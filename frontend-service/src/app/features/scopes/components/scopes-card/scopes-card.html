@@ -3,34 +3,30 @@
 >
   <div class="flex gap-4">
     <div
-      class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50"
+      class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border"
+      [ngClass]="actionColor"
     >
-      <lucide-icon [img]="ShieldCheck" class="h-5 w-5 text-indigo-500"> </lucide-icon>
+      <svg lucideIcon="icon" class="h-5 w-5"></svg>
+
     </div>
 
-    <div class="min-w-0">
-      <h3 class="text-sm font-semibold tracking-wide text-slate-900">ADMIN</h3>
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center justify-between gap-3">
+        <h3 class="text-sm font-semibold tracking-wide text-slate-900 capitalize">
+          {{ resource }}
+        </h3>
 
-      <p class="mt-1 text-sm leading-relaxed text-slate-500">
-        Acesso total à plataforma e configurações.
+        <span
+          class="rounded-full border px-2.5 py-1 text-xs font-medium capitalize"
+          [ngClass]="actionColor"
+        >
+          {{ action }}
+        </span>
+      </div>
+
+      <p class="mt-2 text-sm leading-relaxed text-slate-500">
+        {{ description }}
       </p>
-
-      <ul class="mt-5 space-y-2.5">
-        <li class="flex items-center gap-2 text-sm text-slate-600">
-          <span class="h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
-          Gerenciar usuários
-        </li>
-
-        <li class="flex items-center gap-2 text-sm text-slate-600">
-          <span class="h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
-          Configurar sistema
-        </li>
-
-        <li class="flex items-center gap-2 text-sm text-slate-600">
-          <span class="h-1.5 w-1.5 rounded-full bg-indigo-400"></span>
-          Auditoria total
-        </li>
-      </ul>
     </div>
   </div>
 </div>

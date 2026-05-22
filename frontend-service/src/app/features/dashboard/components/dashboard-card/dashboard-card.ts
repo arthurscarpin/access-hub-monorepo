@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, Activity } from 'lucide-angular';
+import { LucideActivity } from '@lucide/angular';
 
 @Component({
   selector: 'app-dashboard-card',
-  imports: [LucideAngularModule],
+  standalone: true,
+  imports: [LucideActivity],
   templateUrl: './dashboard-card.html'
 })
-export class DashboardCard {
-  readonly Activity: any = Activity;
-}
+export class DashboardCard {}

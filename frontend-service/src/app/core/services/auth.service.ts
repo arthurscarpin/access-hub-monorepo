@@ -1,19 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/evironment';
+import { environment } from '@config/evironment';
 
 export interface LoginResponse {
   accessToken: string;
-  expiresIn: number;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
+  private readonly TOKEN_KEY = 'accessToken';
 
   login(email: string, password: string) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
@@ -22,21 +20,21 @@ export class AuthService {
     });
   }
 
-  saveToken(token: string, rememberMe: boolean = true) {
-    if (rememberMe) {
-      localStorage.setItem('accessToken', token);
-    } else {
-      sessionStorage.setItem('accessToken', token);
-    }
+  saveToken(token: string, rememberMe: boolean = true): void {
+    const storage = rememberMe ? localStorage : sessionStorage;
+    storage.setItem(this.TOKEN_KEY, token);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    return (
+      localStorage.getItem(this.TOKEN_KEY) ||
+      sessionStorage.getItem(this.TOKEN_KEY)
+    );
   }
 
-  logout() {
-    localStorage.removeItem('accessToken');
-    sessionStorage.removeItem('accessToken');
+  logout(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.TOKEN_KEY);
   }
 
   isLoggedIn(): boolean {
