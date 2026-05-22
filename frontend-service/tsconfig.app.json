@@ -9,7 +9,8 @@
     "paths": {
       "@config/*": ["src/app/config/*"],
       "@core/*": ["src/app/core/*"],
-      "@components/*": ["src/app/components/*"]
+      "@components/*": ["src/app/components/*"],
+      "@pages/*": ["src/app/pages/*"]
     }
   },
   "include": [

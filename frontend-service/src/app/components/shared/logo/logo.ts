@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { LucideShieldCheck } from '@lucide/angular';
 
 @Component({
@@ -7,4 +7,7 @@ import { LucideShieldCheck } from '@lucide/angular';
   imports: [LucideShieldCheck],
   templateUrl: './logo.html'
 })
-export class Logo {}
+export class Logo {
+  containerStyle = input<string>('');
+  iconStyle = input<string>('');
+}

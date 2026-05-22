@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SideMenu } from '../../../../shared/components/side-menu/side-menu';
+import { Sidebar } from '@components/shared/sidebar/sidebar-content/sidebar';
 import { TopMenu } from '../../../../shared/components/top-menu/top-menu';
 import { PageTitle } from '../../../../shared/components/page-title/page-title';
 import { DashboardCard } from '../../components/dashboard-card/dashboard-card';
@@ -11,7 +11,7 @@ import { DashboardCaptureChart } from "../../components/dashboard-capture-chart/
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    SideMenu,
+    Sidebar,
     TopMenu,
     PageTitle,
     DashboardCard,
