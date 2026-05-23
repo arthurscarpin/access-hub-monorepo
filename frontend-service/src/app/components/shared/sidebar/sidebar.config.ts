@@ -22,7 +22,7 @@ export const SIDEBAR_ICON_MAP: Record<SidebarIconKey, any> = {
 
 export const SIDEBAR_MENU: SidebarGroup[] = [
   {
-    group: 'Overview',
+    group: 'Operation',
     items: [
       { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
       { label: 'Access Events', route: '/access-events', icon: 'activity' },

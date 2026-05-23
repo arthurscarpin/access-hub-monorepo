@@ -1,0 +1,25 @@
+<div class="flex min-h-screen bg-slate-100">
+  <!-- Side Menu Component -->
+  <app-sidebar
+    class="fixed left-0 top-0 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:flex lg:flex-col"
+  ></app-sidebar>
+
+  <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
+    <!-- Menu Component -->
+    <app-menu [screenOperation]="breadCrumbOperation" [screenName]="breadCrumbName"></app-menu>
+
+    <main class="flex-1 p-6 pt-22">
+      <div class="flex items-start justify-between">
+        <!-- Page Header Component -->
+        <app-page-header
+          [category]="pageCategory"
+          [title]="pageTitle"
+          [description]="pageDescription"
+        ></app-page-header>
+
+        <!-- Filter Button -->
+        <app-button [label]="buttonLabel" [customStyle]="buttonStyle"></app-button>
+      </div>
+    </main>
+  </div>
+</div>
