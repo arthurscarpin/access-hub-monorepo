@@ -39,12 +39,16 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  getUserEmail(): string | null {
+  getUsernameAndEmail(): {email: string; username: string} {
     const token = this.getToken();
     if (!token) {
-      return null;
+      return {email: '', username: ''};
     }
     const decodedToken: any = jwtDecode(token);
-    return decodedToken.email;
+    const email: string | null = decodedToken.email;
+    return {
+      email: email != null ? email : '',
+      username: email != null ? email.split('@')[0] : ''
+    }
   }
 }

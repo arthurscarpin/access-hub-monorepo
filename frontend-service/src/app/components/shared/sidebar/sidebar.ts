@@ -21,16 +21,13 @@ import { AuthService } from '@core/services/auth.service';
 export class Sidebar implements OnInit {
   menu = SIDEBAR_MENU;
   icons = SIDEBAR_ICON_MAP;
-  username: string | null = null;
-  email: string | null = null;
+  username: string = '';
+  email: string = '';
 
   constructor(private authService: AuthService) {}
   
   ngOnInit(): void {
-    this.email = this.authService.getUserEmail();
-    if (this.email != null) {
-      this.username = this.email.split('@')[0];
-    }
+    ({ email: this.email, username: this.username} = this.authService.getUsernameAndEmail() || {});
   }
 
   logout(): void {

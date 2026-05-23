@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
-import { Dashboard } from './features/dashboard/pages/dashaboard/dashboard';
+import { Dashboard } from '@pages/dashboard/dashboard';
 import { AccessEvents } from './features/access-events/pages/access-events/access-events';
 import { Captures } from './features/captures/pages/captures/captures';
 import { Vehicles } from './features/vehicles/pages/vehicles/vehicles';
