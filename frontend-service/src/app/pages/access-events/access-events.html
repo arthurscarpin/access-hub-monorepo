@@ -16,13 +16,89 @@
           [title]="pageTitle"
           [description]="pageDescription"
         ></app-page-header>
-
-        <!-- Filter Button -->
-        <app-button [label]="buttonLabel" [customStyle]="buttonStyle"></app-button>
       </div>
 
-      
+      <!-- Container -->
+      <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div
+          class="flex flex-col gap-4 border-b border-slate-200 p-6 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <div class="flex w-full flex-wrap items-center justify-end gap-2">
+            <!-- Filter Buttons -->
+            @for (button of filterButtons; track button.label) {
+              <app-button
+                [label]="button.label"
+                [customStyle]="
+                  selectedFilter === button.label
+                    ? 'rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer'
+                    : button.style
+                "
+                (click)="selectFilter(button.label)"
+              >
+              </app-button>
+            }
+          </div>
+        </div>
 
+        <!-- All Events -->
+        <table class="w-full">
+          <thead class="border-b border-slate-200 bg-slate-50">
+            <tr class="text-left text-sm font-medium text-slate-500">
+              <th class="px-6 py-4">Plate</th>
+              <th class="px-6 py-4">Direction</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (event of events; track event.plate) {
+              <tr class="transition-colors hover:bg-slate-50/60">
+                <td class="px-6 py-5">
+                  {{ event.plate }}
+                </td>
+                <td class="px-6 py-5">
+                  <div
+                    class="flex items-center gap-2 text-sm font-medium"
+                    [ngClass]="{
+                      'text-emerald-600': event.direction === 'Entry',
+                      'text-red-600': event.direction === 'Exit',
+                    }"
+                  >
+                    <ng-container *ngComponentOutlet="event.icon"></ng-container>
+                    {{ event.direction }}
+                  </div>
+                </td>
+                <td class="px-6 py-5">
+                  <span
+                    class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
+                    [ngClass]="{
+                      'bg-emerald-50 text-emerald-700': event.status === 'Granted',
+                      'bg-red-50 text-red-700': event.status === 'Denied',
+                    }"
+                  >
+                    {{ event.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-5 text-sm text-slate-500">
+                  {{ event.date }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div
+          class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <p>Showing 1–10 of 10 events</p>
+          <div class="flex items-center gap-2">
+            @for (button of paginationButtons; track button.label) {
+              <app-button [label]="button.label" [customStyle]="button.style"></app-button>
+            }
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 </div>

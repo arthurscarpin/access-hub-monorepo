@@ -3,7 +3,6 @@ import { Sidebar } from '@components/shared/sidebar/sidebar';
 import { Menu } from '@components/shared/menu/menu';
 import { AuthService } from '@core/services/auth.service';
 import { PageHeader } from '@components/shared/page-header/page-header';
-import { Button } from '@components/shared/button/button';
 import { EventCard } from '@components/dashboard/event-card/event-card';
 import { EventHistoryItem } from '@components/dashboard/event-history-item/event-history-item';
 import { EVENT_CARD_OPTIONS } from '@components/dashboard/event-card/event-card.options';
@@ -12,7 +11,7 @@ import { EVENT_HISTORY_OPTIONS } from '@pages/dashboard/event-history.options';
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [Sidebar, Menu, PageHeader, Button, EventCard, EventHistoryItem],
+  imports: [Sidebar, Menu, PageHeader, EventCard, EventHistoryItem],
   templateUrl: './dashboard.html',
 })
 export class Dashboard {
