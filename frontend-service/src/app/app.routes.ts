@@ -6,18 +6,18 @@ import { Captures } from './features/captures/pages/captures/captures';
 import { Vehicles } from './features/vehicles/pages/vehicles/vehicles';
 import { Owners } from './features/owners/pages/owners/owners';
 import { UsersControl } from './features/users/pages/users/users';
-import { Scopes } from './features/scopes/pages/scopes/scopes';
+import { Scopes } from '@pages/scopes/scopes';
 import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
-    component: Login
+    component: Login,
   },
   {
     path: '',
@@ -25,7 +25,11 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        component: Dashboard
+        component: Dashboard,
+      },
+      {
+        path: 'scopes',
+        component: Scopes,
       },
       // {
       //   path: 'access-events',
@@ -47,10 +51,6 @@ export const routes: Routes = [
       //   path: 'users',
       //   component: UsersControl
       // },
-      // {
-      //   path: 'scopes',
-      //   component: Scopes
-      // }
-    ]
-  }
+    ],
+  },
 ];

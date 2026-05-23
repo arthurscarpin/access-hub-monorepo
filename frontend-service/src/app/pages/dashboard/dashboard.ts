@@ -17,10 +17,11 @@ import { EVENT_HISTORY_OPTIONS } from '@pages/dashboard/event-history.options';
 })
 export class Dashboard {
   // BreadCrumb
-  operation: string = 'Operation';
-  dashboard: string = 'Dashboard';
+  breadCrumbOperation: string = 'Operation';
+  breadCrumbName: string = 'Dashboard';
   
   // Page Header
+  pageTitle: string = '';
   pageCategory: string = 'Overview';
   pageDescription: string = 'Monitor your operation and latest access events.';
   
@@ -31,7 +32,6 @@ export class Dashboard {
   // Logout
   username: string = '';
   email: string = '';
-  pageTitle: string = '';
 
   // Event Cards
   eventCards = EVENT_CARD_OPTIONS;
