@@ -15,7 +15,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const token = this.authService.getToken();
 
-    // Ignore Login
     if (this.isAuthEndpoint(req.url)) {
       return next.handle(req);
     }

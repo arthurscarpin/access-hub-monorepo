@@ -52,13 +52,14 @@
         </div>
 
         <div class="min-w-0">
-          <p class="truncate text-sm font-medium text-slate-900">Arthur</p>
-          <p class="truncate text-xs text-slate-500">arthur@accesshub.io</p>
+          <p class="truncate text-sm font-medium text-slate-900">{{ username }}</p>
+          <p class="truncate text-xs text-slate-500">{{ email }}</p>
         </div>
       </div>
 
       <button
         class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:border-blue-100 hover:bg-blue-50 hover:text-blue-600"
+        (click)="logout()"
       >
         <svg lucideLogOut class="h-4 w-4"></svg>
       </button>

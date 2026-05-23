@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Sidebar } from '@components/shared/sidebar/sidebar-content/sidebar';
+import { Sidebar } from '@components/shared/sidebar/sidebar';
 import { TopMenu } from '../../../../shared/components/top-menu/top-menu';
 import { PageTitle } from '../../../../shared/components/page-title/page-title';
 import { DashboardCard } from '../../components/dashboard-card/dashboard-card';
