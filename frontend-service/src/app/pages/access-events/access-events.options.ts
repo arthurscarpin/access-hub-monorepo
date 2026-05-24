@@ -42,5 +42,29 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     status: 'Denied',
     date: '20/05, 16:27',
     icon: LucideArrowDownLeft
+  },
+  {
+    id: 'e2329c14-a826-4e98-868a-e0ba916307e4',
+    plate: 'ABC1D23',
+    direction: 'Entry',
+    status: 'Granted',
+    date: '20/05, 12:51',
+    icon: LucideArrowDownLeft
+  },
+  {
+    id: 'a4d67f12-91fd-4b7c-9cb1-8f52d5c67121',
+    plate: 'XYZ9K87',
+    direction: 'Exit',
+    status: 'Denied',
+    date: '20/05, 13:14',
+    icon: LucideArrowUpRight
+  },
+  {
+    id: 'c6b8d1f4-58e0-4c0f-b6e1-3d71c2a9f441',
+    plate: 'BRA2A11',
+    direction: 'Entry',
+    status: 'Granted',
+    date: '20/05, 14:32',
+    icon: LucideArrowDownLeft
   }
 ];

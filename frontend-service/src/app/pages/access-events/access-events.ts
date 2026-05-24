@@ -54,6 +54,16 @@ export class AccessEvents {
       style:
         'rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer',
     },
+    {
+      label: 'Entry',
+      style:
+        'rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer',
+    },
+    {
+      label: 'Exit',
+      style:
+        'rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer',
+    },
   ];
 
   selectedFilter: string = 'All';
