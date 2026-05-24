@@ -1,13 +1,29 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LucideMail, LucideLock, LucideEye, LucideEyeOff, LucideArrowRight } from '@lucide/angular';
+import {
+  LucideMail,
+  LucideLock,
+  LucideEye,
+  LucideEyeOff,
+  LucideArrowRight
+} from '@lucide/angular';
+
 import { AuthService } from '@core/services/auth.service';
+import { Button } from '@components/shared/button/button';
 
 @Component({
   standalone: true,
   selector: 'app-login-section-form',
-  imports: [ReactiveFormsModule, LucideMail, LucideLock, LucideEye, LucideEyeOff, LucideArrowRight],
+  imports: [
+    ReactiveFormsModule,
+    LucideMail,
+    LucideLock,
+    LucideEye,
+    LucideEyeOff,
+    LucideArrowRight,
+    Button,
+  ],
   templateUrl: './login-section-form.html',
 })
 export class LoginSectionForm {
@@ -19,11 +35,15 @@ export class LoginSectionForm {
   isLoading = signal(false);
   showPassword = signal(false);
 
+  isForgotOpen = signal(false);
+  forgotEmail = signal('');
+  forgotEmailError = signal('');
+
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    rememberMe: [false]
-  })
+    rememberMe: [false],
+  });
 
   constructor() {
     this.form.valueChanges.subscribe(() => {
@@ -47,12 +67,56 @@ export class LoginSectionForm {
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error?.error?.message);
-      }
-    })
+        this.errorMessage.set(error?.error?.message || 'Login failed');
+      },
+    });
   }
 
   togglePassword() {
     this.showPassword.update(v => !v);
+  }
+
+  private resetForgotPasswordState() {
+    this.forgotEmail.set('');
+    this.forgotEmailError.set('');
+  }
+
+  openForgotPassword() {
+    this.resetForgotPasswordState();
+    this.isForgotOpen.set(true);
+  }
+
+  closeForgotPassword() {
+    this.isForgotOpen.set(false);
+    this.resetForgotPasswordState();
+  }
+
+  onForgotEmailChange(value: string) {
+    this.forgotEmail.set(value);
+    this.forgotEmailError.set('');
+  }
+
+  sendRecoveryEmail() {
+    const email = this.forgotEmail().trim();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      this.forgotEmailError.set('Email is required');
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      this.forgotEmailError.set('Please enter a valid email');
+      return;
+    }
+
+    this.forgotEmailError.set('');
+
+    console.log('Sending recovery email to:', email);
+
+    // this.authService.sendRecoveryEmail(email).subscribe(...)
+
+    this.closeForgotPassword();
   }
 }
