@@ -98,7 +98,6 @@ export class LoginSectionForm {
 
   sendRecoveryEmail() {
     const email = this.forgotEmail().trim();
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email) {

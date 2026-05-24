@@ -1,47 +1,119 @@
 <div class="flex min-h-screen bg-slate-100">
-  <!-- Side Menu Component -->
+
   <app-sidebar
     class="fixed left-0 top-0 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:flex lg:flex-col"
   ></app-sidebar>
 
   <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
-    <!-- Menu Component -->
-    <app-menu [screenOperation]="breadCrumbOperation" [screenName]="breadCrumbName"></app-menu>
+
+    <app-menu
+      [screenOperation]="breadCrumbOperation"
+      [screenName]="breadCrumbName"
+    ></app-menu>
 
     <main class="flex-1 p-6 pt-22">
+
       <div class="flex items-start justify-between">
-        <!-- Page Header Component -->
+
         <app-page-header
           [category]="pageCategory"
           [title]="pageTitle"
           [description]="pageDescription"
         ></app-page-header>
 
-        <!-- Filter Button -->
-        <app-button [label]="buttonLabel" [customStyle]="buttonStyle"></app-button>
+        <app-button
+          [label]="buttonLabel"
+          [customStyle]="buttonStyle"
+          (click)="openCreateVehicleModal()"
+        ></app-button>
+
       </div>
 
-      <!-- Container -->
       <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div
-          class="flex flex-col gap-4 border-b border-slate-200 p-6 lg:flex-row lg:items-center lg:justify-between"
-        ></div>
 
-        <!-- All Owners -->
         <app-table [data]="vehicles" [tableConfig]="tableConfig" />
 
-        <!-- Pagination -->
-        <div
-          class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between"
-        >
+        <div class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between">
+
           <p>Showing 1–8 of 8 vehicles</p>
+
           <div class="flex items-center gap-2">
             @for (button of paginationButtons; track button.label) {
-              <app-button [label]="button.label" [customStyle]="button.style"></app-button>
+              <app-button
+                [label]="button.label"
+                [customStyle]="button.style"
+              ></app-button>
             }
           </div>
+
         </div>
+
       </div>
+
     </main>
   </div>
 </div>
+
+@if (isCreateVehicleOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
+    <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
+
+      <div class="mb-5">
+        <h3 class="text-lg font-semibold text-slate-900">Create new vehicle</h3>
+        <p class="text-sm text-slate-500">Register a new vehicle in the system.</p>
+      </div>
+
+      @if (error()) {
+        <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          {{ error() }}
+        </div>
+      }
+
+      <div class="space-y-4">
+
+        <input
+          type="text"
+          placeholder="Plate"
+          [value]="plate()"
+          (input)="setPlate($any($event.target).value)"
+          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+        />
+
+        <input
+          type="text"
+          placeholder="Model"
+          [value]="model()"
+          (input)="setModel($any($event.target).value)"
+          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+        />
+
+        <input
+          type="text"
+          placeholder="Owner name"
+          [value]="ownerName()"
+          (input)="setOwnerName($any($event.target).value)"
+          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+        />
+
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+
+        <app-button
+          [label]="'Cancel'"
+          [customStyle]="'text-sm font-medium px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition'"
+          (click)="closeCreateVehicleModal()"
+        ></app-button>
+
+        <app-button
+          [label]="'Create'"
+          [customStyle]="'rounded-xl bg-slate-900 px-5 py-2 text-sm font-medium text-white hover:bg-slate-800 transition'"
+          (click)="createVehicle()"
+        ></app-button>
+
+      </div>
+
+    </div>
+  </div>
+}

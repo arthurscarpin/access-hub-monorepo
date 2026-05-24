@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Sidebar } from '@components/shared/sidebar/sidebar';
 import { Menu } from '@components/shared/menu/menu';
 import { PageHeader } from '@components/shared/page-header/page-header';
@@ -16,22 +16,25 @@ type OwnerRow = (typeof OWNERS_OPTIONS)[number];
   templateUrl: './owners.html',
 })
 export class Owners {
-  // BreadCrumb
+  isCreateOwnerOpen = signal(false);
+
+  name = signal('');
+  email = signal('');
+  documentType = signal('');
+  document = signal('');
+  error = signal('');
+
   breadCrumbOperation: string = 'Management';
   breadCrumbName: string = 'Owners';
 
-  // Page Header
   pageTitle: string = 'Owners';
   pageCategory: string = 'Management';
   pageDescription: string = 'Register and view owner details.';
 
-  // Button
   buttonLabel: string = 'New Owner';
   buttonStyle: string =
     'rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer';
-  
 
-  // Table
   owners: OwnerRow[] = OWNERS_OPTIONS;
 
   tableConfig: TableConfig<OwnerRow> = {
@@ -40,40 +43,29 @@ export class Owners {
         key: 'name',
         label: 'Name',
         render: (row) => `
-        <span class="text-sm font-medium text-slate-800">
-          ${row.name}
-        </span>
-      `,
+          <span class="text-sm font-medium text-slate-800">${row.name}</span>
+        `,
       },
-
       {
         key: 'email',
         label: 'Email',
         render: (row) => `
-        <span class="text-sm text-slate-500">
-          ${row.email}
-        </span>
-      `,
+          <span class="text-sm text-slate-500">${row.email}</span>
+        `,
       },
-
       {
         key: 'documentType',
         label: 'Document Type',
         render: (row) => `
-        <span class="text-sm text-slate-500">
-          ${row.documentType}
-        </span>
-      `,
+          <span class="text-sm text-slate-500">${row.documentType}</span>
+        `,
       },
-
       {
         key: 'document',
         label: 'Document',
         render: (row) => `
-        <span class="text-sm text-slate-500">
-          ${row.document}
-        </span>
-      `,
+          <span class="text-sm text-slate-500">${row.document}</span>
+        `,
       },
     ],
   };
@@ -90,4 +82,68 @@ export class Owners {
         'rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer',
     },
   ];
+
+  openCreateOwnerModal() {
+    this.resetForm();
+    this.isCreateOwnerOpen.set(true);
+  }
+
+  closeCreateOwnerModal() {
+    this.isCreateOwnerOpen.set(false);
+    this.error.set('');
+  }
+
+  resetForm() {
+    this.name.set('');
+    this.email.set('');
+    this.documentType.set('');
+    this.document.set('');
+    this.error.set('');
+  }
+
+  setName(value: string) {
+    this.name.set(value);
+  }
+
+  setEmail(value: string) {
+    this.email.set(value);
+  }
+
+  setDocumentType(value: string) {
+    this.documentType.set(value);
+  }
+
+  setDocument(value: string) {
+    this.document.set(value);
+  }
+
+  createOwner() {
+    if (!this.name().trim()) {
+      this.error.set('Name is required');
+      return;
+    }
+
+    if (!this.email().trim()) {
+      this.error.set('Email is required');
+      return;
+    }
+
+    if (!this.email().includes('@')) {
+      this.error.set('Invalid email');
+      return;
+    }
+
+    if (!this.documentType().trim()) {
+      this.error.set('Document type is required');
+      return;
+    }
+
+    if (!this.document().trim()) {
+      this.error.set('Document is required');
+      return;
+    }
+
+    this.error.set('');
+    this.closeCreateOwnerModal();
+  }
 }
