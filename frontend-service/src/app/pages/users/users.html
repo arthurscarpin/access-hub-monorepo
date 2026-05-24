@@ -20,6 +20,28 @@
         <!-- Filter Button -->
         <app-button [label]="buttonLabel" [customStyle]="buttonStyle"></app-button>
       </div>
+
+      <!-- Container -->
+      <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div
+          class="flex flex-col gap-4 border-b border-slate-200 p-6 lg:flex-row lg:items-center lg:justify-between"
+        ></div>
+
+        <!-- All Owners -->
+        <app-table [data]="users" [tableConfig]="tableConfig" />
+
+        <!-- Pagination -->
+        <div
+          class="flex flex-col gap-4 border-t border-slate-200 px-6 py-4 text-sm text-slate-500 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <p>Showing 1–8 of 8 users</p>
+          <div class="flex items-center gap-2">
+            @for (button of paginationButtons; track button.label) {
+              <app-button [label]="button.label" [customStyle]="button.style"></app-button>
+            }
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 </div>

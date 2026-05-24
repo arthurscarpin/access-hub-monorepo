@@ -8,7 +8,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'ABC1D23',
     direction: 'Entry',
     status: 'Granted',
-    date: '20/05, 12:51',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowDownLeft
   },
   {
@@ -16,7 +16,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'XYZ9K87',
     direction: 'Exit',
     status: 'Denied',
-    date: '20/05, 13:14',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowUpRight
   },
   {
@@ -24,7 +24,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'BRA2A11',
     direction: 'Entry',
     status: 'Granted',
-    date: '20/05, 14:32',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowDownLeft
   },
   {
@@ -32,7 +32,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'CAR7F55',
     direction: 'Exit',
     status: 'Granted',
-    date: '20/05, 15:08',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowUpRight
   },
   {
@@ -40,7 +40,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'DDD4K21',
     direction: 'Entry',
     status: 'Denied',
-    date: '20/05, 16:27',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowDownLeft
   },
   {
@@ -48,7 +48,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'ABC1D23',
     direction: 'Entry',
     status: 'Granted',
-    date: '20/05, 12:51',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowDownLeft
   },
   {
@@ -56,7 +56,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'XYZ9K87',
     direction: 'Exit',
     status: 'Denied',
-    date: '20/05, 13:14',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowUpRight
   },
   {
@@ -64,7 +64,7 @@ export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
     plate: 'BRA2A11',
     direction: 'Entry',
     status: 'Granted',
-    date: '20/05, 14:32',
+    date: '2026-05-17T19:39:50.440166Z',
     icon: LucideArrowDownLeft
   }
 ];

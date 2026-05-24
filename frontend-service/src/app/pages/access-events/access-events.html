@@ -25,7 +25,7 @@
         >
           <div class="flex w-full flex-wrap items-center justify-end gap-2">
             <!-- Filter Buttons -->
-            @for (button of filterButtons; track button.label) {
+            @for (button of filters; track button.label) {
               <app-button
                 [label]="button.label"
                 [customStyle]="
@@ -41,51 +41,7 @@
         </div>
 
         <!-- All Events -->
-        <table class="w-full">
-          <thead class="border-b border-slate-200 bg-slate-50">
-            <tr class="text-left text-sm font-medium text-slate-500">
-              <th class="px-6 py-4">Plate</th>
-              <th class="px-6 py-4">Direction</th>
-              <th class="px-6 py-4">Status</th>
-              <th class="px-6 py-4">Date</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            @for (event of events; track event.plate) {
-              <tr class="transition-colors hover:bg-slate-50/60">
-                <td class="px-6 py-5">
-                  {{ event.plate }}
-                </td>
-                <td class="px-6 py-5">
-                  <div
-                    class="flex items-center gap-2 text-sm font-medium"
-                    [ngClass]="{
-                      'text-emerald-600': event.direction === 'Entry',
-                      'text-red-600': event.direction === 'Exit',
-                    }"
-                  >
-                    <ng-container *ngComponentOutlet="event.icon"></ng-container>
-                    {{ event.direction }}
-                  </div>
-                </td>
-                <td class="px-6 py-5">
-                  <span
-                    class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
-                    [ngClass]="{
-                      'bg-emerald-50 text-emerald-700': event.status === 'Granted',
-                      'bg-red-50 text-red-700': event.status === 'Denied',
-                    }"
-                  >
-                    {{ event.status }}
-                  </span>
-                </td>
-                <td class="px-6 py-5 text-sm text-slate-500">
-                  {{ event.date }}
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+        <app-table [data]="events" [tableConfig]="tableConfig" />
 
         <!-- Pagination -->
         <div
