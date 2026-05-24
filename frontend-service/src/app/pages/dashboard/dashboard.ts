@@ -5,8 +5,8 @@ import { AuthService } from '@core/services/auth.service';
 import { PageHeader } from '@components/shared/page-header/page-header';
 import { EventCard } from '@components/dashboard/event-card/event-card';
 import { EventHistoryItem } from '@components/dashboard/event-history-item/event-history-item';
-import { EVENT_CARD_OPTIONS } from '@components/dashboard/event-card/event-card.options';
-import { EVENT_HISTORY_OPTIONS } from '@pages/dashboard/event-history.options';
+import { EVENT_CARD_OPTIONS } from '@components/dashboard/event-card/event-card.types';
+import { EVENT_HISTORY_OPTIONS } from '@pages/dashboard/event-history.types';
 
 @Component({
   standalone: true,

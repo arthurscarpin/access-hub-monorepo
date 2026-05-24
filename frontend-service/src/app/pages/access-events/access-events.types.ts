@@ -1,6 +1,14 @@
-import { AccessEvents } from '@pages/access-events/access-events.interface';
 import { LucideArrowDownLeft, LucideArrowUpRight } from '@lucide/angular';
+import { Type } from "@angular/core"
 
+export interface AccessEvents {
+    id: string;
+    plate: string;
+    direction: string;
+    status: 'Granted' | 'Denied';
+    date: string;
+    icon: Type<any>;
+}
 
 export const ACCESS_EVENTS_OPTIONS: AccessEvents[] = [
   {

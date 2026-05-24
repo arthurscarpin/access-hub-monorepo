@@ -5,7 +5,7 @@ import { PageHeader } from '@components/shared/page-header/page-header';
 import { Button } from '@components/shared/button/button';
 import { Table } from '@components/shared/table/table';
 import { TableConfig } from '@components/shared/table/table.interface';
-import { USERS_OPTIONS } from './users.options';
+import { USERS_OPTIONS } from '@pages/users/users.types';
 
 type UserRow = (typeof USERS_OPTIONS)[number];
 

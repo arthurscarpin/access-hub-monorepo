@@ -5,7 +5,7 @@ import { PageHeader } from '@components/shared/page-header/page-header';
 import { Button } from '@components/shared/button/button';
 import { Table } from '@components/shared/table/table';
 import { TableConfig } from '@components/shared/table/table.interface';
-import { OWNERS_OPTIONS } from '@pages/owners/owners.options';
+import { OWNERS_OPTIONS } from '@pages/owners/owners.types';
 
 type OwnerRow = (typeof OWNERS_OPTIONS)[number];
 

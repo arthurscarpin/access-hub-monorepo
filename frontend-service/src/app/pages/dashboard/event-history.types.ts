@@ -1,5 +1,12 @@
-import { EventHistoryItem } from "./event-history.interface";
 import { LucideArrowUpRight, LucideArrowDownLeft } from "@lucide/angular";
+import { Type } from '@angular/core';
+
+export interface EventHistoryItem {
+  plate: string;
+  vehicle: string;
+  status: 'granted' | 'denied';
+  icon: Type<any>;
+}
 
 export const EVENT_HISTORY_OPTIONS: EventHistoryItem[] = [
   {

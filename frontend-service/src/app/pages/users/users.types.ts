@@ -1,4 +1,9 @@
-import { Users } from "@pages/users/users.interface";
+export interface Users {
+    id: string;
+    name: string;
+    email: string;
+    scopes: string[];
+}
 
 export const USERS_OPTIONS: Users[] = [
   {

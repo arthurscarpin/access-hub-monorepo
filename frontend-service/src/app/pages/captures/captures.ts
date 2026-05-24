@@ -4,7 +4,7 @@ import { Sidebar } from '@components/shared/sidebar/sidebar';
 import { Menu } from '@components/shared/menu/menu';
 import { PageHeader } from '@components/shared/page-header/page-header';
 import { Button } from '@components/shared/button/button';
-import { PROCESSING_HISTORY_OPTIONS } from './captures.types';
+import { PROCESSING_HISTORY_OPTIONS } from '@pages/captures/captures.types';
 import { LucideCloudUpload } from '@lucide/angular';
 
 

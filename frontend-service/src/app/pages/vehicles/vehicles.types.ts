@@ -1,3 +1,12 @@
+export interface Vehicles {
+    id: string;
+    plate: string;
+    model: string;
+    status: string;
+    email: string;
+    ownerName: string;
+}
+
 export const VEHICLES_OPTIONS = [
   {
     id: '6fe86953-ce0c-4604-924e-ad0a2f1325bc',

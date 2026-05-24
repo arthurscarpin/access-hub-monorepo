@@ -1,4 +1,10 @@
-import { Owners } from '@pages/owners/owners.interface';
+export interface Owners {
+  id: string;
+  name: string;
+  document: string;
+  documentType: string;
+  email: string;
+}
 
 export const OWNERS_OPTIONS: Owners[] = [
   {

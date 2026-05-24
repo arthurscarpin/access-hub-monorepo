@@ -1,5 +1,12 @@
 import { LucideShieldCheck, LucideBookOpen, LucidePencilLine } from '@lucide/angular';
-import { Scopes } from './scopes.interface';
+import { Type } from "@angular/core";
+
+export interface Scopes {
+    resource: string;
+    action: string;
+    description: string;
+    icon: Type<any>;
+}
 
 export const SCOPES: Scopes[] = [
   {

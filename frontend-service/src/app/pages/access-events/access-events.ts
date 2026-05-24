@@ -6,7 +6,7 @@ import { PageHeader } from '@components/shared/page-header/page-header';
 import { Button } from '@components/shared/button/button';
 import { Table } from '@components/shared/table/table';
 import { TableConfig } from '@components/shared/table/table.interface';
-import { ACCESS_EVENTS_OPTIONS } from '@pages/access-events/access-events.options';
+import { ACCESS_EVENTS_OPTIONS } from '@pages/access-events/access-events.types';
 
 type EventRow = (typeof ACCESS_EVENTS_OPTIONS)[number];
 

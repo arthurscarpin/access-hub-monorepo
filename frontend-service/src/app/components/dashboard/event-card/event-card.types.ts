@@ -1,5 +1,13 @@
 import { LucideActivity, LucideShieldBan, LucideCar, LucideDownload } from '@lucide/angular';
-import { EventCard } from './event-card.interface';
+import { Type } from '@angular/core';
+
+export interface EventCard {
+  title: string;
+  value: number;
+  percentage: string;
+  description: string;
+  icon: Type<any>;
+}
 
 export const EVENT_CARD_OPTIONS: EventCard[] = [
   {

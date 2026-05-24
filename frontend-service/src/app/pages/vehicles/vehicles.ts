@@ -5,7 +5,7 @@ import { PageHeader } from '@components/shared/page-header/page-header';
 import { Button } from '@components/shared/button/button';
 import { Table } from '@components/shared/table/table';
 import { TableConfig } from '@components/shared/table/table.interface';
-import { VEHICLES_OPTIONS } from '@pages/vehicles/vehicles.options';
+import { VEHICLES_OPTIONS } from '@pages/vehicles/vehicles.types';
 
 type VehicleRow = (typeof VEHICLES_OPTIONS)[number];
 

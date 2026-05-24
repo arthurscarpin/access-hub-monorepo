@@ -1,5 +1,5 @@
-import { SidebarGroup } from './sidebar.types';
-import { SidebarIconKey } from './sidebar.types';
+import { SidebarGroup, SidebarIconKey } from '@components/shared/sidebar/sidebar.types';
+
 import {
   LucideLayoutDashboard,
   LucideActivity,

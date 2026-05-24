@@ -3,7 +3,7 @@ import { NgComponentOutlet } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideLogOut } from '@lucide/angular';
 import { Logo } from '@components/shared/logo/logo';
-import { SIDEBAR_MENU, SIDEBAR_ICON_MAP } from './sidebar.config';
+import { SIDEBAR_MENU, SIDEBAR_ICON_MAP } from '@components/shared/sidebar/sidebar.config';
 import { AuthService } from '@core/services/auth.service';
 
 @Component({

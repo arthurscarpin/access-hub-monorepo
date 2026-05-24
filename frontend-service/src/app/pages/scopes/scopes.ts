@@ -3,7 +3,7 @@ import { Sidebar } from '@components/shared/sidebar/sidebar';
 import { Menu } from '@components/shared/menu/menu';
 import { PageHeader } from '@components/shared/page-header/page-header';
 import { ScopesCard } from '@components/scopes/scopes-card/scopes-card';
-import { SCOPES } from './scopes.options';
+import { SCOPES } from '@pages/scopes/scopes.types';
 
 
 @Component({
