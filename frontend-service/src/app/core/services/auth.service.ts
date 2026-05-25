@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '@core/config/evironment';
-import { LoginResponse } from '@core/models/auth.models';
+import { AuthResponse } from '@core/models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
 
   login(email: string, password: string, rememberMe: boolean) {
     return this.http
-      .post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
+      .post<AuthResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap((response) => {
           if (response?.accessToken) {

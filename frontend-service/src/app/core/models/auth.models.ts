@@ -1,6 +1,9 @@
-import { User } from "@core/models/user.models";
+export interface User {
+  name: string;
+  email: string;
+}
 
-export interface LoginResponse {
+export interface AuthResponse {
   accessToken: string;
   user: User;
 }

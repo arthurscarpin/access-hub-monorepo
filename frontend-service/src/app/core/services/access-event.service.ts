@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { LucideArrowDownLeft, LucideArrowUpRight } from '@lucide/angular';
 import { environment } from '@core/config/evironment';
 import { AccessEventConfig } from 'src/app/ui/components/shared/interfaces/ui.interfaces';
-import { AccessEventsContent } from '@core/models/access-event.models';
+import { AccessEventsResponse } from '@core/models/access-event.models';
 
 
 @Injectable({ providedIn: 'root' })
@@ -34,7 +34,7 @@ export class AccessEventsService {
       .set('page', page.toString())
       .set('size', size.toString());
 
-    this.http.get<AccessEventsContent>(`${this.apiUrl}/access-events`, { params }).subscribe({
+    this.http.get<AccessEventsResponse>(`${this.apiUrl}/access-events`, { params }).subscribe({
       next: (body) => {
         if (body && body.content) {
           this._events.set(body.content);

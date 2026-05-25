@@ -6,6 +6,6 @@ export interface AccessEvent {
   result: string;
 }
 
-export interface AccessEventsContent {
+export interface AccessEventsResponse {
   content: AccessEvent[];
 }
