@@ -1,8 +1,8 @@
-import { Injectable, computed, signal, Type } from '@angular/core'; // Adicionado o Type aqui
+import { Injectable, computed, signal, Type } from '@angular/core';
 import { LucideArrowDownLeft, LucideArrowUpRight } from '@lucide/angular';
 import { AccessEventResponse } from '@core/models/access-event.models';
 import { ACCESS_EVENTS_MOCKY } from '@components/access-events/access-events-container/access-events-container.mock';
-import { AccessEventConfig } from '@components/shared/interfaces/ui.interfaces'; // Importe a sua interface aqui
+import { AccessEventConfig } from '@components/shared/interfaces/ui.interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class AccessEventsService {
