@@ -1,28 +1,33 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '@config/evironment';
-import { LoginResponse } from '@core/models/auth.models';
-import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+import { environment } from '@core/config/evironment';
+import { LoginResponse } from '@core/models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private readonly apiUrl = environment.apiUrl;
   private readonly TOKEN_KEY = 'accessToken';
 
-  constructor(private router: Router) {}
-
-  login(email: string, password: string) {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, {
-      email,
-      password,
-    });
-  }
-
-  saveToken(token: string, rememberMe: boolean = true): void {
+  private saveToken(token: string, rememberMe: boolean): void {
     const storage = rememberMe ? localStorage : sessionStorage;
     storage.setItem(this.TOKEN_KEY, token);
+  }
+
+  login(email: string, password: string, rememberMe: boolean) {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
+      .pipe(
+        tap((response) => {
+          if (response?.accessToken) {
+            this.saveToken(response.accessToken, rememberMe);
+          }
+        })
+      );
   }
 
   getToken(): string | null {
@@ -32,23 +37,24 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     sessionStorage.removeItem(this.TOKEN_KEY);
-    this.router.navigate(['/login'])
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
 
-  getUsernameAndEmail(): {email: string; username: string} {
+  getUsernameAndEmail(): { email: string; username: string } {
     const token = this.getToken();
-    if (!token) {
-      return {email: '', username: ''};
-    }
-    const decodedToken: any = jwtDecode(token);
-    const email: string | null = decodedToken.email;
-    return {
-      email: email != null ? email : '',
-      username: email != null ? email.split('@')[0] : ''
+    if (!token) return { email: '', username: '' };
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      const email = decodedToken.email || '';
+      const username = email ? email.split('@')[0] : '';
+      return { email, username };
+    } catch {
+      return { email: '', username: '' };
     }
   }
 }

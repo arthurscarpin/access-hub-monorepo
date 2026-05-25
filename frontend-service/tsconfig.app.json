@@ -7,10 +7,9 @@
     "types": [],
     "baseUrl": "./",
     "paths": {
-      "@config/*": ["src/app/config/*"],
+      "@config/*": ["src/app/core/config/*"],
       "@core/*": ["src/app/core/*"],
-      "@components/*": ["src/app/components/*"],
-      "@pages/*": ["src/app/pages/*"]
+      "@ui/*": ["src/app/ui/*"]
     }
   },
   "include": [

@@ -1,7 +1,11 @@
-export interface AccessEventResponse {
+export interface AccessEvent {
   id: string;
   plate: string;
-  direction: 'Entry' | 'Exit';
-  status: 'Granted' | 'Denied';
-  date: string;
+  timestamp: string;
+  direction: string;
+  result: string;
+}
+
+export interface AccessEventsContent {
+  content: AccessEvent[];
 }
