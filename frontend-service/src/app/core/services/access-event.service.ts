@@ -11,15 +11,15 @@ export class AccessEventsService {
   
   private readonly apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
-  private _events = signal<any[]>([]);
+  private _accessEvents = signal<any[]>([]);
 
   private capitalize(value: string): string {
     if (!value) return '';
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
  
-  public events = computed<AccessEventConfig[]>(() => {
-    return this._events().map((event) => ({
+  public accessEvents = computed<AccessEventConfig[]>(() => {
+    return this._accessEvents().map((event) => ({
       id: event.id,
       plate: event.plate,
       direction: this.capitalize(event.direction),
@@ -37,12 +37,12 @@ export class AccessEventsService {
     this.http.get<AccessEventsResponse>(`${this.apiUrl}/access-events`, { params }).subscribe({
       next: (body) => {
         if (body && body.content) {
-          this._events.set(body.content);
+          this._accessEvents.set(body.content);
         }
       },
       error: (err) => {
         console.error('Request error: ', err);
-        this._events.set([]);
+        this._accessEvents.set([]);
       }
     });
   }

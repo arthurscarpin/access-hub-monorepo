@@ -2,7 +2,6 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { Button } from '@ui/components/shared/button/button';
 import { AccessEventsService } from '@core/services/access-event.service';
 import { AccessEventsTable } from '@ui/components/access-events/access-events-table/access-events-table';
-import { FILTER_OPTIONS, PAGINATION_BUTTONS } from './access-events.constants';
 
 
 @Component({
@@ -18,23 +17,24 @@ export class AccessEventsContainer implements OnInit {
     this.accessEventService.load(this.currentPage(), this.pageSize);
   }
 
-  public readonly filterOptions = FILTER_OPTIONS;
-  public readonly paginationButtons = PAGINATION_BUTTONS;
-  public selectedFilter = signal<string>('All');
-  public currentPage = signal<number>(0); 
+  public readonly filterOptions = ['All', 'Authorized', 'Denied', 'In', 'Out'];
+  public readonly paginationButtons = [ { label: 'Previous', action: 'prev' }, { label: 'Next', action: 'next' }];
   
+  public selectedFilter = signal<string>('All');
+  public currentPage = signal<number>(0);
+
   ngOnInit() {
     this.fetchEvents();
   }
 
   public filteredEvents = computed(() => {
-    const rawEvents = this.accessEventService.events();
+    const rawEvents = this.accessEventService.accessEvents();
     const currentFilter = this.selectedFilter();
     if (currentFilter === 'All') {
       return rawEvents;
     }
-    return rawEvents.filter(event => 
-      event.status === currentFilter || event.direction === currentFilter
+    return rawEvents.filter(
+      (event) => event.status === currentFilter || event.direction === currentFilter,
     );
   });
 

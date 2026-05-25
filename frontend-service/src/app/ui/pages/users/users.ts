@@ -6,7 +6,7 @@ import { Button } from 'src/app/ui/components/shared/button/button';
 import { Table } from 'src/app/ui/components/shared/table/table';
 import { TableConfig } from 'src/app/ui/components/shared/table/table.interface';
 import { USERS_OPTIONS } from '@ui/pages/users/users.types';
-import { SCOPES } from '@ui/pages/scopes/scopes.types';
+import { SCOPES } from '@ui/pages/users/users.types';
 
 type UserRow = (typeof USERS_OPTIONS)[number];
 

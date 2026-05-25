@@ -41,7 +41,21 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
+    return !this.isTokenExpired(token);
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const decoded: any = jwtDecode(token);
+      if (!decoded.exp) return false;
+
+      const expirationDate = decoded.exp * 1000;
+      return Date.now() >= expirationDate;
+    } catch {
+      return true;
+    }
   }
 
   getUsernameAndEmail(): { email: string; username: string } {

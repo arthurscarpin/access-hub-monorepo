@@ -6,26 +6,28 @@
 
   <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
     <!-- Menu Component -->
-    <app-menu [screenOperation]="breadCrumbOperation" [screenName]="breadCrumbName"></app-menu>
+    <app-menu [screenOperation]="breadCrumb.operation" [screenName]="breadCrumb.name"></app-menu>
 
     <main class="flex-1 p-6 pt-22">
       <div class="flex items-start justify-between">
         <!-- Page Header Component -->
         <app-page-header
-          [category]="pageCategory"
-          [title]="pageTitle"
-          [description]="pageDescription"
+          [category]="pageHeader.category"
+          [title]="pageHeader.title"
+          [description]="pageHeader.description"
         ></app-page-header>
       </div>
       <section class="px-10 py-8">
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-          @for (scope of scopes; track scope.action) {
+          @for (scope of scopes(); track scope.id) {
             <app-scopes-card
               [icon]="scope.icon"
               [resource]="scope.resource"
               [action]="scope.action"
               [description]="scope.description"
             ></app-scopes-card>
+          } @empty {
+            <div class="col-span-2 text-center text-slate-500 py-10">Scopes not found.</div>
           }
         </div>
       </section>
