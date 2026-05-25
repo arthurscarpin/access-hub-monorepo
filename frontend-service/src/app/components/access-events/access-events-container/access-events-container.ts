@@ -5,7 +5,6 @@ import { AccessEventsService } from '@core/services/access-event.service';
 import { AccessEventsTable } from '@components/access-events/access-events-table/access-events-table';
 
 import { 
-  ACCESS_EVENTS_TABLE_CONFIG, 
   FILTER_OPTIONS, 
   PAGINATION_BUTTONS 
 } from './access-events.constants';
@@ -19,7 +18,6 @@ import {
 export class AccessEventsContainer{
   private eventsService = inject(AccessEventsService);
   
-  public readonly tableConfig = ACCESS_EVENTS_TABLE_CONFIG;
   public readonly filterOptions = FILTER_OPTIONS;
   public readonly paginationButtons = PAGINATION_BUTTONS;
 
