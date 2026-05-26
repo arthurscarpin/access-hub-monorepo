@@ -5,7 +5,6 @@ import com.arthurscarpin.acs.core.accessevent.domain.AccessResult;
 import com.arthurscarpin.acs.core.accessevent.domain.Direction;
 import com.arthurscarpin.acs.infrastructure.persistence.entity.table.AccessEventEntity;
 import com.arthurscarpin.acs.infrastructure.persistence.repository.table.AccessEventRepository;
-import com.arthurscarpin.acs.infrastructure.presentation.request.AccessEventRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

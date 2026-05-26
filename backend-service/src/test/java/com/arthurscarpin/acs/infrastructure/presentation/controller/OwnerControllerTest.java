@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -112,5 +113,66 @@ class OwnerControllerTest extends AccessControlSystemIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Given authenticated user with permission When listing owners Then returns 200 OK with paginated data")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_owner:read"})
+    void shouldReturnOwnersSuccessfully() throws Exception {
+
+        mockMvc.perform(get("/owners")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].id").isNotEmpty())
+                .andExpect(jsonPath("$.content[0].name").value("Maria Oliveira"))
+                .andExpect(jsonPath("$.content[0].email").value("contact1@example.com"))
+                .andExpect(jsonPath("$.content[0].document").value("111.444.777-35"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.number").value(0));
+    }
+
+    @Test
+    @DisplayName("Given no authentication When listing owners Then returns 401 Unauthorized")
+    void shouldReturnUnauthorizedWhenListingOwnersWithoutAuthentication() throws Exception {
+
+        mockMvc.perform(get("/owners")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Given user without permission When listing owners Then returns 403 Forbidden")
+    @WithMockUser(authorities = {"SCOPE_owner:write"})
+    void shouldReturnForbiddenWhenListingOwnersWithoutPermission() throws Exception {
+
+        mockMvc.perform(get("/owners")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Given no owners registered When listing owners Then returns empty page")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_owner:read"})
+    void shouldReturnEmptyPageWhenNoOwnersExist() throws Exception {
+
+        repository.deleteAllInBatch();
+
+        mockMvc.perform(get("/owners")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.number").value(0));
     }
 }
