@@ -4,6 +4,7 @@ import com.arthurscarpin.acs.infrastructure.presentation.request.OwnerRequest;
 import com.arthurscarpin.acs.infrastructure.presentation.response.ErrorResponse;
 import com.arthurscarpin.acs.infrastructure.presentation.response.OwnerResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @SecurityRequirement(name = "bearerAuth")
@@ -25,4 +28,13 @@ public interface OwnerControllerDoc {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     OwnerResponse save(@Valid @RequestBody OwnerRequest request);
+
+
+    @Operation(summary = "List owners", description = "Returns a paginated list of registered owners.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Owners retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    Page<OwnerResponse> findAll(@Parameter(description = "Pagination parameters") Pageable pageable);
 }

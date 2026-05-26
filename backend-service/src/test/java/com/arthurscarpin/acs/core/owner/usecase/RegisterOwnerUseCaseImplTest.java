@@ -20,10 +20,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class RegisterOwnerImplTest {
+class RegisterOwnerUseCaseImplTest {
 
     @InjectMocks
-    private RegisterOwnerImpl useCase;
+    private RegisterOwnerUseCaseImpl useCase;
 
     @Mock
     private OwnerGateway gateway;

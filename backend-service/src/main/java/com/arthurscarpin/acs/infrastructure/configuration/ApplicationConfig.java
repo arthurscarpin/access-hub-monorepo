@@ -9,7 +9,8 @@ import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureZipGateway;
 import com.arthurscarpin.acs.core.capture.usecase.*;
 import com.arthurscarpin.acs.core.owner.gateway.OwnerGateway;
-import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerImpl;
+import com.arthurscarpin.acs.core.owner.usecase.GetOwnersUseCaseImpl;
+import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerUseCaseImpl;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerUseCase;
 import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
 import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCase;
@@ -38,7 +39,7 @@ public class ApplicationConfig {
 
     @Bean
     public RegisterOwnerUseCase registerOwnerUseCase(OwnerGateway ownerGateway) {
-        return new RegisterOwnerImpl(ownerGateway);
+        return new RegisterOwnerUseCaseImpl(ownerGateway);
     }
 
     @Bean
@@ -84,5 +85,10 @@ public class ApplicationConfig {
     @Bean
     public ResultCaptureUseCase resultCaptureUseCase(CaptureGateway captureGateway, ValidateAccessUseCase validateAccessUseCase) {
         return new ResultCaptureUseCaseImpl(captureGateway, validateAccessUseCase);
+    }
+
+    @Bean
+    public GetOwnersUseCaseImpl getOwnersUseCase(OwnerGateway ownerGateway) {
+        return new GetOwnersUseCaseImpl(ownerGateway);
     }
 }

@@ -2,6 +2,8 @@ package com.arthurscarpin.acs.core.owner.gateway;
 
 import com.arthurscarpin.acs.core.owner.domain.DocumentType;
 import com.arthurscarpin.acs.core.owner.domain.Owner;
+import com.arthurscarpin.acs.core.pagination.PageInput;
+import com.arthurscarpin.acs.core.pagination.PageOutput;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -16,5 +18,5 @@ public interface OwnerGateway {
 
     Owner save(Owner ownerSaved);
 
-
+    PageOutput<Owner> findByFilters(PageInput pageInput);
 }
