@@ -22,120 +22,158 @@
     <div class="space-y-4">
 
       <!-- Name -->
-      <fieldset class="space-y-2">
+<fieldset class="space-y-2">
+  <label for="name" class="text-sm font-medium text-slate-700">
+    Full name
+  </label>
 
-        <label
-          for="name"
-          class="text-sm font-medium text-slate-700"
-        >
-          Full name
-        </label>
+  <input
+    id="name"
+    type="text"
+    placeholder="Enter full name"
+    formControlName="name"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.name.touched && form.controls.name.invalid),
 
-        <input
-          id="name"
-          type="text"
-          placeholder="Enter full name"
-          formControlName="name"
-          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none transition focus:border-slate-900"
-        />
+      'border-red-300 focus:border-red-500':
+        form.controls.name.touched && form.controls.name.invalid
+    }"
+  />
 
-        @if (form.controls.name.touched && form.controls.name.invalid) {
-          <p class="text-sm text-red-500">
-            Name is required (minimum 3 characters).
-          </p>
-        }
+  @if (form.controls.name.touched && form.controls.name.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
 
-      </fieldset>
+      @if (form.controls.name.errors?.['required']) {
+        <p>Name is required.</p>
+      }
 
-      <!-- Email -->
-      <fieldset class="space-y-2">
+      @if (form.controls.name.errors?.['minlength']) {
+        <p>Name must contain at least 3 characters.</p>
+      }
 
-        <label
-          for="email"
-          class="text-sm font-medium text-slate-700"
-        >
-          Email
-        </label>
+    </div>
+  }
+</fieldset>
 
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter email"
-          formControlName="email"
-          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none transition focus:border-slate-900"
-        />
+<!-- Email -->
+<fieldset class="space-y-2">
+  <label for="email" class="text-sm font-medium text-slate-700">
+    Email
+  </label>
 
-        @if (form.controls.email.touched && form.controls.email.invalid) {
-          <p class="text-sm text-red-500">
-            Valid email is required.
-          </p>
-        }
+  <input
+    id="email"
+    type="email"
+    placeholder="Enter email"
+    formControlName="email"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.email.touched && form.controls.email.invalid),
 
-      </fieldset>
+      'border-red-300 focus:border-red-500':
+        form.controls.email.touched && form.controls.email.invalid
+    }"
+  />
 
-      <!-- Document Type -->
-      <fieldset class="space-y-2">
+  @if (form.controls.email.touched && form.controls.email.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
 
-        <label
-          for="documentType"
-          class="text-sm font-medium text-slate-700"
-        >
-          Document type
-        </label>
+      @if (form.controls.email.errors?.['required']) {
+        <p>Email is required.</p>
+      }
 
-        <select
-          id="documentType"
-          formControlName="documentType"
-          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-600 outline-none transition focus:border-slate-900"
-        >
-          <option value="">
-            Select document type
-          </option>
+      @if (form.controls.email.errors?.['email']) {
+        <p>Enter a valid email address.</p>
+      }
 
-          <option value="CPF">
-            CPF
-          </option>
+    </div>
+  }
+</fieldset>
 
-          <option value="RG">
-            RG
-          </option>
-        </select>
+<!-- Document Type -->
+<fieldset class="space-y-2">
+  <label for="documentType" class="text-sm font-medium text-slate-700">
+    Document type
+  </label>
 
-        @if (form.controls.documentType.touched &&
-        form.controls.documentType.invalid) {
-          <p class="text-sm text-red-500">
-            Document type is required.
-          </p>
-        }
+  <select
+    id="documentType"
+    formControlName="documentType"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.documentType.touched && form.controls.documentType.invalid),
 
-      </fieldset>
+      'border-red-300 focus:border-red-500':
+        form.controls.documentType.touched && form.controls.documentType.invalid
+    }"
+  >
+    <option value="">Select document type</option>
+    <option value="CPF">CPF</option>
+    <option value="RG">RG</option>
+  </select>
 
-      <!-- Document -->
-      <fieldset class="space-y-2">
+  @if (form.controls.documentType.touched && form.controls.documentType.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
 
-        <label
-          for="document"
-          class="text-sm font-medium text-slate-700"
-        >
-          Document
-        </label>
+      @if (form.controls.documentType.errors?.['required']) {
+        <p>Document type is required.</p>
+      }
 
-        <input
-          id="document"
-          type="text"
-          placeholder="Enter document"
-          formControlName="document"
-          class="h-12 w-full rounded-xl border border-slate-200 px-4 text-sm outline-none transition focus:border-slate-900"
-        />
+    </div>
+  }
+</fieldset>
 
-        @if (form.controls.document.touched &&
-        form.controls.document.invalid) {
-          <p class="text-sm text-red-500">
-            Document is required.
-          </p>
-        }
+<!-- Document -->
+<fieldset class="space-y-2">
+  <label for="document" class="text-sm font-medium text-slate-700">
+    Document
+  </label>
 
-      </fieldset>
+  <input
+    id="document"
+    type="text"
+    placeholder="Enter document"
+    formControlName="document"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.document.touched && form.controls.document.invalid),
+
+      'border-red-300 focus:border-red-500':
+        form.controls.document.touched && form.controls.document.invalid
+    }"
+  />
+
+  @if (form.controls.document.touched && form.controls.document.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
+
+      @if (form.controls.document.errors?.['required']) {
+        <p>Document is required.</p>
+      }
+
+      @if (form.controls.document.errors?.['minlength']) {
+        <p>
+          Document must contain
+          {{ form.controls.document.errors?.['minlength']?.requiredLength }}
+          characters.
+        </p>
+      }
+
+      @if (form.controls.document.errors?.['maxlength']) {
+        <p>
+          Document must contain
+          {{ form.controls.document.errors?.['maxlength']?.requiredLength }}
+          characters.
+        </p>
+      }
+
+    </div>
+  }
+</fieldset>
 
     </div>
 

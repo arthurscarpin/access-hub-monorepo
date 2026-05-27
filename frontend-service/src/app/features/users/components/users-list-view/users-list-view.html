@@ -3,55 +3,62 @@
   <div class="overflow-x-auto">
     <table class="w-full table-fixed border-collapse">
       <caption class="sr-only">
-        Owners list table
+        Users list table
       </caption>
 
       <thead class="border-b border-slate-200 bg-slate-50">
         <tr class="text-left text-sm font-medium text-slate-500">
           <th scope="col" class="w-1/4 px-6 py-4">Name</th>
           <th scope="col" class="w-1/4 px-6 py-4">Email</th>
-          <th scope="col" class="w-1/4 px-6 py-4">Document Type</th>
-          <th scope="col" class="w-1/4 px-6 py-4">Document</th>
+          <th scope="col" class="w-1/4 px-6 py-4">Scopes</th>
         </tr>
       </thead>
 
       <tbody class="divide-y divide-slate-100">
-        @for (owner of owners(); track owner.id) {
+        @for (user of usersWithScopes(); track user.id) {
           <tr class="transition-colors hover:bg-slate-50/60">
             <td class="px-6 py-5">
               <span class="truncate text-sm font-semibold tracking-wide text-slate-900">
-                {{ owner.name }}
+                {{ user.name }}
               </span>
             </td>
 
             <td class="px-6 py-5">
               <span class="truncate text-sm text-slate-500">
-                {{ owner.email }}
+                {{ user.email }}
               </span>
             </td>
 
             <td class="px-6 py-5">
-              <span
-                class="rounded-full border px-3 py-1 text-xs font-medium"
-                [ngClass]="{
-                  'border-orange-200 bg-orange-50 text-yellow-600': owner.documentType === 'CPF',
-                  'border-emerald-200 bg-emerald-50 text-emerald-600': owner.documentType === 'RG',
-                }"
-              >
-                {{ owner.documentType }}
-              </span>
-            </td>
+              <div class="flex flex-wrap items-center gap-1">
+                @for (scope of user.scopes.slice(0, 2); track scope.id) {
+                  <span
+                    class="rounded-full border px-3 py-1 text-xs font-medium"
+                    [ngClass]="{
+                      'border-blue-200 bg-blue-50 text-blue-600':
+                        scope.name.split(':')[1] === 'all',
+                      'border-orange-200 bg-orange-50 text-orange-600':
+                        scope.name.split(':')[1] === 'write',
+                      'border-emerald-200 bg-emerald-50 text-emerald-600':
+                        scope.name.split(':')[1] === 'read',
+                    }"
+                  >
+                    {{ scope.name }}
+                  </span>
+                }
 
-            <td class="px-6 py-5">
-              <span class="truncate text-sm text-slate-400">
-                {{ formatDocument(owner.document, owner.documentType) }}
-              </span>
+                @if (user.scopes.length > 2) {
+                  <span class="ml-1 text-xs font-medium text-slate-400">
+                    +{{ user.scopes.length - 2 }}
+                  </span>
+                }
+              </div>
             </td>
           </tr>
         } @empty {
           <tr>
             <td colspan="4" class="px-6 py-5 text-center text-sm text-slate-400">
-              No owners found.
+              No users found.
             </td>
           </tr>
         }

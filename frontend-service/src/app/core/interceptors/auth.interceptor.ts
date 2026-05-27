@@ -4,11 +4,12 @@ import { AuthService } from '../services/auth.service';
 import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
-  if (
-    request.url.includes('/login') ||
-    request.url.includes('/users') ||
-    request.url.includes('/scopes')
-  ) {
+  const isLogin = request.url.includes('/login');
+  const isScopes = request.url.includes('/scopes');
+
+  const isCreateUser = request.url.includes('/users') && request.method === 'POST';
+
+  if (isLogin || isScopes || isCreateUser) {
     return next(request);
   }
 

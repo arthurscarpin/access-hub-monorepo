@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { OwnerService } from '../../../../core/services/owner.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-owners-list-view',
-  imports: [],
+  imports: [NgClass],
   templateUrl: './owners-list-view.html',
 })
 export class OwnersListView {
