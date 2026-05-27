@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -117,5 +118,126 @@ class UserControllerTest extends AccessControlSystemIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Given existing users When listing users Then returns 200 OK with paginated users")
+    @WithMockUser(authorities = {"SCOPE_admin:all"})
+    void shouldReturnPaginatedUsersSuccessfully() throws Exception {
+
+        UserEntity userOne = new UserEntity(
+                null,
+                "Ana Santos",
+                "ana@email.com",
+                "Password@123",
+                true,
+                List.of(scopeRepository.findById(scopeId).orElseThrow())
+        );
+
+        UserEntity userTwo = new UserEntity(
+                null,
+                "Carlos Silva",
+                "carlos@email.com",
+                "Password@123",
+                true,
+                List.of(scopeRepository.findById(scopeId).orElseThrow())
+        );
+
+        userRepository.saveAll(List.of(userOne, userTwo));
+
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(3))
+                .andExpect(jsonPath("$.totalElements").value(3))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.number").value(0));
+    }
+
+    @Test
+    @DisplayName("Given no users When listing users Then returns empty page")
+    @WithMockUser(authorities = {"SCOPE_admin:all"})
+    void shouldReturnEmptyPageWhenNoUsersExist() throws Exception {
+
+        userRepository.deleteAllInBatch();
+
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.size").value(10));
+    }
+
+    @Test
+    @DisplayName("Given pagination params When listing users Then should paginate correctly")
+    @WithMockUser(authorities = {"SCOPE_admin:all"})
+    void shouldPaginateUsersCorrectly() throws Exception {
+
+        for (int i = 0; i < 15; i++) {
+            UserEntity user = new UserEntity(
+                    null,
+                    "User " + i,
+                    "user" + i + "@email.com",
+                    "Password@123",
+                    true,
+                    List.of(scopeRepository.findById(scopeId).orElseThrow())
+            );
+
+            userRepository.save(user);
+        }
+
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "5")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(5))
+                .andExpect(jsonPath("$.size").value(5))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.totalElements").value(16))
+                .andExpect(jsonPath("$.totalPages").value(4));
+    }
+
+    @Test
+    @DisplayName("Given page out of bounds When listing users Then returns empty content")
+    @WithMockUser(authorities = {"SCOPE_admin:all"})
+    void shouldReturnEmptyContentWhenPageOutOfBounds() throws Exception {
+
+        mockMvc.perform(get("/users")
+                        .param("page", "999")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty());
+    }
+
+    @Test
+    @DisplayName("Given request without authentication When listing users Then returns 401 Unauthorized")
+    void shouldReturnUnauthorizedWhenUserIsNotAuthenticated() throws Exception {
+
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Given user without permission When listing users Then returns 403 Forbidden")
+    @WithMockUser(authorities = {"SCOPE_user:read"})
+    void shouldReturnForbiddenWhenUserDoesNotHavePermission() throws Exception {
+
+        mockMvc.perform(get("/users")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 }
