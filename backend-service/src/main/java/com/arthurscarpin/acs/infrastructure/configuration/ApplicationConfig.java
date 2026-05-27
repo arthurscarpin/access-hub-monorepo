@@ -17,10 +17,7 @@ import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCase;
 import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCaseImpl;
 import com.arthurscarpin.acs.core.user.gateway.LoginGateway;
 import com.arthurscarpin.acs.core.user.gateway.UserGateway;
-import com.arthurscarpin.acs.core.user.usecase.LoginUserUseCase;
-import com.arthurscarpin.acs.core.user.usecase.LoginUserUseCaseImpl;
-import com.arthurscarpin.acs.core.user.usecase.RegisterUserUseCase;
-import com.arthurscarpin.acs.core.user.usecase.RegisterUserUseCaseImpl;
+import com.arthurscarpin.acs.core.user.usecase.*;
 import com.arthurscarpin.acs.core.vehicle.gateway.VehicleGateway;
 import com.arthurscarpin.acs.core.vehicle.usecase.RegisterVehicleUseCase;
 import com.arthurscarpin.acs.core.vehicle.usecase.RegisterVehicleUseCaseImpl;
@@ -90,5 +87,10 @@ public class ApplicationConfig {
     @Bean
     public GetOwnersUseCaseImpl getOwnersUseCase(OwnerGateway ownerGateway) {
         return new GetOwnersUseCaseImpl(ownerGateway);
+    }
+
+    @Bean
+    public GetUsersUseCase getUsersUseCase(UserGateway userGateway) {
+        return new GetUsersUseCaseImpl(userGateway);
     }
 }

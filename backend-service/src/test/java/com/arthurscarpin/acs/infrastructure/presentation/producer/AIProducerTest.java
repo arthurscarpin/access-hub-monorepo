@@ -46,7 +46,7 @@ class AIProducerTest extends AccessControlSystemIntegrationTest {
         Object received = rabbitTemplate.receiveAndConvert(queue.getName(), 5000);
 
         assertNotNull(received);
-        assertTrue(received instanceof Capture);
+        assertInstanceOf(Capture.class, received);
     }
 
     @Test
