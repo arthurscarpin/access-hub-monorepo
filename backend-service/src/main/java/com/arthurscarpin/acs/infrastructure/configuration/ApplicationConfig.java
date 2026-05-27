@@ -19,10 +19,7 @@ import com.arthurscarpin.acs.core.user.gateway.LoginGateway;
 import com.arthurscarpin.acs.core.user.gateway.UserGateway;
 import com.arthurscarpin.acs.core.user.usecase.*;
 import com.arthurscarpin.acs.core.vehicle.gateway.VehicleGateway;
-import com.arthurscarpin.acs.core.vehicle.usecase.RegisterVehicleUseCase;
-import com.arthurscarpin.acs.core.vehicle.usecase.RegisterVehicleUseCaseImpl;
-import com.arthurscarpin.acs.core.vehicle.usecase.UpdateVehicleStatusUseCase;
-import com.arthurscarpin.acs.core.vehicle.usecase.UpdateVehicleStatusUseCaseImpl;
+import com.arthurscarpin.acs.core.vehicle.usecase.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -92,5 +89,10 @@ public class ApplicationConfig {
     @Bean
     public GetUsersUseCase getUsersUseCase(UserGateway userGateway) {
         return new GetUsersUseCaseImpl(userGateway);
+    }
+
+    @Bean
+    public GetVehiclesUseCase getVehiclesUseCase(VehicleGateway vehicleGateway) {
+        return new GetVehiclesUseCaseImpl(vehicleGateway);
     }
 }

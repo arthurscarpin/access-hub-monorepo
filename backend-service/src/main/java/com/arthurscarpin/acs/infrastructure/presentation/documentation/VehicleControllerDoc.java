@@ -36,5 +36,5 @@ public interface VehicleControllerDoc {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    VehicleResponse findById(@PathVariable UUID id);
+    VehicleResponse updateById(@PathVariable UUID id);
 }
