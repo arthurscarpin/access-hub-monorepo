@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { OwnersPage } from './features/owners/pages/owners-page/owners-page';
-import { LoginPage } from './features/login/pages/login-page/login-page';
 import { authGuard } from './core/guards/auth.guard';
+import { LoginPage } from './features/login/pages/login-page/login-page';
+import { OwnersPage } from './features/owners/pages/owners-page/owners-page';
+import { ScopesPage } from './features/scopes/pages/scopes-page/scopes-page';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,10 @@ export const routes: Routes = [
       {
         path: 'owners',
         component: OwnersPage,
+      },
+      {
+        path: 'scopes',
+        component: ScopesPage,
       },
     ],
   },

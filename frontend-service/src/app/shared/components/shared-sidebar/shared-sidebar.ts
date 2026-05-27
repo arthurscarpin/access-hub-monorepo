@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   LucideShieldCheck,
   LucideLayoutDashboard,
@@ -25,6 +26,8 @@ import { AuthService } from '../../../core/services/auth.service';
     LucideUsers,
     LucideShield,
     LucideLogOut,
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './shared-sidebar.html',
 })

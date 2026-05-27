@@ -24,7 +24,7 @@ export class OwnersPage {
   public readonly headerConfig: SharedHeaderConfig = {
     category: 'Management',
     title: 'Owners',
-    description: 'Manage registered owners, documents, and account information from a centralized control panel.',
+    description: 'Control panel for owner management',
   };
 
   public readonly menuConfig: SharedMenuConfig = {
