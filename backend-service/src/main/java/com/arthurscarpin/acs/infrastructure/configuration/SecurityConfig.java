@@ -56,6 +56,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users")
+                        .hasAuthority("SCOPE_admin:all")
+                        .requestMatchers(HttpMethod.GET, "/users")
+                        .hasAuthority("SCOPE_admin:all")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(
