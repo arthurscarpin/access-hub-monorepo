@@ -234,7 +234,7 @@ pyrightconfig.json
 /bazel-out
 
 # Node
-/node_modules
+frontend-service/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -257,7 +257,7 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
+frontend-service/.angular/cache
 .sass-cache/
 /connect.lock
 /coverage
