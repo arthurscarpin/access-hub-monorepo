@@ -14,18 +14,20 @@
         <!-- Header Component -->
         <app-shared-header [config]="headerConfig"></app-shared-header>
         <button
-          class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
-          (click)="openModal()"
+          type="button"
+          class="cursor-pointer rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+          (click)="refreshEvents()"
         >
-          New Vehicle
+          Refresh
         </button>
       </div>
 
       <!-- Container Component -->
+      <app-access-events-view
+        [events]="accessEvents()"
+        [pagination]="pagination()"
+        (pageChange)="handlePageChange($event)"
+      ></app-access-events-view>
     </main>
   </div>
 </div>
-
-@if (modalStage()) {
-
-}

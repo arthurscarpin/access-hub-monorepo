@@ -4,11 +4,12 @@ import { SharedMenu } from '../../../../shared/components/shared-menu/shared-men
 import { SharedHeader } from '../../../../shared/components/shared-header/shared-header';
 import { SharedHeaderConfig } from '../../../../shared/components/shared-header/shared-header-config';
 import { SharedMenuConfig } from '../../../../shared/components/shared-menu/shared-menu.config';
+import { CapturesDropzone } from "../../components/captures-dropzone/captures-dropzone";
 
 @Component({
   standalone: true,
   selector: 'app-captures-page',
-  imports: [SharedSidebar, SharedMenu, SharedHeader,],
+  imports: [SharedSidebar, SharedMenu, SharedHeader, CapturesDropzone],
   templateUrl: './captures-page.html'
 })
 export class CapturesPage {

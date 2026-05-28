@@ -13,19 +13,10 @@
       <div class="mb-6 flex items-start justify-between">
         <!-- Header Component -->
         <app-shared-header [config]="headerConfig"></app-shared-header>
-        <button
-          class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
-          (click)="openModal()"
-        >
-          New Vehicle
-        </button>
       </div>
 
       <!-- Container Component -->
+      <app-captures-dropzone></app-captures-dropzone>
     </main>
   </div>
 </div>
-
-@if (modalStage()) {
-
-}
