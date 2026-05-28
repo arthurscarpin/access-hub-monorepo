@@ -295,6 +295,16 @@ docker run --rm \
 
 The Dockerfile uses `python:3.11-slim`, installs the native libraries required by OpenCV, syncs locked dependencies with `uv`, and starts `src/main.py`.
 
+### Docker Compose
+
+From the repository root, this worker is included in the full platform Compose setup:
+
+```bash
+docker compose up --build recognize-plate-service
+```
+
+The root `docker-compose.yaml` builds this service from `./recognize-plate-service`, waits for RabbitMQ and the backend to become healthy, receives RabbitMQ and storage settings from the root `.env`, and mounts repository-root `./storage` into the container at `/app/storage`.
+
 ## Testing and Quality
 
 Run the test suite:

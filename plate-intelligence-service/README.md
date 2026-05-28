@@ -255,6 +255,16 @@ docker run --rm --env-file .env plate-intelligence-service
 
 The Dockerfile uses `python:3.12-slim`, installs `uv`, syncs locked production dependencies, and starts `src/main.py`.
 
+### Docker Compose
+
+From the repository root, this worker is included in the full platform Compose setup:
+
+```bash
+docker compose up --build plate-intelligence-service
+```
+
+The root `docker-compose.yaml` builds this service from `./plate-intelligence-service`, waits for RabbitMQ and the backend to become healthy, and receives RabbitMQ, OpenAI, LangChain, and model settings from the root `.env`.
+
 ## Testing and Quality
 
 Run the test suite:

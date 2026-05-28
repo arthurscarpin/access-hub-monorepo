@@ -1,13 +1,14 @@
 # Access Control System Monorepo
 
-Distributed access-control platform for vehicle entry and exit validation. The monorepo combines a Spring Boot backend, a Python OCR worker, and a Python plate-intelligence worker to process image captures asynchronously and produce auditable access decisions.
+Distributed access-control platform for vehicle entry and exit validation. The monorepo combines an Angular frontend, a Spring Boot backend, a Python OCR worker, and a Python plate-intelligence worker to process image captures asynchronously and produce auditable access decisions.
 
-The system is designed around service isolation: the backend owns business rules and persistence, the OCR service extracts text from images, and the intelligence service reconstructs the final Brazilian license plate from OCR candidates.
+The system is designed around service isolation: the frontend provides the operational UI, the backend owns business rules and persistence, the OCR service extracts text from images, and the intelligence service reconstructs the final Brazilian license plate from OCR candidates.
 
 ## Services
 
 | Service | Runtime | Responsibility | Documentation |
 | --- | --- | --- | --- |
+| `frontend-service` | Angular 21, Nginx | Browser UI for authentication, dashboard, captures, users, owners, vehicles, scopes, and access events | [frontend-service/README.md](frontend-service/README.md) |
 | `backend-service` | Java 17, Spring Boot | REST API, authentication, authorization, owners, vehicles, captures, access events, persistence, RabbitMQ orchestration | [backend-service/README.md](backend-service/README.md) |
 | `recognize-plate-service` | Python, OpenCV, EasyOCR | Consumes OCR image jobs, pre-processes images, extracts OCR candidates, publishes image status updates | [recognize-plate-service/README.md](recognize-plate-service/README.md) |
 | `plate-intelligence-service` | Python, LangChain, OpenAI | Consumes completed capture analysis jobs, ranks OCR candidates, reconstructs final plate, publishes AI validation results | [plate-intelligence-service/README.md](plate-intelligence-service/README.md) |
@@ -16,7 +17,9 @@ The system is designed around service isolation: the backend owns business rules
 
 ```mermaid
 flowchart LR
-    Client[Client or Frontend] -->|HTTP REST| Backend[backend-service]
+    Browser[Browser] -->|HTTP| Frontend[frontend-service]
+    Frontend -->|Static Angular app| Browser
+    Browser -->|HTTP REST| Backend[backend-service]
 
     Backend -->|PostgreSQL tables| Postgres[(PostgreSQL)]
     Backend -->|Capture documents| Mongo[(MongoDB)]
@@ -84,6 +87,8 @@ flowchart TD
 ## Main Capabilities
 
 - JWT-secured REST API with OAuth2 scopes and method-level authorization.
+- Angular frontend served by Nginx in production Docker images.
+- Docker Compose orchestration for databases, RabbitMQ, backend, workers, and frontend.
 - Owner, vehicle, user, scope, capture, and access-event management.
 - PostgreSQL persistence with Flyway migrations.
 - ZIP-based capture ingestion with storage backup/error handling.
@@ -105,6 +110,13 @@ flowchart TD
 |   +-- pom.xml
 |   +-- Dockerfile
 |   +-- README.md
++-- frontend-service
+|   +-- src
+|   +-- public
+|   +-- package.json
+|   +-- Dockerfile
+|   +-- nginx.conf
+|   +-- README.md
 +-- recognize-plate-service
 |   +-- src
 |   +-- test
@@ -118,6 +130,7 @@ flowchart TD
 |   +-- Dockerfile
 |   +-- README.md
 +-- storage
++-- docker-compose.yaml
 +-- .github
     +-- workflows
 ```
@@ -187,20 +200,42 @@ flowchart LR
 
 Each service has its own runtime, dependencies, environment variables, and Docker instructions. Start with the service-specific documentation:
 
-1. [backend-service](backend-service/README.md)
-2. [recognize-plate-service](recognize-plate-service/README.md)
-3. [plate-intelligence-service](plate-intelligence-service/README.md)
+1. [frontend-service](frontend-service/README.md)
+2. [backend-service](backend-service/README.md)
+3. [recognize-plate-service](recognize-plate-service/README.md)
+4. [plate-intelligence-service](plate-intelligence-service/README.md)
 
-Recommended startup order for a full local environment:
+### Docker Compose
+
+The repository root includes `docker-compose.yaml` for the full stack:
+
+```bash
+docker compose up --build
+```
+
+The Compose setup builds and starts:
+
+- PostgreSQL on `localhost:5432`;
+- MongoDB on `localhost:27017`;
+- RabbitMQ AMQP on `localhost:5672`;
+- RabbitMQ Management UI on `localhost:15672`;
+- backend API on `localhost:8080`;
+- frontend UI on `localhost:4200`;
+- OCR and plate-intelligence workers.
+
+The frontend image is built from `frontend-service/Dockerfile`. It compiles Angular with the production configuration and serves the generated `dist/frontend-service/browser` files through Nginx.
+
+Recommended manual startup order for a full local environment:
 
 1. Start PostgreSQL, MongoDB, RabbitMQ, and shared image storage.
 2. Start `backend-service`.
 3. Start `recognize-plate-service`.
 4. Start `plate-intelligence-service`.
-5. Use the backend Swagger UI or Postman collection to create users, owners, vehicles, and captures.
+5. Start `frontend-service` or use the backend Swagger UI/Postman collection to create users, owners, vehicles, and captures.
 
 ## Documentation Map
 
+- Frontend UI, Angular scripts, Docker/Nginx image, and Compose usage: [frontend-service/README.md](frontend-service/README.md)
 - Backend API, data model, scopes, Docker, and Java CI/CD: [backend-service/README.md](backend-service/README.md)
 - OCR worker, OpenCV/EasyOCR pipeline, message contract, Docker, and Python CI/CD: [recognize-plate-service/README.md](recognize-plate-service/README.md)
 - AI plate reconstruction worker, LangChain/OpenAI prompt flow, message contract, Docker, and Python CI/CD: [plate-intelligence-service/README.md](plate-intelligence-service/README.md)
