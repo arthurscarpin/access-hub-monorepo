@@ -1,6 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { LucideCloudUpload } from '@lucide/angular';
-
 import { CaptureService } from '../../../../core/services/capture.service';
 
 @Component({
@@ -12,11 +11,13 @@ import { CaptureService } from '../../../../core/services/capture.service';
 export class CapturesDropzone {
   private readonly captureService = inject(CaptureService);
 
-  protected readonly selectedFile = signal<File | null>(null);
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
+  protected readonly selectedFile = signal<File | null>(null);
   protected readonly message = signal<string | null>(null);
   protected readonly messageType = signal<'success' | 'error' | null>(null);
   protected readonly loading = signal(false);
+  protected readonly direction = signal<'IN' | 'OUT'>('IN');
 
   protected onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -45,24 +46,31 @@ export class CapturesDropzone {
     this.message.set(null);
     this.messageType.set(null);
 
-    this.captureService.upload(file, 'IN').subscribe({
+    this.captureService.upload(file, this.direction()).subscribe({
       next: (response) => {
         this.loading.set(false);
 
-        this.message.set(response.message ?? 'Upload completed successfully');
+        this.message.set(response?.message ?? 'Upload completed successfully');
         this.messageType.set('success');
 
-        this.selectedFile.set(null);
+        this.reset();
       },
       error: (error) => {
         this.loading.set(false);
 
-        const backendMessage =
-          error?.error?.message ?? 'Upload failed';
-
-        this.message.set(backendMessage);
+        this.message.set(error?.error?.message ?? 'Upload failed');
         this.messageType.set('error');
+
+        this.reset();
       },
     });
+  }
+
+  private reset(): void {
+    this.selectedFile.set(null);
+
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 }

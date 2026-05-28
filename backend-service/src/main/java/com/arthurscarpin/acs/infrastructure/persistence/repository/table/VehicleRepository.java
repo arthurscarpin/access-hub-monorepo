@@ -13,6 +13,7 @@ import java.util.UUID;
 @Repository
 public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
+    @EntityGraph(attributePaths = {"owner"})
     Optional<VehicleEntity> findByPlate(String plate);
 
     @EntityGraph(attributePaths = "owner")

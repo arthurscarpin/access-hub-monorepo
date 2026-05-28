@@ -53,8 +53,8 @@ public class CaptureController implements CaptureControllerDoc {
         Path storagePath = Path.of(storageConfigProperties.getRoot());
         Path destination = storagePath.resolve(filename);
 
-        log.debug("Current working directory: {}", System.getProperty("user.dir"));
-        log.debug("Configured storage root: {}", storageConfigProperties.getRoot());
+        log.info("Current working directory: {}", System.getProperty("user.dir"));
+        log.info("Configured storage root: {}", storageConfigProperties.getRoot());
         log.debug("Absolute storage path: {}", storagePath.toAbsolutePath());
         log.debug("Destination path: {}", destination.toAbsolutePath());
 

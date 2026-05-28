@@ -9,14 +9,14 @@
   <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
     <!-- Menu Component -->
     <app-shared-menu [config]="menuConfig"></app-shared-menu>
-    <main class="flex-1 p-6 pt-22">
+    <main class="flex flex-1 flex-col p-6 pt-22">
       <div class="mb-6 flex items-start justify-between">
-        <!-- Header Component -->
         <app-shared-header [config]="headerConfig"></app-shared-header>
       </div>
 
-      <!-- Container Component -->
-      <app-captures-dropzone></app-captures-dropzone>
+      <div class="flex w-full flex-1">
+        <app-captures-dropzone class="w-full"></app-captures-dropzone>
+      </div>
     </main>
   </div>
 </div>

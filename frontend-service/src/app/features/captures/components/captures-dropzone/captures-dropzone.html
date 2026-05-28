@@ -26,12 +26,37 @@
     </label>
 
     <input
+      #fileInput
       id="zip-upload"
       type="file"
       accept=".zip"
       class="hidden"
       (change)="onFileSelected($event)"
     />
+
+    <div class="flex items-center rounded-xl bg-slate-900 p-1">
+      <button
+        type="button"
+        class="rounded-lg px-4 py-2 text-sm font-medium transition w-20 text-center cursor-pointer"
+        [class.bg-white]="direction() === 'IN'"
+        [class.text-slate-900]="direction() === 'IN'"
+        [class.text-slate-400]="direction() !== 'IN'"
+        (click)="direction.set('IN')"
+      >
+        IN
+      </button>
+
+      <button
+        type="button"
+        class="rounded-lg px-4 py-2 text-sm font-medium transition w-20 text-center cursor-pointer"
+        [class.bg-white]="direction() === 'OUT'"
+        [class.text-slate-900]="direction() === 'OUT'"
+        [class.text-slate-400]="direction() !== 'OUT'"
+        (click)="direction.set('OUT')"
+      >
+        OUT
+      </button>
+    </div>
 
     @if (selectedFile(); as file) {
       <div class="text-sm text-slate-600">
@@ -40,23 +65,24 @@
 
       <button
         type="button"
-        class="cursor-pointer rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
+        class="cursor-pointer rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
         (click)="upload()"
+        [disabled]="loading()"
       >
-        Upload file
+        {{ loading() ? 'Uploading...' : 'Upload file' }}
       </button>
+    } @else {
+      <p class="text-sm text-slate-400">No file selected yet</p>
     }
 
     @if (message()) {
       <div
-        class="mt-6 rounded-xl px-4 py-3 text-sm font-medium"
+        class="mt-6 rounded-xl border px-4 py-3 text-sm font-medium"
         [class.bg-emerald-50]="messageType() === 'success'"
         [class.text-emerald-700]="messageType() === 'success'"
-        [class.border]="messageType() === 'success'"
         [class.border-emerald-200]="messageType() === 'success'"
         [class.bg-red-50]="messageType() === 'error'"
         [class.text-red-700]="messageType() === 'error'"
-        [class.border]="messageType() === 'error'"
         [class.border-red-200]="messageType() === 'error'"
       >
         {{ message() }}
