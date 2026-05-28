@@ -28,9 +28,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class CaptureController implements CaptureControllerDoc {
 
-    private static final Pattern ZIP_FILENAME_PATTERN = Pattern.compile(
-            "^[0-9a-fA-F\\-]{36}\\.zip$"
-    );
+    private static final Pattern ZIP_FILENAME_PATTERN = Pattern.compile("^[0-9a-fA-F\\-]{36}\\.zip$");
 
     private final CreateCaptureUseCase createCaptureUseCase;
     private final StorageConfigProperties storageConfigProperties;
@@ -55,15 +53,13 @@ public class CaptureController implements CaptureControllerDoc {
         Path storagePath = Path.of(storageConfigProperties.getRoot());
         Path destination = storagePath.resolve(filename);
 
-        log.info("Current working directory: {}", System.getProperty("user.dir"));
-        log.info("Configured storage root: {}", storageConfigProperties.getRoot());
-        log.info("Absolute storage path: {}", storagePath.toAbsolutePath());
-        log.info("Destination path: {}", destination.toAbsolutePath());
+        log.debug("Current working directory: {}", System.getProperty("user.dir"));
+        log.debug("Configured storage root: {}", storageConfigProperties.getRoot());
+        log.debug("Absolute storage path: {}", storagePath.toAbsolutePath());
+        log.debug("Destination path: {}", destination.toAbsolutePath());
 
         try {
-
             Files.createDirectories(storagePath);
-
             Files.copy(
                     file.getInputStream(),
                     destination,
@@ -71,23 +67,16 @@ public class CaptureController implements CaptureControllerDoc {
             );
 
         } catch (IOException e) {
-
             log.error("Failed to save ZIP file", e);
-
-            throw new CaptureZipException(
-                    "Could not save ZIP file: " + e.getMessage()
-            );
+            throw new CaptureZipException("Could not save ZIP file: " + e.getMessage());
         }
 
         log.info("ZIP saved at {}", destination.toAbsolutePath());
-
         Capture capture = createCaptureUseCase.execute(filename, direction);
-
         List<String> captureImages = capture.images()
                 .stream()
                 .map(CaptureImage::filename)
                 .toList();
-
         return new CaptureResponse(
                 capture.id(),
                 capture.status(),
