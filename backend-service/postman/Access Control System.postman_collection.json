@@ -19,7 +19,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"583c2b4a-2b89-4eef-8d35-4456b086ba0f\"\r\n    ]\r\n}",
+									"raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\": \"admin@accesshub.io\",\r\n    \"password\": \"123456\",\r\n    \"scopes\": [\r\n        \"512b9968-ae52-4a8c-90d9-5a4388d04298\"\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -38,6 +38,44 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Get Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/users?page=0&size=10",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -47,6 +85,16 @@
 						{
 							"name": "Get Scopes",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
 								"method": "GET",
 								"header": [],
 								"url": {
@@ -57,6 +105,87 @@
 									"port": "8080",
 									"path": [
 										"scopes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Owners",
+					"item": [
+						{
+							"name": "Register Owner",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Arthur Scarpin\",\r\n    \"document\": \"406.684.358-10\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"scarpinarthur.dev@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8080/owners",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"owners"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Owners",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/owners?page=0&size=10",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"owners"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										}
 									]
 								}
 							},
@@ -84,7 +213,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"plate\": \"RIO2A19\",\r\n    \"model\": \"Audi A8\",\r\n    \"ownerId\": \"c3c32b19-7e41-4da0-897d-df9ab20b8900\"\r\n}",
+									"raw": "{\r\n    \"plate\": \"ABC1216\",\r\n    \"model\": \"New Civic\",\r\n    \"ownerId\": \"525fa40c-ef35-4e15-8d72-918dd79ac8a9\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -120,26 +249,21 @@
 								"method": "PATCH",
 								"header": [],
 								"url": {
-									"raw": "localhost:8080/vehicles/ba780a43-40e4-4672-9e49-fdd2313ab0cf",
+									"raw": "localhost:8080/vehicles/f47cff72-2a66-4f6d-a227-dd4cb3afa996",
 									"host": [
 										"localhost"
 									],
 									"port": "8080",
 									"path": [
 										"vehicles",
-										"ba780a43-40e4-4672-9e49-fdd2313ab0cf"
+										"f47cff72-2a66-4f6d-a227-dd4cb3afa996"
 									]
 								}
 							},
 							"response": []
-						}
-					]
-				},
-				{
-					"name": "Owners",
-					"item": [
+						},
 						{
-							"name": "Register Owner",
+							"name": "Get Vehicles",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -151,25 +275,16 @@
 										}
 									]
 								},
-								"method": "POST",
+								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Maria Oliveira\",\r\n    \"document\": \"111.444.777-34\",\r\n    \"documentType\": \"CPF\",\r\n    \"email\": \"contact1@example.com\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "localhost:8080/owners",
+									"raw": "localhost:8080/vehicles",
 									"host": [
 										"localhost"
 									],
 									"port": "8080",
 									"path": [
-										"owners"
+										"vehicles"
 									]
 								}
 							},
@@ -244,7 +359,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/access-events?page=0&size=50",
+									"raw": "http://localhost:8080/access-events?page=0&size=10",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -260,7 +375,7 @@
 										},
 										{
 											"key": "size",
-											"value": "50"
+											"value": "10"
 										}
 									]
 								}
@@ -286,15 +401,27 @@
 									]
 								},
 								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"filename\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6.zip\",\r\n    \"direction\": \"OUT\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data",
+										"type": "text"
 									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/arthurscarpin/codigo/access-control-system-monorepo/storage/backup/20260517/9d2a7c5f-0e4b-4c91-8f2d-7a1b6e3c5d88.zip"
+										},
+										{
+											"key": "direction",
+											"value": "IN",
+											"type": "text"
+										}
+									]
 								},
 								"url": {
 									"raw": "http://localhost:8080/captures/upload",
