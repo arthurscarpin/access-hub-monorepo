@@ -23,7 +23,7 @@ export class VehicleService {
   private readonly _totalElements = signal(0);
   public readonly totalElements = this._totalElements.asReadonly();
 
-  public findAll(page: number = 0, size: number = 8): void {
+  public findAll(page: number = 0, size: number = 5): void {
     const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
     this.httpClient.get<Paginated<Vehicle>>(`${this.apiUrl}/vehicles`, { params }).subscribe({
       next: (res) => {

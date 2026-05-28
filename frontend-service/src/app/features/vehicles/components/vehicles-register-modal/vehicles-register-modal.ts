@@ -1,4 +1,4 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { VehicleService } from '../../../../core/services/vehicle.service';
@@ -16,6 +16,7 @@ export class VehiclesRegisterModal {
 
   public readonly saved = output<void>();
   public readonly close = output<void>();
+  public readonly error = signal<string | null>(null);
 
   public readonly form = this.formBuilder.nonNullable.group({
     plate: [
@@ -38,13 +39,26 @@ export class VehiclesRegisterModal {
     const payload: CreateVehicleRequest = this.form.getRawValue();
 
     this.service.save(payload).subscribe({
-      next: (response) => {
+      next: () => {
         this.form.reset();
         this.saved.emit();
         this.close.emit();
       },
-      error: (error) => {
-        console.error('Failed to create vehicle:', error);
+      error: (err) => {
+        const statusError = err?.status;
+        let messageError = err?.error?.message;
+
+        if (statusError === 400) {
+          console.log(messageError);
+          messageError = 'Owner is invalid';
+        }
+
+        if (statusError === 500) {
+          console.log(messageError);
+          messageError = 'Server error! Please contact ADMIN';
+        }
+
+        this.error.set(messageError || 'Failed to create owner');
       },
     });
   }

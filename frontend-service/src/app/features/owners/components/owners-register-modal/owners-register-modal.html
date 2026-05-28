@@ -18,6 +18,13 @@
       </p>
     </header>
 
+    <!-- Global error -->
+    @if (error()) {
+      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+        {{ error() }}
+      </div>
+    }
+
     <!-- Fields -->
     <div class="space-y-4">
 

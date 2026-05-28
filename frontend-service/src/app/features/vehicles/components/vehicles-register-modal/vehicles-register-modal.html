@@ -10,6 +10,13 @@
 
       <p class="mt-1 text-sm text-slate-500">Register a new vehicle in the system.</p>
     </header>
+    
+    <!-- Global error -->
+    @if (error()) {
+      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+        {{ error() }}
+      </div>
+    }
 
     <!-- FIELDS -->
     <div class="space-y-4">
@@ -21,7 +28,7 @@
         <input
           id="plate"
           type="text"
-          placeholder="ABC1D23"
+          placeholder="Enter vehicle plate (ABC1234 or ABC1D23)"
           formControlName="plate"
           class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
           [ngClass]="{
@@ -54,7 +61,7 @@
         <input
           id="model"
           type="text"
-          placeholder="e.g. Civic, Corolla"
+          placeholder="Enter vehicle model"
           formControlName="model"
           class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
           [ngClass]="{

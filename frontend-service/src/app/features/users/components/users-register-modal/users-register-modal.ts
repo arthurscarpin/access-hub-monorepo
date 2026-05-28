@@ -64,8 +64,15 @@ export class UsersRegisterModal {
         this.saved.emit();
         this.close.emit();
       },
-      error: () => {
-        this.error.set('Failed to create user');
+      error: (err) => {
+        const statusError = err?.status;
+        let messageError = err?.error?.message;
+
+        if (statusError === 500) {
+          console.log(messageError);
+          messageError = 'Server error! Please contact ADMIN';
+        }
+        this.error.set(messageError || 'Failed to create user');
       },
     });
 
