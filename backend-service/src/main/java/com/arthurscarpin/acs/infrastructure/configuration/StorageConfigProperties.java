@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Setter
 @Getter
 public class StorageConfigProperties {
-    private String root = "storage";
-    private String backup = "storage/backup";
-    private String error = "storage/error";
-    private String tmp = "storage/tmp";
+    private String root = "../../storage";
+    private String backup = "../../storage/backup";
+    private String error = "../../storage/error";
+    private String tmp = "../../storage/tmp";
     private int maxFiles = 10;
 }

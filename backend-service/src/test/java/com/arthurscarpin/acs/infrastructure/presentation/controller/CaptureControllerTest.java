@@ -7,28 +7,26 @@ import com.arthurscarpin.acs.core.capture.domain.CaptureImage;
 import com.arthurscarpin.acs.core.capture.domain.CaptureStatus;
 import com.arthurscarpin.acs.core.capture.domain.ImageStatus;
 import com.arthurscarpin.acs.core.capture.usecase.CreateCaptureUseCase;
-import com.arthurscarpin.acs.infrastructure.presentation.request.CaptureRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestPropertySource(properties = "storage.root=/tmp/acs-capture-controller-test")
 class CaptureControllerTest extends AccessControlSystemIntegrationTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockitoBean
     private CreateCaptureUseCase createCaptureUseCase;
@@ -39,18 +37,21 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     void shouldCreateCaptureSuccessfully() throws Exception {
         String captureId = UUID.randomUUID().toString();
         String filename = captureId + ".zip";
-        CaptureRequest request = new CaptureRequest(filename, Direction.IN);
+        MockMultipartFile file = zipFile(filename);
 
         when(createCaptureUseCase.execute(filename, Direction.IN))
                 .thenReturn(createMockCapture(captureId, List.of("plate1.jpg", "plate2.jpg")));
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(captureId))
                 .andExpect(jsonPath("$.message")
                         .value("Capture created with success"));
+
+        verify(createCaptureUseCase).execute(filename, Direction.IN);
     }
 
     @Test
@@ -59,14 +60,15 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     void shouldCreateCaptureWithZipFilename() throws Exception {
         String captureId = UUID.randomUUID().toString();
         String filename = captureId + ".zip";
-        CaptureRequest request = new CaptureRequest(filename, Direction.IN);
+        MockMultipartFile file = zipFile(filename);
 
         when(createCaptureUseCase.execute(filename, Direction.IN))
                 .thenReturn(createMockCapture(captureId, List.of("license_plate.jpg")));
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(captureId))
                 .andExpect(jsonPath("$.message")
@@ -79,14 +81,15 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     void shouldCreateCaptureWithExtractedFiles() throws Exception {
         String captureId = UUID.randomUUID().toString();
         String filename = captureId + ".zip";
-        CaptureRequest request = new CaptureRequest(filename, Direction.IN);
+        MockMultipartFile file = zipFile(filename);
 
         when(createCaptureUseCase.execute(filename, Direction.IN))
                 .thenReturn(createMockCapture(captureId, List.of("plate1.jpg", "plate2.jpg", "plate3.jpg")));
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(captureId))
                 .andExpect(jsonPath("$.message")
@@ -98,12 +101,12 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @DisplayName("Given invalid capture request with empty filename When saving Then returns 400 Bad Request")
     @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldReturnBadRequestWhenEmptyFilename() throws Exception {
-        CaptureRequest request =
-                new CaptureRequest("", null);
+        MockMultipartFile file = zipFile("");
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest());
     }
 
@@ -111,15 +114,17 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @DisplayName("Given invalid capture request with null filename When saving Then returns 400 Bad Request")
     @WithMockUser(authorities = {"SCOPE_capture:write"})
     void shouldReturnBadRequestWhenNullFilename() throws Exception {
-        String invalidRequest = """
-                {
-                  "filename": null
-                }
-                """;
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                null,
+                "application/zip",
+                "zip-content".getBytes()
+        );
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidRequest))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest());
     }
 
@@ -127,12 +132,12 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @DisplayName("Given no authentication When saving capture Then returns 401 Unauthorized")
     void shouldReturnUnauthorizedWhenNoAuth() throws Exception {
         String captureId = UUID.randomUUID().toString();
-        CaptureRequest request =
-                new CaptureRequest(captureId + ".zip", Direction.IN);
+        MockMultipartFile file = zipFile(captureId + ".zip");
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -141,12 +146,12 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @WithMockUser(authorities = {"SCOPE_capture:read"})
     void shouldReturnForbiddenWhenNoPermission() throws Exception {
         String captureId = UUID.randomUUID().toString();
-        CaptureRequest request =
-                new CaptureRequest(captureId + ".zip", Direction.IN);
+        MockMultipartFile file = zipFile(captureId + ".zip");
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isForbidden());
     }
 
@@ -155,13 +160,22 @@ class CaptureControllerTest extends AccessControlSystemIntegrationTest {
     @WithMockUser(authorities = {"SCOPE_capture:read", "SCOPE_admin:read"})
     void shouldReturnForbiddenWhenOnlyReadPermission() throws Exception {
         String captureId = UUID.randomUUID().toString();
-        CaptureRequest request =
-                new CaptureRequest(captureId + ".zip", Direction.IN);
+        MockMultipartFile file = zipFile(captureId + ".zip");
 
-        mockMvc.perform(post("/captures/upload")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(multipart("/captures/upload")
+                        .file(file)
+                        .param("direction", Direction.IN.name())
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isForbidden());
+    }
+
+    private MockMultipartFile zipFile(String filename) {
+        return new MockMultipartFile(
+                "file",
+                filename,
+                "application/zip",
+                "zip-content".getBytes()
+        );
     }
 
     private Capture createMockCapture(String id, List<String> filenames) {
