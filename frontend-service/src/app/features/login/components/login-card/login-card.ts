@@ -47,7 +47,7 @@ export class LoginCard {
     }
     const payload: LoginRequest = this.form.getRawValue();
     this.service.login(payload).subscribe({
-      next: () => this.router.navigateByUrl('/owners'),
+      next: () => this.router.navigateByUrl('/dashboard'),
       error: (error) => this.errorMessage.set(error?.error?.message)
     });
   }

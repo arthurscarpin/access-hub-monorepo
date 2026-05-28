@@ -1,0 +1,31 @@
+<div class="flex min-h-screen bg-slate-100">
+  <div
+    class="fixed left-0 top-0 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:flex lg:flex-col"
+  >
+    <!-- Sidebar Component -->
+    <app-shared-sidebar></app-shared-sidebar>
+  </div>
+
+  <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
+    <!-- Menu Component -->
+    <app-shared-menu [config]="menuConfig"></app-shared-menu>
+    <main class="flex-1 p-6 pt-22">
+      <div class="mb-6 flex items-start justify-between">
+        <!-- Header Component -->
+        <app-shared-header [config]="headerConfig"></app-shared-header>
+        <button
+          class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 cursor-pointer"
+          (click)="openModal()"
+        >
+          New Vehicle
+        </button>
+      </div>
+
+      <!-- Container Component -->
+    </main>
+  </div>
+</div>
+
+@if (modalStage()) {
+
+}
