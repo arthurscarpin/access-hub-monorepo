@@ -318,6 +318,18 @@ Run the container with the same environment variables required by the production
 docker run --rm -p 8080:8080 --env-file .env access-control-system-api
 ```
 
+### Docker Compose
+
+From the repository root, the backend is part of the full platform Compose setup:
+
+```bash
+docker compose up --build backend-service
+```
+
+The root `docker-compose.yaml` builds this service from `./backend-service`, exposes the API on `localhost:8080`, waits for PostgreSQL, MongoDB, and RabbitMQ health checks, and mounts repository-root `./storage` into the container at `/app/storage`.
+
+When the frontend is started through the same Compose file, it is exposed on `localhost:4200` and depends on this backend service.
+
 ## Testing and Quality
 
 Run the automated test suite:
