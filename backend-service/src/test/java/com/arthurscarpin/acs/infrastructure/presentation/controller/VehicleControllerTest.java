@@ -92,7 +92,8 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.plate").value(request.plate()))
                 .andExpect(jsonPath("$.model").value(request.model()))
-                .andExpect(jsonPath("$.ownerId").value(ownerId.toString()));
+                .andExpect(jsonPath("$.ownerId").value(ownerId.toString()))
+                .andExpect(jsonPath("$.ownerName").value("Paulo Silva"));
     }
 
     @Test
@@ -159,7 +160,8 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
                 .andExpect(jsonPath("$.id").value(vehicle.getId().toString()))
                 .andExpect(jsonPath("$.plate").value(vehicle.getPlate()))
                 .andExpect(jsonPath("$.model").value(vehicle.getModel()))
-                .andExpect(jsonPath("$.ownerId").value(vehicle.getOwner().getId().toString()));
+                .andExpect(jsonPath("$.ownerId").value(vehicle.getOwner().getId().toString()))
+                .andExpect(jsonPath("$.ownerName").value(vehicle.getOwner().getName()));
     }
 
     @Test
@@ -210,6 +212,7 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
                 .andExpect(jsonPath("$.content[0].plate").value("EXIST123"))
                 .andExpect(jsonPath("$.content[0].model").value("Audi A8"))
                 .andExpect(jsonPath("$.content[0].ownerId").exists())
+                .andExpect(jsonPath("$.content[0].ownerName").value("Maria Oliveira"))
                 .andExpect(jsonPath("$.pageable.pageNumber").value(0))
                 .andExpect(jsonPath("$.pageable.pageSize").value(10))
                 .andExpect(jsonPath("$.totalElements").value(1));

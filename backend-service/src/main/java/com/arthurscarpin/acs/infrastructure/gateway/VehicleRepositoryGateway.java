@@ -40,7 +40,8 @@ public class VehicleRepositoryGateway implements VehicleGateway {
 
     @Override
     public Optional<Vehicle> findByPlate(String plate) {
-        return vehicleRepository.findByPlate(plate);
+        return vehicleRepository.findByPlate(plate)
+                .map(vehicleMapper::fromEntityToDomain);
     }
 
     @Transactional

@@ -49,7 +49,8 @@ class VehicleMapperTest {
                 "BRA1S23",
                 "Audi A8",
                 VehicleStatus.ACTIVE,
-                ownerId
+                ownerId,
+                "Maria Souza"
         );
 
         VehicleResponse response = mapper.fromDomainToResponse(vehicle);
@@ -60,6 +61,7 @@ class VehicleMapperTest {
         assertEquals(vehicle.model(), response.model());
         assertEquals(vehicle.status(), response.status());
         assertEquals(vehicle.ownerId(), response.ownerId());
+        assertEquals(vehicle.ownerName(), response.ownerName());
     }
 
     @Test
@@ -72,7 +74,8 @@ class VehicleMapperTest {
                 "BRA1S23",
                 "Audi A8",
                 VehicleStatus.ACTIVE,
-                ownerId
+                ownerId,
+                "Maria Souza"
         );
 
         VehicleEntity entity = mapper.fromDomainToEntity(vehicle);
@@ -93,6 +96,7 @@ class VehicleMapperTest {
 
         OwnerEntity owner = new OwnerEntity();
         owner.setId(ownerId);
+        owner.setName("Maria Souza");
 
         VehicleEntity entity = VehicleEntity.builder()
                 .id(UUID.randomUUID())
@@ -110,6 +114,7 @@ class VehicleMapperTest {
         assertEquals(entity.getModel(), result.model());
         assertEquals(entity.getStatus(), result.status());
         assertEquals(ownerId, result.ownerId());
+        assertEquals(owner.getName(), result.ownerName());
     }
 
     @Test

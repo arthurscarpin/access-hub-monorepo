@@ -20,7 +20,8 @@ public interface VehicleMapper {
     @Mapping(target = "owner", source = "ownerId")
     VehicleEntity fromDomainToEntity(Vehicle vehicle);
 
-    @Mapping(target = "ownerId", source = "owner")
+    @Mapping(target = "ownerId", source = "owner.id")
+    @Mapping(target = "ownerName", source = "owner.name")
     Vehicle fromEntityToDomain(VehicleEntity entity);
 
     default OwnerEntity map(UUID ownerId) {

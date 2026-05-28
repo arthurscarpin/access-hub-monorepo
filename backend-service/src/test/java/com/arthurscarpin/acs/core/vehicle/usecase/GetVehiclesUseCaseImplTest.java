@@ -43,7 +43,8 @@ class GetVehiclesUseCaseImplTest {
         Vehicle vehicle = Vehicle.create(
                 new Plate("BRA1S23"),
                 "Audi A8",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                "José Santos"
         );
 
         PageOutput<Vehicle> expected = new PageOutput<>(

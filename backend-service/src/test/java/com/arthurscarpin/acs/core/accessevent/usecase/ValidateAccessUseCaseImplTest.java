@@ -41,7 +41,7 @@ class ValidateAccessUseCaseImplTest {
     void shouldAuthorizeAccessWhenVehicleIsActive() {
         AccessEvent input = AccessEvent.create("BRA1S23", OffsetDateTime.now(), Direction.IN, null);
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "João Silva");
 
         when(vehicleGateway.findByPlate("BRA1S23")).thenReturn(Optional.of(vehicle));
         when(accessEventGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -57,7 +57,7 @@ class ValidateAccessUseCaseImplTest {
     void shouldDenyAccessWhenVehicleIsBlocked() {
         AccessEvent input = AccessEvent.create("BRA1S23", OffsetDateTime.now(), Direction.IN, null);
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID())
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "João Silva")
                 .changeStatus(VehicleStatus.BLOCKED);
 
         when(vehicleGateway.findByPlate("BRA1S23")).thenReturn(Optional.of(vehicle));
@@ -86,7 +86,7 @@ class ValidateAccessUseCaseImplTest {
     void shouldPersistAccessEventWithCorrectData() {
         AccessEvent input = AccessEvent.create("BRA1S23", OffsetDateTime.now(), Direction.OUT, null);
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "João Silva");
 
         when(vehicleGateway.findByPlate("BRA1S23")).thenReturn(Optional.of(vehicle));
         when(accessEventGateway.save(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -115,7 +115,7 @@ class ValidateAccessUseCaseImplTest {
     void shouldPropagateExceptionOnSave() {
         AccessEvent input = AccessEvent.create("BRA1S23", OffsetDateTime.now(), Direction.OUT, null);
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "João Silva");
 
         when(vehicleGateway.findByPlate("BRA1S23")).thenReturn(Optional.of(vehicle));
         when(accessEventGateway.save(any())).thenThrow(new RuntimeException("Database error"));

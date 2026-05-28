@@ -15,13 +15,14 @@ class VehicleTest {
         Plate plate = new Plate("ABC-1234");
         UUID ownerId = UUID.randomUUID();
 
-        Vehicle vehicle = Vehicle.create(plate, "Civic", ownerId);
+        Vehicle vehicle = Vehicle.create(plate, "Civic", ownerId, "Maria Oliveira");
 
         assertNull(vehicle.id());
         assertEquals("ABC1234", vehicle.plate());
         assertEquals("Civic", vehicle.model());
         assertEquals(VehicleStatus.ACTIVE, vehicle.status());
         assertEquals(ownerId, vehicle.ownerId());
+        assertEquals("Maria Oliveira", vehicle.ownerName());
     }
 
     @Test
@@ -30,7 +31,8 @@ class VehicleTest {
         Vehicle vehicle = Vehicle.create(
                 new Plate("ABC-1234"),
                 "Civic",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                "Maria Oliveira"
         );
 
         Vehicle updated = vehicle.changeStatus(VehicleStatus.BLOCKED);
@@ -48,7 +50,8 @@ class VehicleTest {
         Vehicle vehicle = Vehicle.create(
                 new Plate("ABC-1234"),
                 "Civic",
-                ownerId
+                ownerId,
+                "Maria Oliveira"
         );
 
         Vehicle updated = vehicle.changeStatus(VehicleStatus.BLOCKED);
@@ -56,6 +59,7 @@ class VehicleTest {
         assertEquals(vehicle.plate(), updated.plate());
         assertEquals(vehicle.model(), updated.model());
         assertEquals(vehicle.ownerId(), updated.ownerId());
+        assertEquals(vehicle.ownerName(), updated.ownerName());
         assertEquals(vehicle.id(), updated.id());
     }
 }

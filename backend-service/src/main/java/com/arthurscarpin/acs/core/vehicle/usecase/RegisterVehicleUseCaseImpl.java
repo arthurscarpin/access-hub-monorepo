@@ -27,7 +27,7 @@ public class RegisterVehicleUseCaseImpl implements RegisterVehicleUseCase {
         }
         Owner owner = ownerGateway.findById(vehicle.ownerId())
                 .orElseThrow(() -> new OwnerNotFoundException("Owner not found"));
-        Vehicle savedVehicle = Vehicle.create(plate, vehicle.model(), owner.id());
+        Vehicle savedVehicle = Vehicle.create(plate, vehicle.model(), owner.id(), owner.name());
         return vehicleGateway.save(savedVehicle);
     }
 }

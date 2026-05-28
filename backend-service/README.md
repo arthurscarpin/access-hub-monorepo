@@ -130,6 +130,7 @@ The `core` package contains business rules and gateway contracts. The `infrastru
 | `POST` | `/owners` | Register an owner | Bearer token + `owner:write` or admin |
 | `POST` | `/vehicles` | Register a vehicle | Bearer token + `vehicle:write` or admin |
 | `PATCH` | `/vehicles/{id}` | Toggle vehicle status | Bearer token + `vehicle:write` or admin |
+| `GET` | `/vehicles` | List vehicles with owner details and pagination | Bearer token + `vehicle:read` or admin |
 | `GET` | `/access-events` | Query access history with filters and pagination | Bearer token + `access_event:read` or admin |
 | `POST` | `/captures/upload` | Create a capture from a ZIP file in storage and publish OCR jobs for extracted images | Bearer token + `capture:write` or admin |
 | `GET` | `/actuator/health` | Health check | Public |
