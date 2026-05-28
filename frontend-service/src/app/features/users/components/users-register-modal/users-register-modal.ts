@@ -3,7 +3,7 @@ import { NgClass } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ScopeService } from '../../../../core/services/scope.service';
-import { CreateUserRequest } from '../../../../core/dto/users.dto';
+import { CreateUserRequest } from '../../../../core/dto/user.dto';
 import { UserService } from '../../../../core/services/users.service';
 
 @Component({

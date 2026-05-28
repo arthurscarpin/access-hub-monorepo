@@ -4,35 +4,34 @@ import { SharedMenu } from '../../../../shared/components/shared-menu/shared-men
 import { SharedHeader } from '../../../../shared/components/shared-header/shared-header';
 import { SharedHeaderConfig } from '../../../../shared/components/shared-header/shared-header-config';
 import { SharedMenuConfig } from '../../../../shared/components/shared-menu/shared-menu.config';
-import { UserService } from '../../../../core/services/users.service';
-import { UsersListView } from '../../components/users-list-view/users-list-view';
-import { User } from '../../../../core/models/user.model';
-import { UsersRegisterModal } from '../../components/users-register-modal/users-register-modal';
-
+import { Vehicle } from '../../../../core/models/vehicle.model';
+import { VehicleService } from '../../../../core/services/vehicle.service';
+import { VehiclesListView } from '../../components/vehicles-list-view/vehicles-list-view';
+import { VehiclesRegisterModal } from '../../components/vehicles-register-modal/vehicles-register-modal';
 
 @Component({
   standalone: true,
-  selector: 'app-users-page',
-  imports: [SharedSidebar, SharedMenu, SharedHeader, UsersListView, UsersRegisterModal],
-  templateUrl: './users-page.html'
+  selector: 'app-vehicles-page',
+  imports: [SharedSidebar, SharedMenu, SharedHeader, VehiclesListView, VehiclesRegisterModal],
+  templateUrl: './vehicles-page.html',
 })
-export class UsersPage {
-  users = signal<User[]>([]);
-  private readonly service = inject(UserService)
+export class VehiclesPage {
+  vehicles = signal<Vehicle[]>([]);
+  private readonly service = inject(VehicleService);
   public readonly modalStage = signal(false);
 
   public readonly headerConfig: SharedHeaderConfig = {
     category: 'Management',
-    title: 'Users',
-    description: 'Control panel for users management',
+    title: 'Vehicles',
+    description: 'Control panel for vehicle management',
   };
 
   public readonly menuConfig: SharedMenuConfig = {
     category: 'Management',
-    title: 'Users'
+    title: 'Vehicles',
   };
 
- public openModal(): void {
+  public openModal(): void {
     this.modalStage.set(true);
   }
 

@@ -4,6 +4,7 @@ import { LoginPage } from './features/login/pages/login-page/login-page';
 import { OwnersPage } from './features/owners/pages/owners-page/owners-page';
 import { ScopesPage } from './features/scopes/pages/scopes-page/scopes-page';
 import { UsersPage } from './features/users/pages/users-page/users-page';
+import { VehiclesPage } from './features/vehicles/pages/vehicles-page/vehicles-page';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,10 @@ export const routes: Routes = [
       {
         path: 'users',
         component: UsersPage,
+      },
+      {
+        path: 'vehicles',
+        component: VehiclesPage,
       }
     ],
   },

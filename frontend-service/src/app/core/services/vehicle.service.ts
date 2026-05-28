@@ -1,21 +1,21 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { User } from '../models/user.model';
+import { Vehicle } from '../models/vehicle.model';
 import { Paginated } from '../models/paginated.model';
-import { CreateUserRequest } from '../dto/user.dto';
+import { CreateVehicleRequest } from '../dto/vehicle.dto';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
+export class VehicleService {
   private readonly apiUrl = environment.apiUrl;
   private readonly httpClient = inject(HttpClient);
 
-  private readonly _pagination = signal<Paginated<User> | null>(null);
+  private readonly _pagination = signal<Paginated<Vehicle> | null>(null);
   public readonly pagination = this._pagination.asReadonly();
 
-  private readonly _users = signal<User[]>([]);
-  public readonly users = this._users.asReadonly();
+  private readonly _vehicles = signal<Vehicle[]>([]);
+  public readonly vehicles = this._vehicles.asReadonly();
 
   private readonly _loading = signal(false);
   public readonly loading = this._loading.asReadonly();
@@ -25,22 +25,30 @@ export class UserService {
 
   public findAll(page: number = 0, size: number = 8): void {
     const params = new HttpParams().set('page', page.toString()).set('size', size.toString());
-    this.httpClient.get<Paginated<User>>(`${this.apiUrl}/users`, { params }).subscribe({
+    this.httpClient.get<Paginated<Vehicle>>(`${this.apiUrl}/vehicles`, { params }).subscribe({
       next: (res) => {
         this._pagination.set(res);
-        this._users.set(res.content);
+        this._vehicles.set(res.content);
         this._totalElements.set(res.totalElements);
         this._loading.set(false);
       },
       error: () => {
-        this._users.set([]);
+        this._vehicles.set([]);
         this._totalElements.set(0);
         this._loading.set(false);
       },
     });
   }
 
-  public save(payload: CreateUserRequest): Observable<User> {
-    return this.httpClient.post<User>(`${this.apiUrl}/users`, payload);
+  public save(payload: CreateVehicleRequest): Observable<Vehicle> {
+    return this.httpClient.post<Vehicle>(`${this.apiUrl}/vehicles`, payload);
+  }
+
+  public updateById(id: string): Observable<Vehicle> {
+    return this.httpClient.patch<Vehicle>(`${this.apiUrl}/vehicles/${id}`, {});
+  }
+
+  public updateVehicleInList(updated: Vehicle): void {
+    this._vehicles.update((list) => list.map((v) => (v.id === updated.id ? updated : v)));
   }
 }
