@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -37,4 +39,13 @@ public interface VehicleControllerDoc {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     VehicleResponse updateById(@PathVariable UUID id);
+
+    @Operation(summary = "List vehicles", description = "Retrieves a paginated list of vehicles based on the provided pagination parameters.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehicles retrieved successfully", content = @Content(schema = @Schema(implementation = VehicleResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    Page<VehicleResponse> findAll(Pageable pageable);
 }
