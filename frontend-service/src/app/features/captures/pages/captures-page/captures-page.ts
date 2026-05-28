@@ -15,14 +15,14 @@ export class CapturesPage {
   public readonly modalStage = signal(false);
 
    public readonly headerConfig: SharedHeaderConfig = {
-    category: 'Management',
-    title: 'Vehicles',
-    description: 'Control panel for vehicle management',
+    category: 'Operation',
+    title: 'Captures',
+    description: 'Upload a ZIP file containing images to automatically recognize license plates',
   };
 
   public readonly menuConfig: SharedMenuConfig = {
-    category: 'Management',
-    title: 'Vehicles',
+    category: 'Operation',
+    title: 'Captures',
   };
 
   public openModal(): void {

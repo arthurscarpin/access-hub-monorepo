@@ -15,14 +15,14 @@ export class AccessEventsPage {
     public readonly modalStage = signal(false);
 
    public readonly headerConfig: SharedHeaderConfig = {
-    category: 'Management',
-    title: 'Vehicles',
-    description: 'Control panel for vehicle management',
+    category: 'Operation',
+    title: 'Access Events',
+    description: 'View the full history of vehicle entries and exits',
   };
 
   public readonly menuConfig: SharedMenuConfig = {
-    category: 'Management',
-    title: 'Vehicles',
+    category: 'Operation',
+    title: 'Access Events',
   };
 
   public openModal(): void {
