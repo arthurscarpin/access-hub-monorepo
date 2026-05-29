@@ -68,6 +68,7 @@ public class CaptureZipExtractor {
 
         try {
             Files.createDirectories(tmp);
+            Path normalizedTmp = tmp.toAbsolutePath().normalize();
 
             try (ZipFile zip = new ZipFile(zipPath.toFile())) {
                 return imageNames.stream()
@@ -76,9 +77,13 @@ public class CaptureZipExtractor {
                         .map(entry -> {
                             String fileName = Path.of(entry.getName()).getFileName().toString();
                             Path destination = tmp.resolve(fileName);
+                            Path normalizedDestination = destination.toAbsolutePath().normalize();
+                            if (!normalizedDestination.startsWith(normalizedTmp)) {
+                                throw new CaptureNotFoundException("Zip processor error: " + entry.getName());
+                            }
                             try (InputStream in = zip.getInputStream(entry)) {
-                                Files.copy(in, destination, StandardCopyOption.REPLACE_EXISTING);
-                                return destination.toString();
+                                Files.copy(in, normalizedDestination, StandardCopyOption.REPLACE_EXISTING);
+                                return normalizedDestination.toString();
                             } catch (IOException e) {
                                 throw new CaptureNotFoundException("Zip processor error: " + entry.getName());
                             }
