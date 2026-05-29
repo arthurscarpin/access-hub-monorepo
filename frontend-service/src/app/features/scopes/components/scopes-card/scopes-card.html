@@ -1,0 +1,42 @@
+<article
+  class="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 hover:shadow-sm"
+>
+  <header class="flex gap-4">
+    <!-- Icon -->
+    <div
+      class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 text-blue-600"
+      aria-hidden="true"
+      [ngClass]="{
+        'border-blue-200 bg-blue-50 text-blue-600': config.action === 'all',
+        'border-orange-200 bg-orange-50 text-orange-600': config.action === 'write',
+        'border-emerald-200 bg-emerald-50 text-emerald-600': config.action === 'read',
+      }"
+    >
+      <ng-container *ngComponentOutlet="config.icon"></ng-container>
+    </div>
+
+    <!-- Content -->
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-sm font-semibold tracking-wide text-slate-900 capitalize">
+          {{ config.resource }}
+        </h2>
+
+        <span
+          class="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-medium capitalize text-blue-700"
+          [ngClass]="{
+            'border-blue-200 bg-blue-50 text-blue-600': config.action === 'all',
+            'border-orange-200 bg-orange-50 text-orange-600': config.action === 'write',
+            'border-emerald-200 bg-emerald-50 text-emerald-600': config.action === 'read',
+          }"
+        >
+          {{ config.action }}
+        </span>
+      </div>
+
+      <p class="mt-2 text-sm leading-relaxed text-slate-500">
+        {{ config.description }}
+      </p>
+    </div>
+  </header>
+</article>

@@ -6,11 +6,11 @@ import com.arthurscarpin.acs.core.owner.gateway.OwnerGateway;
 import com.arthurscarpin.acs.core.owner.exception.DocumentDuplicateException;
 import com.arthurscarpin.acs.core.owner.exception.EmailDuplicateException;
 
-public class RegisterOwnerImpl implements RegisterOwnerUseCase {
+public class RegisterOwnerUseCaseImpl implements RegisterOwnerUseCase {
 
     private final OwnerGateway gateway;
 
-    public RegisterOwnerImpl(OwnerGateway gateway) {
+    public RegisterOwnerUseCaseImpl(OwnerGateway gateway) {
         this.gateway = gateway;
     }
 

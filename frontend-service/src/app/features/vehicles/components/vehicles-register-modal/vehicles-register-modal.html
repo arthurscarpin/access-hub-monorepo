@@ -1,0 +1,135 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+>
+  <article class="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+    <!-- HEADER -->
+    <header class="mb-6">
+      <h2 class="text-xl font-semibold text-slate-900">Create new vehicle</h2>
+
+      <p class="mt-1 text-sm text-slate-500">Register a new vehicle in the system.</p>
+    </header>
+    
+    <!-- Global error -->
+    @if (error()) {
+      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- FIELDS -->
+    <div class="space-y-4">
+      <!-- Plate -->
+      <!-- Plate -->
+      <fieldset class="space-y-2">
+        <label for="plate" class="text-sm font-medium text-slate-700"> Plate </label>
+
+        <input
+          id="plate"
+          type="text"
+          placeholder="Enter vehicle plate (ABC1234 or ABC1D23)"
+          formControlName="plate"
+          class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+          [ngClass]="{
+            'border-slate-200 focus:border-slate-900': !(
+              form.controls.plate.touched && form.controls.plate.invalid
+            ),
+
+            'border-red-300 focus:border-red-500':
+              form.controls.plate.touched && form.controls.plate.invalid,
+          }"
+        />
+
+        @if (form.controls.plate.touched && form.controls.plate.invalid) {
+          <div class="space-y-1 text-sm text-red-500">
+            @if (form.controls.plate.errors?.['required']) {
+              <p>Plate is required.</p>
+            }
+
+            @if (form.controls.plate.errors?.['pattern']) {
+              <p>Invalid plate format (use ABC1234 or ABC1D23).</p>
+            }
+          </div>
+        }
+      </fieldset>
+
+      <!-- Model -->
+      <fieldset class="space-y-2">
+        <label for="model" class="text-sm font-medium text-slate-700"> Model </label>
+
+        <input
+          id="model"
+          type="text"
+          placeholder="Enter vehicle model"
+          formControlName="model"
+          class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+          [ngClass]="{
+            'border-slate-200 focus:border-slate-900': !(
+              form.controls.model.touched && form.controls.model.invalid
+            ),
+
+            'border-red-300 focus:border-red-500':
+              form.controls.model.touched && form.controls.model.invalid,
+          }"
+        />
+
+        @if (form.controls.model.touched && form.controls.model.invalid) {
+          <div class="text-sm text-red-500">
+            @if (form.controls.model.errors?.['required']) {
+              <p>Model is required.</p>
+            }
+          </div>
+        }
+      </fieldset>
+
+      <!-- Owner ID -->
+      <fieldset class="space-y-2">
+        <label for="ownerId" class="text-sm font-medium text-slate-700"> Owner ID </label>
+
+        <input
+          id="ownerId"
+          type="text"
+          placeholder="Enter owner ID"
+          formControlName="ownerId"
+          class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+          [ngClass]="{
+            'border-slate-200 focus:border-slate-900': !(
+              form.controls.ownerId.touched && form.controls.ownerId.invalid
+            ),
+
+            'border-red-300 focus:border-red-500':
+              form.controls.ownerId.touched && form.controls.ownerId.invalid,
+          }"
+        />
+
+        @if (form.controls.ownerId.touched && form.controls.ownerId.invalid) {
+          <div class="text-sm text-red-500">
+            @if (form.controls.ownerId.errors?.['required']) {
+              <p>Owner is required.</p>
+            }
+          </div>
+        }
+      </fieldset>
+    </div>
+
+    <!-- ACTIONS -->
+    <footer class="mt-6 flex justify-end gap-3">
+      <button
+        type="button"
+        class="cursor-pointer rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50"
+        (click)="close.emit()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="cursor-pointer rounded-xl bg-slate-900 px-5 py-2.5 text-sm text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Create vehicle
+      </button>
+    </footer>
+  </article>
+</form>

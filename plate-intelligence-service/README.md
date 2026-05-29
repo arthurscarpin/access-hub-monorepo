@@ -1,33 +1,55 @@
 # Plate Intelligence Service
 
-Python worker responsible for reconstructing and validating Brazilian license plates from OCR candidates. The service consumes completed capture payloads from RabbitMQ, aggregates OCR results from multiple images, asks an OpenAI-powered LangChain assistant to produce the final plate decision, and publishes the enriched capture result back to the access-control backend.
+Python AI worker for final license-plate reconstruction. The service consumes completed capture payloads from RabbitMQ, aggregates OCR candidates from all capture images, calls an OpenAI-powered LangChain assistant, and publishes the final plate decision back to RabbitMQ for the backend to persist and convert into an access event.
 
-This service is the intelligence layer of the access-control platform. It does not expose an HTTP API; it operates as a message-driven process designed for asynchronous, scalable, and isolated plate-analysis workloads.
+It does not expose an HTTP API. It is a long-running message consumer.
 
-## Highlights
+## Responsibilities
 
-- Message-driven Python worker built around RabbitMQ, durable JSON messages, bounded retries, and dead-letter routing.
-- Clean separation between core use case contracts and infrastructure adapters.
-- Deterministic OCR candidate aggregation before invoking the LLM.
-- Brazilian plate support for Mercosul (`ABC1D23`) and legacy (`ABC1234`) formats.
-- LangChain integration with OpenAI chat models and structured JSON output parsing.
-- Dedicated prompt engineering for positional OCR correction and plate reconstruction.
-- Explicit success and failure publishing contract for backend orchestration.
-- Structured logging with production-aware console output and local NDJSON files.
-- Automated tests covering the use case, consumer, producer, OpenAI assistant wrapper, and candidate aggregation.
-- CI pipeline with pytest coverage, SonarCloud analysis, and CodeQL security scanning.
+- Consume capture payloads from the AI validation queue.
+- Normalize and rank OCR candidates before invoking the LLM.
+- Support Brazilian legacy (`ABC1234`) and Mercosul (`ABC1D23`) plate formats.
+- Use LangChain/OpenAI for structured final plate reconstruction.
+- Publish successful final plate results with confidence and reasoning.
+- Publish failure payloads when validation cannot complete.
+- Retry unexpected consumer failures with bounded retry headers.
+- Let RabbitMQ dead-letter messages after retries are exhausted.
 
 ## Role in the Platform
 
-The access-control platform splits plate processing into independent services:
+```mermaid
+flowchart LR
+    Backend[backend-service] -->|AI validation request| Rabbit[(RabbitMQ)]
+    Rabbit --> Worker[plate-intelligence-service]
+    Worker --> OpenAI[OpenAI via LangChain]
+    Worker -->|AI result| Rabbit
+    Rabbit --> Backend
+```
 
-1. The backend service receives a capture and stores image metadata.
-2. OCR workers extract text candidates from each image.
-3. The backend publishes a capture to the AI validation queue when OCR processing is complete.
-4. Plate Intelligence consumes that capture, reconstructs the most likely plate, and publishes the final result.
-5. The backend receives the result, updates the capture, and creates the access event.
+The backend sends a capture to this worker only after OCR processing has completed for its images. The backend remains responsible for applying the access decision rule after receiving the final plate.
 
-This design keeps OCR, AI reasoning, and access-control business rules independently deployable.
+## Architecture
+
+```text
+src
++-- core
+|   +-- gateway         # abstract plate analysis and publishing contract
+|   +-- usecase         # validation orchestration
++-- infrastructure
+    +-- ai_assistants   # OpenAI/LangChain assistant wrapper and prompt
+    +-- configuration   # settings, RabbitMQ, ChatOpenAI, logging
+    +-- consumer        # RabbitMQ consumer and retry handling
+    +-- gateway         # concrete plate analysis gateway
+    +-- parsers         # structured output parser
+    +-- plate_analysis  # deterministic OCR candidate aggregation
+    +-- producer        # RabbitMQ result publisher
++-- main.py             # dependency wiring and worker startup
+test
++-- core
++-- infrastructure
+```
+
+The deterministic aggregator runs before the assistant. This keeps the LLM prompt focused on a smaller, ranked set of candidates and makes the reasoning path easier to inspect.
 
 ## Processing Flow
 
@@ -41,14 +63,14 @@ PlateConsumer
 ValidatePlateUseCaseUseCaseImpl
         |
         +-- PlateCandidateAggregator
-        |      - normalizes OCR text
-        |      - detects Mercosul and legacy formats
-        |      - counts repeated candidates
-        |      - ranks by valid format, frequency, and confidence
+        |      - normalize OCR text
+        |      - detect valid plate formats
+        |      - count repetitions
+        |      - rank by format, frequency, confidence
         |
-        +-- OpenAIAssistant through LangChain
-        |      - applies the plate reconstruction prompt
-        |      - returns structured JSON
+        +-- PlateAnlysisGateway
+               +-- OpenAIAssistant
+               +-- structured output parser
         |
         v
 PlateResultProducer
@@ -57,24 +79,15 @@ PlateResultProducer
 RabbitMQ AI result routing key
 ```
 
-## Architecture
+## Plate Reconstruction Rules
 
-```text
-src
-+-- core
-|   +-- gateway         # Abstract contract for plate analysis and publishing
-|   +-- usecase         # Plate validation orchestration
-+-- infrastructure
-    +-- ai_assistants   # OpenAI/LangChain assistant and system prompt
-    +-- configuration   # Settings, RabbitMQ, ChatOpenAI, logging
-    +-- consumer        # RabbitMQ consumer
-    +-- gateway         # Concrete analysis gateway
-    +-- parsers         # Pydantic output parser
-    +-- plate_analysis  # OCR candidate aggregation
-    +-- producer        # RabbitMQ result producer
-```
-
-The `core` package defines the application behavior and gateway contract. The `infrastructure` package provides RabbitMQ, OpenAI, LangChain, logging, parsing, and analysis implementations.
+- OCR text is normalized to uppercase alphanumeric candidates.
+- Very short candidates are ignored.
+- Legacy plates must match `LLLNNNN`.
+- Mercosul plates must match `LLLNLNN`.
+- Candidate ranking prioritizes valid format, repeated appearances, and confidence.
+- The assistant prompt includes common positional OCR corrections such as `0` vs `O`, `1` vs `I`, `5` vs `S`, and `8` vs `B`.
+- The assistant response is parsed as structured JSON with final plate, confidence, and reasoning.
 
 ## Technology Stack
 
@@ -86,16 +99,16 @@ The `core` package defines the application behavior and gateway contract. The `i
 | AI orchestration | LangChain |
 | LLM provider | OpenAI |
 | Data validation | Pydantic, pydantic-settings |
-| Configuration | Environment variables, `.env`, `.env.idea` |
-| Testing | pytest, pytest-cov |
+| Configuration | `.env.idea`, `.env`, environment variables |
+| Tests | pytest, pytest-cov |
 | Packaging | Docker |
-| CI quality gates | GitHub Actions, SonarCloud, CodeQL |
+| CI/CD | GitHub Actions, SonarCloud, CodeQL |
 
 ## Message Contract
 
 ### Input
 
-The service expects a capture payload from the RabbitMQ AI validation queue. The relevant fields are:
+Consumed from `RABBITMQ_AI_VALIDATION_QUEUE`:
 
 ```json
 {
@@ -103,7 +116,7 @@ The service expects a capture payload from the RabbitMQ AI validation queue. The
   "images": [
     {
       "id": "image-id",
-      "filename": "plate-frame-001.jpg",
+      "filename": "image-1.jpg",
       "status": "COMPLETED",
       "ocr": [
         {
@@ -117,11 +130,9 @@ The service expects a capture payload from the RabbitMQ AI validation queue. The
 }
 ```
 
-The worker reads every `images[].ocr[]` entry, normalizes each candidate, and builds a ranked analysis report for the AI assistant.
-
 ### Successful Output
 
-On success, the service publishes:
+Published to `RABBITMQ_AI_RESULT_ROUTING_KEY` through `RABBITMQ_EXCHANGE`:
 
 ```json
 {
@@ -130,15 +141,13 @@ On success, the service publishes:
     "status": "COMPLETED",
     "finalPlate": "RIO2A19",
     "finalConfidence": 0.94,
-    "reasoning": "OCR candidates point to RIO2A19 after positional correction."
+    "reasoning": "OCR candidates indicate RIO2A19 after positional correction."
   },
   "error": null
 }
 ```
 
 ### Failure Output
-
-If validation fails, the service marks the capture as failed and publishes the error details:
 
 ```json
 {
@@ -150,53 +159,41 @@ If validation fails, the service marks the capture as failed and publishes the e
 }
 ```
 
-The consumer acknowledges valid messages after the use case completes. Invalid JSON is negatively acknowledged without requeue. Unexpected processing failures are retried with an `x-retry-count` header before the message is negatively acknowledged without requeue, allowing RabbitMQ to route it to the AI validation DLQ configured by the backend.
+## Retry Behavior
 
-### Retry Behavior
+For unexpected consumer failures:
 
-For unexpected processing failures, the worker:
-
-- reads the current retry count from the `x-retry-count` message header;
-- acknowledges the failed delivery before scheduling the retry;
+- the worker reads `x-retry-count` from the message header;
+- acknowledges the failed delivery before retry scheduling;
 - waits `RABBITMQ_BASE_DELAY_SECONDS ** retry_count` seconds;
-- republishes the original message to the configured AI result routing key with an incremented `x-retry-count`;
-- negatively acknowledges without requeue when `RABBITMQ_MAX_RETRIES` is reached.
+- republishes the original body with incremented `x-retry-count`;
+- negatively acknowledges without requeue after `RABBITMQ_MAX_RETRIES`.
 
-## Plate Reconstruction Rules
-
-The service combines deterministic pre-processing with LLM-based final reconstruction:
-
-- OCR candidates are normalized to uppercase alphanumeric strings.
-- Candidates shorter than three characters are ignored.
-- Mercosul plates must match `LLLNLNN`.
-- Legacy plates must match `LLLNNNN`.
-- Candidate ranking prioritizes valid plate format, repeated occurrences, and highest confidence.
-- The system prompt forces positional OCR correction for common confusions such as `0` vs `O`, `1` vs `I`, `5` vs `S`, and `8` vs `B`.
-- The final assistant response must follow the structured parser with `final_plate`, `final_confidence`, and `reasoning`.
+RabbitMQ dead-letter routing is declared by the backend.
 
 ## Configuration
 
-Settings are loaded from environment variables. When present, `.env.idea` is used before `.env`.
+Settings are loaded from `.env.idea` when present, otherwise `.env`, and can also come from environment variables.
 
 | Variable | Purpose |
 | --- | --- |
-| `ENVIRONMENT` | Runtime environment. Non-production environments also write local NDJSON logs. |
+| `ENVIRONMENT` | Runtime environment. Non-production runs may write local NDJSON logs. |
 | `RABBITMQ_HOST` | RabbitMQ host. |
-| `RABBITMQ_PORT` | RabbitMQ port. |
+| `RABBITMQ_PORT` | RabbitMQ AMQP port. |
 | `RABBITMQ_USERNAME` | RabbitMQ username. |
 | `RABBITMQ_PASSWORD` | RabbitMQ password. |
-| `RABBITMQ_EXCHANGE` | RabbitMQ exchange used to publish results. |
-| `RABBITMQ_AI_VALIDATION_QUEUE` | Queue consumed by this service. |
-| `RABBITMQ_AI_RESULT_ROUTING_KEY` | Routing key used to publish AI validation results. |
-| `RABBITMQ_MAX_RETRIES` | Maximum number of processing retries before the message is rejected without requeue. |
-| `RABBITMQ_BASE_DELAY_SECONDS` | Base used to calculate retry delay as `base ** retry_count` seconds. |
-| `OPENAI_API_KEY` | OpenAI API key used by LangChain. |
-| `LANGCHAIN_DEBUG` | Enables LangChain debug output when `true`. |
-| `LLM_MODEL` | OpenAI model name used for plate reconstruction. |
-| `TEMPERATURE` | LLM temperature. Use low values for deterministic reconstruction. |
-| `MAX_TOKENS` | Maximum completion tokens for the LLM response. |
+| `RABBITMQ_EXCHANGE` | Exchange used to publish AI results. |
+| `RABBITMQ_AI_VALIDATION_QUEUE` | Queue consumed by this worker. |
+| `RABBITMQ_AI_RESULT_ROUTING_KEY` | Routing key used to publish final results. |
+| `RABBITMQ_MAX_RETRIES` | Maximum retry count. |
+| `RABBITMQ_BASE_DELAY_SECONDS` | Retry delay base. |
+| `OPENAI_API_KEY` | API key used by LangChain/OpenAI. |
+| `LANGCHAIN_DEBUG` | Enables LangChain debug logging when true. |
+| `LLM_MODEL` | OpenAI chat model used by the assistant. |
+| `TEMPERATURE` | Model temperature. Lower values are recommended for deterministic reconstruction. |
+| `MAX_TOKENS` | Maximum response tokens. |
 
-Example `.env`:
+Example:
 
 ```dotenv
 ENVIRONMENT=dev
@@ -218,82 +215,77 @@ MAX_TOKENS=500
 
 ## Running Locally
 
-### Prerequisites
+Prerequisites:
 
 - Python 3.12
 - uv
 - RabbitMQ
 - OpenAI API key
 
-### Install Dependencies
+Install dependencies:
 
 ```bash
 uv sync
 ```
 
-### Run the Worker
+Run the worker:
 
 ```bash
 uv run python src/main.py
 ```
 
-The process blocks while listening to the configured RabbitMQ queue.
-
-## Docker
-
-Build the image:
-
-```bash
-docker build -t plate-intelligence-service .
-```
-
-Run the worker with environment variables:
-
-```bash
-docker run --rm --env-file .env plate-intelligence-service
-```
-
-The Dockerfile uses `python:3.12-slim`, installs `uv`, syncs locked production dependencies, and starts `src/main.py`.
-
-## Testing and Quality
-
-Run the test suite:
+Run tests:
 
 ```bash
 uv run pytest
 ```
 
-Run tests with coverage using the project configuration:
+Run tests with explicit coverage output:
 
 ```bash
-uv run pytest --cov=src --cov-report=term --cov-config=.coveragerc
+uv run pytest --cov=src --cov-report=xml:coverage.xml --cov-report=term --cov-config=.coveragerc
 ```
 
-The current tests cover:
+## Docker
 
-- OCR candidate normalization, aggregation, ranking, and format detection.
-- Plate validation use case success and failure publishing paths.
-- RabbitMQ consumer acknowledgment and negative acknowledgment behavior.
-- RabbitMQ retry behavior with `x-retry-count` before DLQ routing.
-- RabbitMQ result producer payload encoding and delivery properties.
-- OpenAI assistant chain invocation and error propagation.
+Build:
+
+```bash
+docker build -t plate-intelligence-service .
+```
+
+Run:
+
+```bash
+docker run --rm --env-file ../.env plate-intelligence-service
+```
+
+The image uses `python:3.12-slim`, copies `uv` from the official Astral image, syncs locked production dependencies, and starts `src/main.py`.
+
+## Docker Compose
+
+The root `docker-compose.yaml` starts this service with:
+
+- dependency on healthy RabbitMQ and backend service;
+- RabbitMQ variables from the root `.env`;
+- OpenAI and LangChain variables from the root `.env`.
+
+Start it with the full platform:
+
+```bash
+docker compose up --build plate-intelligence-service
+```
 
 ## CI/CD
 
-The GitHub Actions workflow for this service runs when files under `plate-intelligence-service/**` change. It includes:
+Workflow:
 
-- dependency synchronization with `uv sync --frozen --no-dev`;
-- pytest coverage generation;
-- coverage artifact upload;
-- SonarCloud analysis;
-- CodeQL security analysis for Python.
+```text
+.github/workflows/plate-intelligence-service.yml
+```
 
-## Operational Notes
+Jobs:
 
-- This worker requires RabbitMQ to be reachable before startup.
-- The service creates a dedicated channel for consuming and a producer channel when publishing results.
-- Message prefetch is set to `1` to process one AI validation task at a time per worker instance.
-- Processing failures are retried up to `RABBITMQ_MAX_RETRIES`; after that the message is rejected without requeue and should land in `${RABBITMQ_AI_VALIDATION_QUEUE}.dlq` when the backend-declared topology is active.
-- Published messages use JSON content type and delivery mode `2` for persistence.
-- In non-production environments, logs are also written to `logs/YYYYMMDD.ndjson`.
-- Horizontal scaling is achieved by running multiple worker instances against the same queue.
+- `build-test`: install uv, sync dependencies, run pytest coverage, upload `coverage.xml`.
+- `sonar`: download coverage and run SonarCloud.
+- `security`: initialize CodeQL for Python, compile sources, analyze.

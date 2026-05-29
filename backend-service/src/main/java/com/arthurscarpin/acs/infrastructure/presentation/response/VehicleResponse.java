@@ -20,6 +20,9 @@ public record VehicleResponse(
         VehicleStatus status,
 
         @Schema(description = "Identifier of the vehicle owner", example = "00000000-0000-0000-0000-000000000001")
-        UUID ownerId
+        UUID ownerId,
+
+        @Schema(description = "Name of the vehicle owner", example = "Juliana Silva")
+        String ownerName
 ) {
 }

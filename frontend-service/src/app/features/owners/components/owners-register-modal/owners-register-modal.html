@@ -1,0 +1,209 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+>
+  <article
+    class="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl"
+  >
+
+    <!-- Header -->
+    <header class="mb-6">
+      <h2 class="text-xl font-semibold text-slate-900">
+        Create new owner
+      </h2>
+
+      <p class="mt-1 text-sm text-slate-500">
+        Register a new owner in the system.
+      </p>
+    </header>
+
+    <!-- Global error -->
+    @if (error()) {
+      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Fields -->
+    <div class="space-y-4">
+
+      <!-- Name -->
+<fieldset class="space-y-2">
+  <label for="name" class="text-sm font-medium text-slate-700">
+    Full name
+  </label>
+
+  <input
+    id="name"
+    type="text"
+    placeholder="Enter full name"
+    formControlName="name"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.name.touched && form.controls.name.invalid),
+
+      'border-red-300 focus:border-red-500':
+        form.controls.name.touched && form.controls.name.invalid
+    }"
+  />
+
+  @if (form.controls.name.touched && form.controls.name.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
+
+      @if (form.controls.name.errors?.['required']) {
+        <p>Name is required.</p>
+      }
+
+      @if (form.controls.name.errors?.['minlength']) {
+        <p>Name must contain at least 3 characters.</p>
+      }
+
+    </div>
+  }
+</fieldset>
+
+<!-- Email -->
+<fieldset class="space-y-2">
+  <label for="email" class="text-sm font-medium text-slate-700">
+    Email
+  </label>
+
+  <input
+    id="email"
+    type="email"
+    placeholder="Enter email"
+    formControlName="email"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.email.touched && form.controls.email.invalid),
+
+      'border-red-300 focus:border-red-500':
+        form.controls.email.touched && form.controls.email.invalid
+    }"
+  />
+
+  @if (form.controls.email.touched && form.controls.email.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
+
+      @if (form.controls.email.errors?.['required']) {
+        <p>Email is required.</p>
+      }
+
+      @if (form.controls.email.errors?.['email']) {
+        <p>Enter a valid email address.</p>
+      }
+
+    </div>
+  }
+</fieldset>
+
+<!-- Document Type -->
+<fieldset class="space-y-2">
+  <label for="documentType" class="text-sm font-medium text-slate-700">
+    Document type
+  </label>
+
+  <select
+    id="documentType"
+    formControlName="documentType"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.documentType.touched && form.controls.documentType.invalid),
+
+      'border-red-300 focus:border-red-500':
+        form.controls.documentType.touched && form.controls.documentType.invalid
+    }"
+  >
+    <option value="">Select document type</option>
+    <option value="CPF">CPF</option>
+    <option value="RG">RG</option>
+  </select>
+
+  @if (form.controls.documentType.touched && form.controls.documentType.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
+
+      @if (form.controls.documentType.errors?.['required']) {
+        <p>Document type is required.</p>
+      }
+
+    </div>
+  }
+</fieldset>
+
+<!-- Document -->
+<fieldset class="space-y-2">
+  <label for="document" class="text-sm font-medium text-slate-700">
+    Document
+  </label>
+
+  <input
+    id="document"
+    type="text"
+    placeholder="Enter document"
+    formControlName="document"
+    class="h-12 w-full rounded-xl border px-4 text-sm outline-none transition"
+    [ngClass]="{
+      'border-slate-200 focus:border-slate-900':
+        !(form.controls.document.touched && form.controls.document.invalid),
+
+      'border-red-300 focus:border-red-500':
+        form.controls.document.touched && form.controls.document.invalid
+    }"
+  />
+
+  @if (form.controls.document.touched && form.controls.document.invalid) {
+    <div class="space-y-1 text-sm text-red-500">
+
+      @if (form.controls.document.errors?.['required']) {
+        <p>Document is required.</p>
+      }
+
+      @if (form.controls.document.errors?.['minlength']) {
+        <p>
+          Document must contain
+          {{ form.controls.document.errors?.['minlength']?.requiredLength }}
+          characters.
+        </p>
+      }
+
+      @if (form.controls.document.errors?.['maxlength']) {
+        <p>
+          Document must contain
+          {{ form.controls.document.errors?.['maxlength']?.requiredLength }}
+          characters.
+        </p>
+      }
+
+    </div>
+  }
+</fieldset>
+
+    </div>
+
+    <!-- Actions -->
+    <footer class="mt-6 flex justify-end gap-3">
+
+      <button
+        type="button"
+        class="cursor-pointer rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm text-slate-600 transition hover:bg-slate-50"
+        (click)="close.emit()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+        class="cursor-pointer rounded-xl bg-slate-900 px-5 py-2.5 text-sm text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Create
+      </button>
+
+    </footer>
+
+  </article>
+</form>

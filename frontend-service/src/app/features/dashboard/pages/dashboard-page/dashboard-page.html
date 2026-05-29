@@ -1,0 +1,33 @@
+<div class="flex min-h-screen bg-slate-100">
+  <div
+    class="fixed left-0 top-0 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:flex lg:flex-col"
+  >
+    <!-- Sidebar Component -->
+    <app-shared-sidebar></app-shared-sidebar>
+  </div>
+
+  <div class="flex min-h-screen flex-1 flex-col lg:ml-72">
+    <!-- Menu Component -->
+    <app-shared-menu [config]="menuConfig"></app-shared-menu>
+    <main class="flex-1 p-6 pt-22">
+      <div class="mb-6 flex items-start justify-between">
+        <!-- Header Component -->
+        <app-shared-header [config]="headerConfig()"></app-shared-header>
+      </div>
+
+      <!-- Container Component -->
+      <div class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <!-- cards -->
+        <app-dashboard-card [config]="totalAccessEvents()"></app-dashboard-card>
+        <app-dashboard-card [config]="totalVehicles()"></app-dashboard-card>
+        <app-dashboard-card [config]="totalOwners()"></app-dashboard-card>
+      </div>
+
+      <!-- Events History -->
+      <div class="mt-8 block">
+        <app-dashboard-events-view [events]="accessEvents()"></app-dashboard-events-view>
+      </div>
+      
+    </main>
+  </div>
+</div>

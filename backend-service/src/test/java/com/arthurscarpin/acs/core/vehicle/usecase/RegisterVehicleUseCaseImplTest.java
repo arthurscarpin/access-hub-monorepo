@@ -38,9 +38,10 @@ class RegisterVehicleUseCaseImplTest {
     @DisplayName("Given valid vehicle and existing owner, when registering, then should save vehicle successfully")
     void shouldRegisterVehicleSuccessfully() {
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        UUID ownerId = UUID.randomUUID();
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", ownerId, "Stale Owner Name");
         Owner owner = new Owner(
-                null,
+                ownerId,
                 "Maria Oliveira",
                 "111.444.777-35",
                 DocumentType.CPF,
@@ -54,6 +55,7 @@ class RegisterVehicleUseCaseImplTest {
 
         assertEquals(vehicle.model(), response.model());
         assertEquals(owner.id(), response.ownerId());
+        assertEquals(owner.name(), response.ownerName());
         verify(vehicleGateway).save(any(Vehicle.class));
     }
 
@@ -61,7 +63,7 @@ class RegisterVehicleUseCaseImplTest {
     @DisplayName("Given existing plate, when registering vehicle, then should throw PlateDuplicateException")
     void shouldThrowExceptionWhenPlateAlreadyExists() {
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
 
         when(vehicleGateway.findByPlate(plate.plate())).thenReturn(Optional.of(vehicle));
 
@@ -74,7 +76,7 @@ class RegisterVehicleUseCaseImplTest {
     @DisplayName("Given non-existent owner, when registering vehicle, then should throw OwnerNotFoundException")
     void shouldThrowExceptionWhenOwnerNotFound() {
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
 
         when(vehicleGateway.findByPlate(plate.plate())).thenReturn(Optional.empty());
         when(ownerGateway.findById(vehicle.ownerId())).thenReturn(Optional.empty());
@@ -87,7 +89,7 @@ class RegisterVehicleUseCaseImplTest {
     @DisplayName("Given valid vehicle data, when registering, then should create vehicle using factory method with correct data")
     void shouldCreateVehicleUsingFactory() {
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
         Owner owner = new Owner(
                 vehicle.ownerId(),
                 "Arthur",
@@ -104,13 +106,14 @@ class RegisterVehicleUseCaseImplTest {
         assertNotNull(result);
         assertEquals(vehicle.model(), result.model());
         assertEquals(owner.id(), result.ownerId());
+        assertEquals(owner.name(), result.ownerName());
     }
 
     @Test
     @DisplayName("Given invalid vehicle due to duplicate plate, when registering, then should not persist vehicle")
     void shouldNotSaveVehicleWhenValidationFails() {
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
 
         when(vehicleGateway.findByPlate(any())).thenReturn(Optional.of(vehicle));
 

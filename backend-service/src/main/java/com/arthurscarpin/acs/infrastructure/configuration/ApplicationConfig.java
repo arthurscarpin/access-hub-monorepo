@@ -9,22 +9,17 @@ import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureZipGateway;
 import com.arthurscarpin.acs.core.capture.usecase.*;
 import com.arthurscarpin.acs.core.owner.gateway.OwnerGateway;
-import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerImpl;
+import com.arthurscarpin.acs.core.owner.usecase.GetOwnersUseCaseImpl;
+import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerUseCaseImpl;
 import com.arthurscarpin.acs.core.owner.usecase.RegisterOwnerUseCase;
 import com.arthurscarpin.acs.core.scope.gateway.ScopeGateway;
 import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCase;
 import com.arthurscarpin.acs.core.scope.usecase.GetScopesUseCaseImpl;
 import com.arthurscarpin.acs.core.user.gateway.LoginGateway;
 import com.arthurscarpin.acs.core.user.gateway.UserGateway;
-import com.arthurscarpin.acs.core.user.usecase.LoginUserUseCase;
-import com.arthurscarpin.acs.core.user.usecase.LoginUserUseCaseImpl;
-import com.arthurscarpin.acs.core.user.usecase.RegisterUserUseCase;
-import com.arthurscarpin.acs.core.user.usecase.RegisterUserUseCaseImpl;
+import com.arthurscarpin.acs.core.user.usecase.*;
 import com.arthurscarpin.acs.core.vehicle.gateway.VehicleGateway;
-import com.arthurscarpin.acs.core.vehicle.usecase.RegisterVehicleUseCase;
-import com.arthurscarpin.acs.core.vehicle.usecase.RegisterVehicleUseCaseImpl;
-import com.arthurscarpin.acs.core.vehicle.usecase.UpdateVehicleStatusUseCase;
-import com.arthurscarpin.acs.core.vehicle.usecase.UpdateVehicleStatusUseCaseImpl;
+import com.arthurscarpin.acs.core.vehicle.usecase.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,7 +33,7 @@ public class ApplicationConfig {
 
     @Bean
     public RegisterOwnerUseCase registerOwnerUseCase(OwnerGateway ownerGateway) {
-        return new RegisterOwnerImpl(ownerGateway);
+        return new RegisterOwnerUseCaseImpl(ownerGateway);
     }
 
     @Bean
@@ -84,5 +79,20 @@ public class ApplicationConfig {
     @Bean
     public ResultCaptureUseCase resultCaptureUseCase(CaptureGateway captureGateway, ValidateAccessUseCase validateAccessUseCase) {
         return new ResultCaptureUseCaseImpl(captureGateway, validateAccessUseCase);
+    }
+
+    @Bean
+    public GetOwnersUseCaseImpl getOwnersUseCase(OwnerGateway ownerGateway) {
+        return new GetOwnersUseCaseImpl(ownerGateway);
+    }
+
+    @Bean
+    public GetUsersUseCase getUsersUseCase(UserGateway userGateway) {
+        return new GetUsersUseCaseImpl(userGateway);
+    }
+
+    @Bean
+    public GetVehiclesUseCase getVehiclesUseCase(VehicleGateway vehicleGateway) {
+        return new GetVehiclesUseCaseImpl(vehicleGateway);
     }
 }

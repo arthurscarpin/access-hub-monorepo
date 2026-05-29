@@ -170,6 +170,17 @@ services:
       MAX_TOKENS: ${MAX_TOKENS}
     restart: unless-stopped
 
+  frontend-service:
+    build:
+      context: ./frontend-service
+      dockerfile: Dockerfile
+    container_name: frontend-service
+    depends_on:
+      - backend-service
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+
 volumes:
   access-control-pgdata:
   access-control-mongo-data:

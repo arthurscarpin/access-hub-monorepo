@@ -33,14 +33,15 @@ class UpdateVehicleStatusUseCaseImplTest {
     void shouldToggleVehicleStatusSuccessfully() {
         UUID id = UUID.randomUUID();
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicleInput = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicleInput = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
         VehicleStatus newStatus = vehicleInput.status().toggle();
         Vehicle vehicleOutput = new Vehicle(
                 vehicleInput.id(),
                 vehicleInput.plate(),
                 vehicleInput.model(),
                 newStatus,
-                vehicleInput.ownerId()
+                vehicleInput.ownerId(),
+                vehicleInput.ownerName()
         );
 
         when(gateway.findById(id)).thenReturn(Optional.of(vehicleInput));
@@ -48,6 +49,7 @@ class UpdateVehicleStatusUseCaseImplTest {
         Vehicle result = useCase.execute(id);
 
         assertEquals(newStatus, result.status());
+        assertEquals(vehicleInput.ownerName(), result.ownerName());
         verify(gateway).save(any(Vehicle.class));
     }
 
@@ -67,7 +69,7 @@ class UpdateVehicleStatusUseCaseImplTest {
     void shouldChangeVehicleStatusToOppositeValue() {
         UUID id = UUID.randomUUID();
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
         VehicleStatus oldStatus = vehicle.status();
 
         when(gateway.findById(id)).thenReturn(Optional.of(vehicle));
@@ -82,7 +84,7 @@ class UpdateVehicleStatusUseCaseImplTest {
     void shouldUseDomainChangeStatusMethod() {
         UUID id = UUID.randomUUID();
         Plate plate = new Plate("BRA1S23");
-        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID());
+        Vehicle vehicle = Vehicle.create(plate, "Audi A8", UUID.randomUUID(), "Maria Oliveira");
 
         when(gateway.findById(id)).thenReturn(Optional.of(vehicle));
         when(gateway.save(any())).thenAnswer(inv -> inv.getArgument(0));

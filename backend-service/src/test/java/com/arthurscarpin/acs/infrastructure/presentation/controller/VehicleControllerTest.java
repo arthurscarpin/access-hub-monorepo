@@ -20,6 +20,8 @@ import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -90,7 +92,8 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.plate").value(request.plate()))
                 .andExpect(jsonPath("$.model").value(request.model()))
-                .andExpect(jsonPath("$.ownerId").value(ownerId.toString()));
+                .andExpect(jsonPath("$.ownerId").value(ownerId.toString()))
+                .andExpect(jsonPath("$.ownerName").value("Paulo Silva"));
     }
 
     @Test
@@ -157,7 +160,8 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
                 .andExpect(jsonPath("$.id").value(vehicle.getId().toString()))
                 .andExpect(jsonPath("$.plate").value(vehicle.getPlate()))
                 .andExpect(jsonPath("$.model").value(vehicle.getModel()))
-                .andExpect(jsonPath("$.ownerId").value(vehicle.getOwner().getId().toString()));
+                .andExpect(jsonPath("$.ownerId").value(vehicle.getOwner().getId().toString()))
+                .andExpect(jsonPath("$.ownerName").value(vehicle.getOwner().getName()));
     }
 
     @Test
@@ -192,6 +196,97 @@ class VehicleControllerTest extends AccessControlSystemIntegrationTest {
 
         mockMvc.perform(patch("/vehicles/{id}", vehicle.getId())
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Given existing vehicles When listing Then returns paginated response successfully")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:read"})
+    void shouldReturnPagedVehiclesSuccessfully() throws Exception {
+
+        mockMvc.perform(get("/vehicles")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].plate").value("EXIST123"))
+                .andExpect(jsonPath("$.content[0].model").value("Audi A8"))
+                .andExpect(jsonPath("$.content[0].ownerId").exists())
+                .andExpect(jsonPath("$.content[0].ownerName").value("Maria Oliveira"))
+                .andExpect(jsonPath("$.pageable.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageable.pageSize").value(10))
+                .andExpect(jsonPath("$.totalElements").value(1));
+    }
+
+    @Test
+    @DisplayName("Given no vehicles When listing Then returns empty page")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:read"})
+    void shouldReturnEmptyPageWhenNoVehicles() throws Exception {
+
+        vehicleRepository.deleteAllInBatch();
+
+        mockMvc.perform(get("/vehicles")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty())
+                .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    @Test
+    @DisplayName("Given multiple vehicles When listing page 0 Then returns first page correctly")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:read"})
+    void shouldReturnFirstPageCorrectly() throws Exception {
+
+        OwnerEntity owner = ownerRepository.findAll().get(0);
+
+        vehicleRepository.save(new VehicleEntity(null, "AAA1111", "BMW X1", VehicleStatus.ACTIVE, owner));
+        vehicleRepository.save(new VehicleEntity(null, "BBB2222", "Mercedes C", VehicleStatus.ACTIVE, owner));
+
+        mockMvc.perform(get("/vehicles")
+                        .param("page", "0")
+                        .param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(3));
+    }
+
+    @Test
+    @DisplayName("Given multiple vehicles When listing with size 1 Then returns only one element per page")
+    @WithMockUser(authorities = {"SCOPE_admin:all", "SCOPE_vehicle:read"})
+    void shouldRespectPageSize() throws Exception {
+
+        OwnerEntity owner = ownerRepository.findAll().get(0);
+
+        vehicleRepository.save(new VehicleEntity(null, "AAA1111", "BMW X1", VehicleStatus.ACTIVE, owner));
+        vehicleRepository.save(new VehicleEntity(null, "BBB2222", "Mercedes C", VehicleStatus.ACTIVE, owner));
+
+        mockMvc.perform(get("/vehicles")
+                        .param("page", "0")
+                        .param("size", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.totalElements").value(3));
+    }
+
+    @Test
+    @DisplayName("Given no authentication When listing vehicles Then returns 401")
+    void shouldReturnUnauthorizedWhenNoAuthGet() throws Exception {
+
+        mockMvc.perform(get("/vehicles")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Given user without permission When listing vehicles Then returns 403")
+    @WithMockUser(authorities = {"SCOPE_vehicle:write"})
+    void shouldReturnForbiddenWhenNoPermissionGet() throws Exception {
+
+        mockMvc.perform(get("/vehicles")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isForbidden());
     }
 }
