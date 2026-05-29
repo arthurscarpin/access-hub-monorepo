@@ -1,35 +1,53 @@
 # Recognize Plate Service
 
-Python worker responsible for OCR extraction in the access-control platform. The service consumes image-processing jobs from RabbitMQ, loads the referenced image from local/shared storage, applies OpenCV pre-processing, extracts text candidates with EasyOCR, and publishes image-level status updates back to the backend.
+Python OCR worker for the Access Control System. This service consumes image-processing jobs from RabbitMQ, resolves image paths from shared storage, pre-processes each image with OpenCV, extracts OCR candidates with EasyOCR, and publishes image-level status updates back to RabbitMQ.
 
-This service does not expose an HTTP API. It is a message-driven OCR worker designed to run independently from the backend and the AI plate-reconstruction service.
+It does not expose an HTTP API. It is a long-running message consumer.
 
-## Highlights
+## Responsibilities
 
-- RabbitMQ worker for asynchronous license-plate OCR processing with bounded retries before dead-letter routing.
-- Three-stage status publishing: `STARTED`, `PROCESSING`, and `COMPLETED` or `FAILED`.
-- OpenCV image pre-processing with contour-based plate crop detection.
-- EasyOCR text extraction configured for Portuguese OCR.
-- Durable JSON result publishing with OCR text, confidence, and bounding boxes.
-- Clean separation between core use case contracts and infrastructure adapters.
-- Storage abstraction for resolving image filenames into filesystem paths.
-- Production-aware logging with local NDJSON logs outside production.
-- Automated unit tests covering storage, use case flow, consumer behavior, publisher behavior, OpenCV pre-processing, and EasyOCR output mapping.
-- CI pipeline with pytest coverage, SonarCloud analysis, and CodeQL security scanning.
+- Consume OCR jobs from the configured RabbitMQ queue.
+- Publish `STARTED`, `PROCESSING`, `COMPLETED`, and `FAILED` image status events.
+- Resolve backend-published filenames against `STORAGE_PATH`.
+- Improve OCR quality with OpenCV pre-processing.
+- Run EasyOCR and normalize results into JSON-safe payloads.
+- Retry unexpected processing failures with bounded retry headers.
+- Let RabbitMQ dead-letter messages after retries are exhausted.
 
 ## Role in the Platform
 
-The access-control platform processes captures across specialized services:
+```mermaid
+flowchart LR
+    Backend[backend-service] -->|OCR request| Rabbit[(RabbitMQ)]
+    Rabbit --> Worker[recognize-plate-service]
+    Worker --> Storage[(Shared storage)]
+    Worker -->|OCR status| Rabbit
+    Rabbit --> Backend
+```
 
-1. The backend receives a capture request and publishes one OCR job per image.
-2. Recognize Plate Service consumes each OCR job.
-3. The service loads and pre-processes the target image.
-4. EasyOCR extracts text candidates and confidence scores.
-5. The service publishes image status updates back to RabbitMQ.
-6. The backend aggregates OCR status for all images in the capture.
-7. When all images are processed, the backend sends the capture to the Plate Intelligence Service for final plate reconstruction.
+The backend publishes one OCR request per extracted capture image. This worker processes each image independently, which allows OCR work to scale horizontally by running multiple worker instances on the same queue.
 
-This split keeps OCR workloads isolated and horizontally scalable.
+## Architecture
+
+```text
+src
++-- core
+|   +-- domain          # capture/image status enums and storage path helpers
+|   +-- gateway         # abstract capture processing contract
+|   +-- usecase         # OCR orchestration workflow
++-- infrastructure
+    +-- configuration   # settings, RabbitMQ factory, logging
+    +-- consumer        # RabbitMQ consumer and retry handling
+    +-- gateway         # concrete capture publisher gateway
+    +-- image_processing # OpenCV pre-processor
+    +-- ocr             # EasyOCR processor
+    +-- producer        # RabbitMQ OCR status publisher
++-- main.py             # dependency wiring and worker startup
+test
++-- unit                # unit tests for domain, use case, adapters, OCR, consumer, producer
+```
+
+The use case coordinates the workflow and delegates infrastructure details to gateways and processors.
 
 ## Processing Flow
 
@@ -42,49 +60,32 @@ CaptureConsumer
         v
 CaptureUseCaseImpl
         |
-        +-- publish STARTED status
-        |
-        +-- Storage
-        |      - resolves STORAGE_PATH + filename
-        |
-        +-- publish PROCESSING status
-        |
+        +-- publish STARTED
+        +-- resolve image path from STORAGE_PATH
+        +-- publish PROCESSING
         +-- OpenCVPreProcessor
-        |      - loads image
-        |      - detects likely plate contour
-        |      - crops plate area when possible
-        |      - converts to grayscale
-        |      - resizes, denoises, and applies CLAHE
-        |
         +-- EasyOCRProcessor
-        |      - extracts text candidates
-        |      - converts bounding boxes to JSON-safe coordinates
-        |      - sorts OCR items by screen position
-        |
-        +-- publish COMPLETED or FAILED status
-        |
-        v
-RabbitMQ OCR status routing key
+        +-- publish COMPLETED with OCR candidates
+        +-- publish FAILED if processing cannot complete
 ```
 
-## Architecture
+## Image Processing Pipeline
 
-```text
-src
-+-- core
-|   +-- domain          # Status enums and storage path builder
-|   +-- gateway         # Abstract capture processing gateway
-|   +-- usecase         # OCR processing orchestration
-+-- infrastructure
-    +-- configuration   # Settings, RabbitMQ, logging
-    +-- consumer        # RabbitMQ capture consumer
-    +-- gateway         # Concrete storage, pre-processing, OCR, publishing adapter
-    +-- image_processing # OpenCV image pre-processing
-    +-- ocr             # EasyOCR processor
-    +-- producer        # RabbitMQ OCR status producer
-```
+The OpenCV pre-processor:
 
-The `core` package owns the processing workflow and domain contracts. The `infrastructure` package provides RabbitMQ integration, filesystem path resolution, OpenCV processing, EasyOCR execution, and result publishing.
+- loads the image from disk;
+- converts the image to grayscale;
+- applies bilateral filtering and Canny edge detection;
+- searches contours for a likely license-plate quadrilateral;
+- crops the plate region when detected;
+- falls back to the full image when no plate candidate is found;
+- resizes, denoises, and applies CLAHE before OCR.
+
+The EasyOCR processor returns:
+
+- extracted text;
+- confidence score;
+- bounding box coordinates converted to integer lists.
 
 ## Technology Stack
 
@@ -93,40 +94,42 @@ The `core` package owns the processing workflow and domain contracts. The `infra
 | Runtime | Python 3.11+ and < 3.13 |
 | Dependency management | uv |
 | Messaging | RabbitMQ, pika |
-| OCR engine | EasyOCR |
+| OCR | EasyOCR |
 | Image processing | OpenCV headless, NumPy |
 | ML runtime | torch, torchvision |
-| Configuration | Pydantic Settings, `.env`, `.env.idea` |
-| Testing | pytest, pytest-cov |
+| Configuration | pydantic-settings, `.env.idea`, `.env` |
+| Tests | pytest, pytest-cov |
 | Packaging | Docker |
-| CI quality gates | GitHub Actions, SonarCloud, CodeQL |
+| CI/CD | GitHub Actions, SonarCloud, CodeQL |
 
 ## Message Contract
 
 ### Input
 
-The service consumes OCR jobs from the configured RabbitMQ OCR queue. The relevant fields are:
+Consumed from `RABBITMQ_OCR_QUEUE`:
 
 ```json
 {
   "captureId": "capture-id",
   "imageId": "image-id",
-  "filename": "storage/tmp/capture-id/image-id.jpg",
+  "filename": "storage/tmp/capture-id/image-1.jpg",
   "timestamp": "2026-01-01T00:00:00Z"
 }
 ```
 
-The `filename` field is required. It is resolved against `STORAGE_PATH` before image loading. The worker accepts filenames relative to the storage root, such as `tmp/capture-id/image-id.jpg`, and backend-published paths prefixed with the storage directory, such as `storage/tmp/capture-id/image-id.jpg`.
+`filename` is required. The storage helper accepts relative filenames such as `tmp/capture-id/image-1.jpg` and backend-style paths prefixed with `storage/`.
 
-### Started Status
+### Status Output
 
-Published before filesystem and OCR processing begin:
+Published to `RABBITMQ_OCR_STATUS_ROUTING_KEY` through `RABBITMQ_EXCHANGE`.
+
+Started:
 
 ```json
 {
   "captureId": "capture-id",
   "imageId": "image-id",
-  "filename": "vehicle-frame-001.jpg",
+  "filename": "image-1.jpg",
   "image_status": "STARTED",
   "capture_status": "PROCESSING",
   "message": "Execution started",
@@ -134,37 +137,19 @@ Published before filesystem and OCR processing begin:
 }
 ```
 
-### Processing Status
-
-Published after the image path is resolved and before OCR execution:
+Completed:
 
 ```json
 {
   "captureId": "capture-id",
   "imageId": "image-id",
-  "filename": "vehicle-frame-001.jpg",
-  "image_status": "PROCESSING",
-  "capture_status": "PROCESSING",
-  "message": "Execution in processing...",
-  "ocr": []
-}
-```
-
-### Completed Status
-
-Published when OCR extraction succeeds:
-
-```json
-{
-  "captureId": "capture-id",
-  "imageId": "image-id",
-  "filename": "vehicle-frame-001.jpg",
+  "filename": "image-1.jpg",
   "image_status": "COMPLETED",
   "capture_status": "PROCESSING",
   "message": "Execution completed",
   "ocr": [
     {
-      "text": "ABC1234",
+      "text": "ABC1D23",
       "confidence": 0.91,
       "bbox": [[10, 20], [120, 20], [120, 60], [10, 60]]
     }
@@ -172,9 +157,7 @@ Published when OCR extraction succeeds:
 }
 ```
 
-### Failed Status
-
-Published when the filename is missing or image/OCR processing raises an exception:
+Failed:
 
 ```json
 {
@@ -187,56 +170,38 @@ Published when the filename is missing or image/OCR processing raises an excepti
 }
 ```
 
-The consumer acknowledges valid messages after the use case completes. Invalid JSON is negatively acknowledged without requeue. Unexpected processing failures are retried with an `x-retry-count` header before the message is negatively acknowledged without requeue, allowing RabbitMQ to route it to the OCR queue DLQ configured by the backend.
+## Retry Behavior
 
-### Retry Behavior
+For unexpected consumer failures:
 
-For unexpected processing failures, the worker:
-
-- reads the current retry count from the `x-retry-count` message header;
-- acknowledges the failed delivery before scheduling the retry;
+- the worker reads `x-retry-count` from the message header;
+- acknowledges the failed delivery before retry scheduling;
 - waits `RABBITMQ_BASE_DELAY_SECONDS ** retry_count` seconds;
-- republishes the original message to the configured OCR status routing key with an incremented `x-retry-count`;
-- negatively acknowledges without requeue when `RABBITMQ_MAX_RETRIES` is reached.
+- republishes the original body with incremented `x-retry-count`;
+- negatively acknowledges without requeue after `RABBITMQ_MAX_RETRIES`.
 
-## Image Processing
-
-The OpenCV pre-processor applies a practical plate-focused pipeline:
-
-- loads the image from the resolved storage path;
-- converts the image to grayscale;
-- applies bilateral filtering and Canny edge detection;
-- searches the largest contours for a quadrilateral with plate-like aspect ratio;
-- crops the detected plate region when a candidate is found;
-- falls back to the full image when no plate contour is detected;
-- converts the crop to grayscale, scales it by `2x`, denoises it, and applies CLAHE.
-
-The OCR processor then uses EasyOCR to return JSON-safe candidates containing:
-
-- `text`: extracted text;
-- `confidence`: OCR confidence as a float;
-- `bbox`: bounding box coordinates as integer lists.
+RabbitMQ dead-letter routing is declared by the backend.
 
 ## Configuration
 
-Settings are loaded from environment variables. When present, `.env.idea` is used before `.env`.
+Settings are loaded from `.env.idea` when present, otherwise `.env`, and can also come from environment variables.
 
 | Variable | Purpose |
 | --- | --- |
-| `ENVIRONMENT` | Runtime environment. Non-production environments also write local NDJSON logs. |
+| `ENVIRONMENT` | Runtime environment. Non-production runs may write local NDJSON logs. |
 | `RABBITMQ_HOST` | RabbitMQ host. |
-| `RABBITMQ_PORT` | RabbitMQ port. |
+| `RABBITMQ_PORT` | RabbitMQ AMQP port. |
 | `RABBITMQ_USERNAME` | RabbitMQ username. |
 | `RABBITMQ_PASSWORD` | RabbitMQ password. |
-| `RABBITMQ_EXCHANGE` | RabbitMQ exchange used to publish status updates. |
-| `RABBITMQ_OCR_QUEUE` | Queue consumed by this service. |
-| `RABBITMQ_OCR_STATUS_ROUTING_KEY` | Routing key used to publish OCR status updates. |
-| `RABBITMQ_AI_VALIDATION_ROUTING_KEY` | Platform routing key required by the current settings model. |
-| `RABBITMQ_MAX_RETRIES` | Maximum number of processing retries before the message is rejected without requeue. |
-| `RABBITMQ_BASE_DELAY_SECONDS` | Base used to calculate retry delay as `base ** retry_count` seconds. |
-| `STORAGE_PATH` | Root directory where image filenames are resolved. In Docker Compose this is usually `storage`, mounted as `/app/storage`. |
+| `RABBITMQ_EXCHANGE` | Exchange used to publish OCR statuses. |
+| `RABBITMQ_OCR_QUEUE` | Queue consumed by this worker. |
+| `RABBITMQ_OCR_STATUS_ROUTING_KEY` | Routing key for OCR status events. |
+| `RABBITMQ_AI_VALIDATION_ROUTING_KEY` | Required by the current settings model for platform consistency. |
+| `RABBITMQ_MAX_RETRIES` | Maximum retry count. |
+| `RABBITMQ_BASE_DELAY_SECONDS` | Retry delay base. |
+| `STORAGE_PATH` | Root path used to resolve image filenames. |
 
-Example `.env`:
+Example:
 
 ```dotenv
 ENVIRONMENT=dev
@@ -250,102 +215,82 @@ RABBITMQ_OCR_STATUS_ROUTING_KEY=capture.ocr.updated
 RABBITMQ_AI_VALIDATION_ROUTING_KEY=capture.ai.validation
 RABBITMQ_MAX_RETRIES=3
 RABBITMQ_BASE_DELAY_SECONDS=2
-STORAGE_PATH=/data/access-control/images
+STORAGE_PATH=../storage
 ```
 
 ## Running Locally
 
-### Prerequisites
+Prerequisites:
 
 - Python 3.11 or 3.12
 - uv
 - RabbitMQ
-- Local or shared image storage mounted at `STORAGE_PATH`
+- Shared storage directory containing extracted capture images
 
-### Install Dependencies
+Install dependencies:
 
 ```bash
 uv sync
 ```
 
-### Run the Worker
+Run the worker:
 
 ```bash
 uv run python src/main.py
 ```
 
-The process blocks while listening to the configured OCR queue.
-
-## Docker
-
-Build the image:
-
-```bash
-docker build -t recognize-plate-service .
-```
-
-Run the worker with environment variables and a mounted storage directory:
-
-```bash
-docker run --rm \
-  --env-file .env \
-  -v /host/images:/data/access-control/images \
-  recognize-plate-service
-```
-
-The Dockerfile uses `python:3.11-slim`, installs the native libraries required by OpenCV, syncs locked dependencies with `uv`, and starts `src/main.py`.
-
-### Docker Compose
-
-From the repository root, this worker is included in the full platform Compose setup:
-
-```bash
-docker compose up --build recognize-plate-service
-```
-
-The root `docker-compose.yaml` builds this service from `./recognize-plate-service`, waits for RabbitMQ and the backend to become healthy, receives RabbitMQ and storage settings from the root `.env`, and mounts repository-root `./storage` into the container at `/app/storage`.
-
-## Testing and Quality
-
-Run the test suite:
+Run tests:
 
 ```bash
 uv run pytest
 ```
 
-Run tests with coverage using the project configuration:
+Run tests with explicit coverage output:
 
 ```bash
-uv run pytest --cov=src --cov-report=term --cov-config=.coveragerc
+uv run pytest --cov=src --cov-report=xml:coverage.xml --cov-report=term --cov-config=.coveragerc
 ```
 
-The current tests cover:
+## Docker
 
-- storage path validation and construction;
-- success, missing filename, and exception flows in the capture use case;
-- RabbitMQ consumer acknowledgment and negative acknowledgment behavior;
-- RabbitMQ retry behavior with `x-retry-count` before DLQ routing;
-- OCR status producer payload encoding and delivery properties;
-- OpenCV pre-processing behavior for valid, invalid, and contour edge cases;
-- EasyOCR processor output transformation, empty-text filtering, and sorting.
+Build:
+
+```bash
+docker build -t recognize-plate-service .
+```
+
+Run:
+
+```bash
+docker run --rm --env-file ../.env -v "$PWD/../storage:/app/storage" recognize-plate-service
+```
+
+The image uses `python:3.11-slim`, installs OS libraries required by OpenCV, installs `uv`, syncs locked dependencies, and starts `src/main.py`.
+
+## Docker Compose
+
+The root `docker-compose.yaml` starts this service with:
+
+- dependency on healthy RabbitMQ and backend service;
+- shared `./storage:/app/storage` volume;
+- RabbitMQ and storage variables from the root `.env`.
+
+Start it with the full platform:
+
+```bash
+docker compose up --build recognize-plate-service
+```
 
 ## CI/CD
 
-The GitHub Actions workflow for this service runs when files under `recognize-plate-service/**` change. It includes:
+Workflow:
 
-- dependency synchronization with `uv sync --frozen --no-dev`;
-- pytest coverage generation;
-- coverage artifact upload;
-- SonarCloud analysis;
-- CodeQL security analysis for Python.
+```text
+.github/workflows/recognize-plate-service-ci-cd.yaml
+```
 
-## Operational Notes
+Jobs:
 
-- This worker requires RabbitMQ and image storage to be available before processing jobs.
-- Message prefetch is set to `1` to process one image at a time per worker instance.
-- Processing failures are retried up to `RABBITMQ_MAX_RETRIES`; after that the message is rejected without requeue and should land in `${RABBITMQ_OCR_QUEUE}.dlq` when the backend-declared topology is active.
-- Published messages use JSON content type and delivery mode `2` for persistence.
-- EasyOCR is initialized with `gpu=True`; runtime environments should provide compatible GPU support or adjust the processor configuration when running CPU-only deployments.
-- `STORAGE_PATH` must point to the same storage location where the backend or capture ingestion flow writes image files. With the monorepo Docker Compose, both backend and OCR worker mount repository-root `./storage` at `/app/storage`.
-- In non-production environments, logs are also written to `logs/YYYYMMDD.ndjson`.
-- Horizontal scaling is achieved by running multiple worker instances against the same OCR queue.
+- `build-test`: install uv, sync dependencies, run pytest coverage, upload `coverage.xml`.
+- `sonar`: download coverage and run SonarCloud.
+- `security`: initialize CodeQL for Python, compile sources, analyze.
