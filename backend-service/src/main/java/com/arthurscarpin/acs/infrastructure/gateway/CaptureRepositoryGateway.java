@@ -1,9 +1,6 @@
 package com.arthurscarpin.acs.infrastructure.gateway;
 
-import com.arthurscarpin.acs.core.capture.domain.Capture;
-import com.arthurscarpin.acs.core.capture.domain.CaptureImage;
-import com.arthurscarpin.acs.core.capture.domain.CaptureMessage;
-import com.arthurscarpin.acs.core.capture.domain.ImageStatus;
+import com.arthurscarpin.acs.core.capture.domain.*;
 import com.arthurscarpin.acs.core.capture.exception.CaptureNotFoundException;
 import com.arthurscarpin.acs.core.capture.gateway.CaptureGateway;
 import com.arthurscarpin.acs.infrastructure.mapper.CaptureMapper;
@@ -12,6 +9,7 @@ import com.arthurscarpin.acs.infrastructure.persistence.entity.document.CaptureI
 import com.arthurscarpin.acs.infrastructure.persistence.repository.document.CaptureRepository;
 import com.arthurscarpin.acs.infrastructure.presentation.producer.AIProducer;
 import com.arthurscarpin.acs.infrastructure.presentation.producer.CaptureProducer;
+import com.arthurscarpin.acs.infrastructure.presentation.websocket.CaptureStatusPublisher;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +30,8 @@ public class CaptureRepositoryGateway implements CaptureGateway {
     private final AIProducer iAProducer;
 
     private final CaptureMapper mapper;
+
+    private final CaptureStatusPublisher captureStatusPublisher;
 
     @Override
     public Capture findById(String captureId) {
@@ -77,9 +77,7 @@ public class CaptureRepositoryGateway implements CaptureGateway {
             log.warn("Image ID {} not found in domain for Capture ID: {}", processedImageId, domain.id());
             return;
         }
-
         CaptureImageEntity imageEntity = mapper.toImageEntity(processedImage);
-
         CaptureEntity updatedEntity = repository.incrementProcessedCountAndUpsertSingleImage(
                 domain.id(),
                 processedImageId,
@@ -95,6 +93,21 @@ public class CaptureRepositoryGateway implements CaptureGateway {
         log.info("Mongo Atomic Update - Capture ID: {} | Processed: {}/{}",
                 domain.id(), updatedEntity.getProcessedImagesCount(), totalImages);
 
+        Capture currentProgressDomain = mapper.fromEntityToDomain(updatedEntity);
+
+        org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
+                    @Override
+                    public void afterCommit() {
+                        captureStatusPublisher.publish(new CaptureRealtimeEvent<>(
+                                currentProgressDomain.id(),
+                                CaptureEventType.OCR_NOTIFICATION,
+                                currentProgressDomain,
+                                System.currentTimeMillis()
+                        ));
+                    }
+                }
+        );
         if (updatedEntity.getProcessedImagesCount() == totalImages) {
             log.info("Success! This thread atomically processed the last image. Forcing fresh database reload...");
 
@@ -107,6 +120,23 @@ public class CaptureRepositoryGateway implements CaptureGateway {
 
             log.info("Publishing consolidated payload with all extracted OCRs to RabbitMQ...");
             iAProducer.publish(updatedDomain);
+
+            log.info("OCR message received for Capture ID: {}", updatedDomain.id());
+            log.debug("OCR Payload: {}", updatedDomain);
+
+            org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                    new org.springframework.transaction.support.TransactionSynchronizationAdapter() {
+                        @Override
+                        public void afterCommit() {
+                            captureStatusPublisher.publish(new CaptureRealtimeEvent<>(
+                                    updatedDomain.id(),
+                                    CaptureEventType.OCR_NOTIFICATION,
+                                    updatedDomain,
+                                    System.currentTimeMillis()
+                            ));
+                        }
+                    }
+            );
         }
     }
 
@@ -137,6 +167,17 @@ public class CaptureRepositoryGateway implements CaptureGateway {
         CaptureEntity updatedEntity = repository.save(entity);
         log.info("Capture ID: {} successfully updated.", domain.id());
 
-        return mapper.fromEntityToDomain(updatedEntity);
+        Capture updatedDomain = mapper.fromEntityToDomain(updatedEntity);
+
+        log.info("AI message received for Capture ID: {}", updatedDomain.id());
+        log.debug("AI Payload: {}", updatedDomain);
+
+        captureStatusPublisher.publish(new CaptureRealtimeEvent<>(
+                updatedDomain.id(),
+                CaptureEventType.AI_NOTIFICATION,
+                updatedDomain,
+                System.currentTimeMillis()
+        ));
+        return updatedDomain;
     }
 }
