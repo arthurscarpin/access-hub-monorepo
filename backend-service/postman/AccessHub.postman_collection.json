@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "51b8c338-5813-4391-a90a-7bfb492d8c6b",
-		"name": "Access Control System",
+		"name": "AccessHub",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37882254"
 	},
@@ -314,11 +314,14 @@
 								}
 							],
 							"request": {
+								"auth": {
+									"type": "noauth"
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"123456\"\r\n}",
+									"raw": "{\r\n    \"email\": \"admin@accesshub.io\",\r\n    \"password\": \"123456\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
