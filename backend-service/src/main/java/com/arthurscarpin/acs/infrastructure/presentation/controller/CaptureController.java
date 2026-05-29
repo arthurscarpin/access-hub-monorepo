@@ -50,13 +50,17 @@ public class CaptureController implements CaptureControllerDoc {
             throw new CaptureZipException("Invalid ZIP file");
         }
 
-        Path storagePath = Path.of(storageConfigProperties.getRoot());
-        Path destination = storagePath.resolve(filename);
+        Path storagePath = Path.of(storageConfigProperties.getRoot()).toAbsolutePath().normalize();
+        Path destination = storagePath.resolve(filename).toAbsolutePath().normalize();
+
+        if (!destination.startsWith(storagePath)) {
+            throw new CaptureZipException("Invalid ZIP file path");
+        }
 
         log.info("Current working directory: {}", System.getProperty("user.dir"));
         log.info("Configured storage root: {}", storageConfigProperties.getRoot());
-        log.debug("Absolute storage path: {}", storagePath.toAbsolutePath());
-        log.debug("Destination path: {}", destination.toAbsolutePath());
+        log.debug("Absolute storage path: {}", storagePath);
+        log.debug("Destination path: {}", destination);
 
         try {
             Files.createDirectories(storagePath);
