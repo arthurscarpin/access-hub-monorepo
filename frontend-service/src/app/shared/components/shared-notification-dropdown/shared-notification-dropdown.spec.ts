@@ -1,34 +1,77 @@
-import { Component, output, effect, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { WebsocketService } from '../../../core/services/websocket.service';
+import { NotificationItem } from '../../../core/models/ capture.model';
+import { SharedNotificationDropdown } from './shared-notification-dropdown';
 
-@Component({
-  selector: 'app-shared-notification-dropdown',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './shared-notification-dropdown.html'
-})
-export class SharedNotificationDropdown {
-  private readonly wsService = inject(WebsocketService);
+describe('SharedNotificationDropdown', () => {
+  let component: SharedNotificationDropdown;
+  let fixture: ComponentFixture<SharedNotificationDropdown>;
+  let websocketService: {
+    notifications: ReturnType<typeof signal<NotificationItem[]>>;
+    unreadCount: ReturnType<typeof signal<number>>;
+    markAllAsRead: ReturnType<typeof vi.fn>;
+    markAsRead: ReturnType<typeof vi.fn>;
+    clearAll: ReturnType<typeof vi.fn>;
+  };
 
-  notifications = this.wsService.notifications;
-  unreadCount = this.wsService.unreadCount;
-  countChanged = output<number>();
+  beforeEach(async () => {
+    websocketService = {
+      notifications: signal<NotificationItem[]>([
+        {
+          id: 'capture-1_123',
+          title: 'Capture Completed: ABC1D23',
+          description: 'AI has successfully consolidated the final plate results.',
+          type: 'success' as const,
+          unread: true,
+          timestamp: 123,
+          reasoning: 'Two images matched the same plate.',
+          isExpanded: false,
+        },
+      ]),
+      unreadCount: signal(1),
+      markAllAsRead: vi.fn(),
+      markAsRead: vi.fn(),
+      clearAll: vi.fn(),
+    };
 
-  private readonly unreadCountEffect = effect(() => {
-    this.countChanged.emit(this.unreadCount());
+    await TestBed.configureTestingModule({
+      imports: [SharedNotificationDropdown],
+      providers: [{ provide: WebsocketService, useValue: websocketService }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(SharedNotificationDropdown);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
-  toggleReasoning(id: string, event: Event): void {
-    event.stopPropagation();
-    this.wsService.notifications.update((oldList) =>
-      oldList.map((notif) => 
-        notif.id === id ? { ...notif, isExpanded: !notif.isExpanded } : notif
-      )
-    );
-  }
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  markAllAsRead(): void { this.wsService.markAllAsRead(); }
-  markAsRead(id: string): void { this.wsService.markAsRead(id); }
-  clearAll(): void { this.wsService.clearAll(); }
-}
+  it('should render notifications and delegate read actions', () => {
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('Capture Completed: ABC1D23');
+    expect(text).toContain('1');
+
+    component.markAsRead('capture-1_123');
+    component.markAllAsRead();
+    component.clearAll();
+
+    expect(websocketService.markAsRead).toHaveBeenCalledWith('capture-1_123');
+    expect(websocketService.markAllAsRead).toHaveBeenCalled();
+    expect(websocketService.clearAll).toHaveBeenCalled();
+  });
+
+  it('should expand reasoning without propagating the click', () => {
+    const event = { stopPropagation: vi.fn() } as unknown as Event;
+
+    component.toggleReasoning('capture-1_123', event);
+
+    expect(event.stopPropagation).toHaveBeenCalled();
+    expect(websocketService.notifications()[0].isExpanded).toBe(true);
+  });
+});

@@ -75,8 +75,6 @@ export class UsersRegisterModal {
         this.error.set(messageError || 'Failed to create user');
       },
     });
-
-    this.saved.emit();
   }
 
   public getScopeVariant(scope: string): 'all' | 'write' | 'read' {
