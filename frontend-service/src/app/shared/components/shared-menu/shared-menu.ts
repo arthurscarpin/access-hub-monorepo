@@ -13,8 +13,14 @@ export class SharedMenu {
   @Input() config!: SharedMenuConfig;
 
   public readonly dropdownStage = signal(false);
+  
+  public readonly notificationCount = signal<number>(0);
 
   public toggleDropdown(): void {
     this.dropdownStage.update((value) => !value);
+  }
+
+  public updateCount(count: number): void {
+    this.notificationCount.set(count);
   }
 }

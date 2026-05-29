@@ -1,22 +1,34 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, output, effect, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { WebsocketService } from '../../../core/services/websocket.service';
 
-import { SharedNotificationDropdown } from './shared-notification-dropdown';
+@Component({
+  selector: 'app-shared-notification-dropdown',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './shared-notification-dropdown.html'
+})
+export class SharedNotificationDropdown {
+  private readonly wsService = inject(WebsocketService);
 
-describe('SharedNotificationDropdown', () => {
-  let component: SharedNotificationDropdown;
-  let fixture: ComponentFixture<SharedNotificationDropdown>;
+  notifications = this.wsService.notifications;
+  unreadCount = this.wsService.unreadCount;
+  countChanged = output<number>();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SharedNotificationDropdown],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(SharedNotificationDropdown);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
+  private readonly unreadCountEffect = effect(() => {
+    this.countChanged.emit(this.unreadCount());
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  toggleReasoning(id: string, event: Event): void {
+    event.stopPropagation();
+    this.wsService.notifications.update((oldList) =>
+      oldList.map((notif) => 
+        notif.id === id ? { ...notif, isExpanded: !notif.isExpanded } : notif
+      )
+    );
+  }
+
+  markAllAsRead(): void { this.wsService.markAllAsRead(); }
+  markAsRead(id: string): void { this.wsService.markAsRead(id); }
+  clearAll(): void { this.wsService.clearAll(); }
+}

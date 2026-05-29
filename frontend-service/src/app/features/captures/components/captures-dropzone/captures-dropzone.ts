@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, inject, signal } from '@angular/core';
 import { LucideCloudUpload } from '@lucide/angular';
 import { CaptureService } from '../../../../core/services/capture.service';
+import { WebsocketService } from '../../../../core/services/websocket.service';
 
 @Component({
   standalone: true,
@@ -10,6 +11,7 @@ import { CaptureService } from '../../../../core/services/capture.service';
 })
 export class CapturesDropzone {
   private readonly captureService = inject(CaptureService);
+  private readonly wsService = inject(WebsocketService);
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -47,11 +49,26 @@ export class CapturesDropzone {
     this.messageType.set(null);
 
     this.captureService.upload(file, this.direction()).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.loading.set(false);
 
         this.message.set(response?.message ?? 'Upload completed successfully');
         this.messageType.set('success');
+
+        console.log('Response received from upload:', response);
+
+        if (response && response.id) {
+          console.log(`Triggering channel for ID: ${response.id}`);
+          this.wsService.initializeCaptureSubscription(response.id);
+        } else if (response && response.data && response.data.id) {
+          console.log(`Triggering channel for ID (via .data): ${response.data.id}`);
+          this.wsService.initializeCaptureSubscription(response.data.id);
+        } else if (response && response.payload && response.payload.id) {
+          console.log(`Triggering channel for ID (via .payload): ${response.payload.id}`);
+          this.wsService.initializeCaptureSubscription(response.payload.id);
+        } else {
+          console.warn('Upload succeeded, but capture ID was not found in the HTTP response.');
+        }
 
         this.reset();
       },
