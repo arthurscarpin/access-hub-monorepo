@@ -1,4 +1,4 @@
-# Access Control System Monorepo
+# AccessHub Monorepo
 
 Distributed vehicle access-control platform built as a service-oriented monorepo. The system combines an Angular operations console, a Spring Boot API, a Python OCR worker, and a Python AI worker to process capture ZIP files, extract license-plate candidates, reconstruct a final plate, and create auditable access decisions.
 
