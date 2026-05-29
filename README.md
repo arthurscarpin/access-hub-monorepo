@@ -22,7 +22,7 @@ flowchart LR
     Backend --> Postgres[(PostgreSQL)]
     Backend --> Mongo[(MongoDB)]
     Backend --> Rabbit[(RabbitMQ)]
-    Backend -->|/topic/capture/{id}| Browser
+    Backend -->|STOMP capture topic| Browser
 
     Rabbit --> OCR[recognize-plate-service]
     OCR --> Rabbit
